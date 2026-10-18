@@ -1,0 +1,1371 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+/* Глобальный кастомный ретро-курсор для ВСЕХ элементов приложения без исключения */
+html, body, *, *::before, *::after, canvas {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='19' height='25' viewBox='0 0 19 25'%3E%3Cpath d='M1 1 L1 21 L5.8 16.2 L9.5 24 L12.5 22.5 L8.8 15 L15 15 Z' fill='%23ffffff' stroke='%23000000' stroke-width='2' stroke-linejoin='miter' stroke-linecap='square'/%3E%3C/svg%3E") 0 0, default !important;
+}
+
+button, a, input, select, textarea, [role="button"], .win-btn, .spawn-btn, #close-menu, #pause-overlay, .item-card, .gmod-item, .pointer, .is-hovered {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAYCAYAAAD3Va0xAAAAi0lEQVR4nN2T3QrAIAiFVfb+r3zG+gEnCabtZgeKCvs6lhGthdHCksUaADxdG1MBlJL8F3QFYqDGnAahv16nMLvQ7dTwLg0cuSOoWhNFRgUmC7s2yJ1rSTTQysY+IGZ2XzWs6agME7uwk54HKrmS9M6hcTh/9vs5m54csUNrUNjVvJ+jjryjd4qpMW48Bjkbj2vOwQAAAABJRU5ErkJggg==") 5 0, pointer !important;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000;
+  font-family: 'Tahoma', 'Verdana', 'Lucida Console', monospace, sans-serif;
+  image-rendering: pixelated;
+}
+
+body > canvas {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  display: block;
+}
+
+/* Стильная панель заголовка в черно-сером градиенте */
+#win-titlebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 26px;
+  background: linear-gradient(90deg, #18191b 0%, #2a2b2f 50%, #1f2023 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 0 8px;
+  z-index: 999999; /* Всегда выше прелоадера и любых оверлеев */
+  user-select: none;
+  border-bottom: 1px solid #101112;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 5px rgba(0, 0, 0, 0.6);
+  -webkit-app-region: drag; /* Позволяет перетаскивать окно за заголовок */
+}
+
+.win-title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.win-icon {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+.win-title-text {
+  color: #e2e4e8;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.win-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  -webkit-app-region: no-drag; /* Кнопки кликабельны */
+}
+
+.win-btn {
+  width: 22px;
+  height: 18px;
+  background: linear-gradient(180deg, #3c3d42 0%, #26272a 100%);
+  border-top: 1px solid #55575e;
+  border-left: 1px solid #55575e;
+  border-right: 1px solid #141516;
+  border-bottom: 1px solid #141516;
+  color: #d0d2d6;
+  font-family: 'Tahoma', 'Verdana', monospace, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: all 0.05s ease;
+}
+
+.win-btn:hover {
+  background: linear-gradient(180deg, #4c4e55 0%, #323337 100%);
+  color: #ffffff;
+}
+
+.win-btn:active {
+  background: #1b1c1e;
+  border-top: 1px solid #141516;
+  border-left: 1px solid #141516;
+  border-right: 1px solid #55575e;
+  border-bottom: 1px solid #55575e;
+  transform: translateY(1px);
+}
+
+.win-btn.win-close:hover {
+  background: linear-gradient(180deg, #d33838 0%, #8b1515 100%);
+  border-color: #ff6b6b #ff6b6b #500a0a #500a0a;
+  color: #ffffff;
+}
+
+/* Кастомный внутриигровой курсор (работает внутри захваченного экрана без всплывающих окон браузера) */
+#custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 19px;
+  height: 25px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='19' height='25' viewBox='0 0 19 25'%3E%3Cpath d='M1 1 L1 21 L5.8 16.2 L9.5 24 L12.5 22.5 L8.8 15 L15 15 Z' fill='%23ffffff' stroke='%23000000' stroke-width='2' stroke-linejoin='miter' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: top left;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+#custom-cursor.pointer {
+  width: 18px;
+  height: 24px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAYCAYAAAD3Va0xAAAAi0lEQVR4nN2T3QrAIAiFVfb+r3zG+gEnCabtZgeKCvs6lhGthdHCksUaADxdG1MBlJL8F3QFYqDGnAahv16nMLvQ7dTwLg0cuSOoWhNFRgUmC7s2yJ1rSTTQysY+IGZ2XzWs6agME7uwk54HKrmS9M6hcTh/9vs5m54csUNrUNjVvJ+jjryjd4qpMW48Bjkbj2vOwQAAAABJRU5ErkJggg==");
+  background-size: contain;
+  margin-left: -5px; /* Совмещение кончика пальца с точкой клика */
+}
+
+#custom-cursor.hidden {
+  display: none !important;
+}
+
+/* Маленькая точка по центру: белая с тонкой темной обводкой */
+#crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background-color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10;
+  transition: width 0.08s, height 0.08s;
+}
+
+/* При наведении */
+#crosshair.hovered {
+  width: 6px;
+  height: 6px;
+  background-color: #f0f0f0;
+}
+
+/* При удержании */
+#crosshair.grabbed {
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+}
+
+/* Меню предметов в стиле классических игр конца 90-х / Windows XP */
+#spawn-menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 680px;
+  min-height: 220px;
+  max-width: 94vw;
+  background: #2b2b2d;
+  border-top: 2px solid #5a5a5e;
+  border-left: 2px solid #5a5a5e;
+  border-right: 2px solid #141416;
+  border-bottom: 2px solid #141416;
+  color: #dfdfdf;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.8), inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 0px;
+}
+
+/* --- Оверлей Паузы: полноценное меню в стиле ретро Windows / Half-Life --- */
+#pause-overlay {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9500;
+}
+
+#pause-overlay.hidden {
+  display: none !important;
+}
+
+.pause-window {
+  background: #1c1d20;
+  border-top: 2px solid #3c3e44;
+  border-left: 2px solid #3c3e44;
+  border-right: 2px solid #0d0d0f;
+  border-bottom: 2px solid #0d0d0f;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-width: 260px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.85);
+}
+
+.pause-header {
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 4px;
+}
+
+.pause-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.pause-btn {
+  width: 100%;
+  font-size: 14px;
+  padding: 9px 18px;
+}
+
+#spawn-menu.hidden {
+  display: none;
+}
+
+.spawn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: linear-gradient(180deg, #3f4044 0%, #292a2d 100%);
+  border-bottom: 1px solid #1a1b1d;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #d0d0d4;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#close-menu {
+  background: #2d2e31;
+  border-top: 1px solid #5a5b60;
+  border-left: 1px solid #5a5b60;
+  border-right: 1px solid #141416;
+  border-bottom: 1px solid #141416;
+  color: #cccccc;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 16px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+#close-menu:hover, #close-menu.is-hovered {
+  background: #3e4045;
+  color: #ffffff;
+}
+
+#close-menu:active, #close-menu.is-active {
+  border-top: 1px solid #141416;
+  border-left: 1px solid #141416;
+  border-right: 1px solid #5a5b60;
+  border-bottom: 1px solid #5a5b60;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: #1e1e20;
+  border-top: 1px solid #141416;
+  flex: 1;
+}
+
+.item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  background: #2c2d30;
+  border-top: 1px solid #4a4b50;
+  border-left: 1px solid #4a4b50;
+  border-right: 1px solid #151618;
+  border-bottom: 1px solid #151618;
+  border-radius: 0px;
+  overflow: hidden;
+  min-height: 110px;
+  cursor: default;
+  pointer-events: none; /* Карточка не кликабельна и не перехватывает события */
+}
+
+/* Кнопка "Создать" внутри карточки активна и интерактивна */
+.item-card .spawn-btn {
+  pointer-events: auto;
+}
+
+.item-card canvas {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 72px !important;
+  height: 72px !important;
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.item-name {
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #dedee2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.spawn-btn {
+  width: 100%;
+  padding: 4px 6px;
+  margin-top: 4px;
+  background: linear-gradient(180deg, #44454a 0%, #2f3034 100%);
+  border-top: 1px solid #6b6d74;
+  border-left: 1px solid #6b6d74;
+  border-right: 1px solid #141517;
+  border-bottom: 1px solid #141517;
+  color: #f0f0f4;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 0px;
+  transition: all 0.05s ease;
+}
+
+.spawn-btn:hover, .spawn-btn.is-hovered {
+  background: linear-gradient(180deg, #53555c 0%, #3a3b40 100%);
+  color: #ffffff;
+}
+
+.spawn-btn:active, .spawn-btn.is-active, .item-card.btn-pressed .spawn-btn {
+  background: #1e1f22;
+  border-top: 1px solid #141517;
+  border-left: 1px solid #141517;
+  border-right: 1px solid #6b6d74;
+  border-bottom: 1px solid #6b6d74;
+  transform: translateY(1px);
+}
+
+/* Подсказка слева снизу */
+#hint-bottom-left {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 4px 10px;
+  background: #242528;
+  border-top: 1px solid #4a4b50;
+  border-left: 1px solid #4a4b50;
+  border-right: 1px solid #141416;
+  border-bottom: 1px solid #141416;
+  border-radius: 0px;
+  color: #bfbfc4;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Индикатор оси вращения в стиле Dead Rails */
+#axis-hud {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 5px 12px;
+  background: #242528;
+  border-top: 1px solid #4a4b50;
+  border-left: 1px solid #4a4b50;
+  border-right: 1px solid #141416;
+  border-bottom: 1px solid #141416;
+  border-radius: 0px;
+  color: #e0e0e0;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  z-index: 25;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#axis-hud.hidden {
+  display: none !important;
+}
+
+#axis-val {
+  font-weight: 900;
+  padding: 1px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#axis-val.axis-x {
+  color: #ff3333;
+  background: rgba(255, 51, 51, 0.2);
+  border-color: #ff3333;
+}
+
+#axis-val.axis-y {
+  color: #00ff44;
+  background: rgba(0, 255, 68, 0.2);
+  border-color: #00ff44;
+}
+
+#axis-val.axis-z {
+  color: #00aaff;
+  background: rgba(0, 170, 255, 0.2);
+  border-color: #00aaff;
+}
+
+/* Оверлей эффекта падения: линии ветра и динамический блюр */
+#fall-wind-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* --- Garry's Mod Weapon Selector HUD (Классический Source стиль без GLOW) --- */
+#weapon-hud {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+#weapon-hud.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-6px);
+  pointer-events: none;
+}
+
+.gmod-slots-container {
+  display: flex;
+  gap: 8px;
+}
+
+.gmod-slot-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 145px;
+}
+
+.gmod-slot-header {
+  background: #14110d;
+  border: 2px solid #e58b10;
+  color: #ff9b19;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 2px 6px;
+  text-align: center;
+  letter-spacing: 2px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+}
+
+.gmod-item {
+  background: rgba(18, 14, 10, 0.92);
+  border: 1px solid #4a3416;
+  border-left: 3px solid #754b18;
+  padding: 5px 8px;
+  color: #c0bebe;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+  transition: background 0.05s, border-color 0.05s;
+}
+
+.gmod-item-title {
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #dedede;
+  letter-spacing: 0.5px;
+}
+
+.gmod-item-sub {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 10px;
+  color: #887a6a;
+  margin-top: 1px;
+}
+
+/* Выделенный активный предмет: аутентичный инвертированный оранжевый блок Half-Life 2 / GMod */
+.gmod-item.active {
+  background: #ff9b19 !important;
+  border: 1px solid #ffba42 !important;
+  border-left: 3px solid #ffffff !important;
+  transform: none;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+}
+
+.gmod-item.active .gmod-item-title {
+  color: #000000 !important;
+  font-weight: 900;
+  text-shadow: none !important;
+}
+
+.gmod-item.active .gmod-item-sub {
+  color: #241400 !important;
+  font-weight: 700;
+}
+
+/* Текущий экипированный предмет в руках */
+.gmod-item.equipped {
+  border-right: 3px solid #00ffaa;
+}
+
+/* --- HUD Патронов (Классический монолитный HUD Half-Life 2 / GMod без GLOW) --- */
+#ammo-hud {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  z-index: 50;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+#ammo-hud.hidden {
+  opacity: 0;
+}
+
+.ammo-box {
+  background: rgba(18, 14, 10, 0.94);
+  border: 2px solid #e58b10;
+  outline: 1px solid rgba(0, 0, 0, 0.9);
+  padding: 6px 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.85);
+}
+
+.ammo-label {
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #e58b10;
+  letter-spacing: 2px;
+  margin-right: 2px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.ammo-current {
+  font-family: 'Impact', 'Trebuchet MS', 'Arial Black', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: #ff9b19;
+  line-height: 1;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.ammo-divider {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 16px;
+  color: #886535;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.ammo-reserve {
+  font-family: 'Impact', 'Trebuchet MS', 'Arial Black', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #d89030;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* --- Окошко настройки скорости полёта (V hold 0.7s) --- */
+#flight-speed-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9000;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+#flight-speed-overlay.hidden {
+  display: none !important;
+}
+
+.flight-speed-box {
+  background: #242528;
+  border-top: 1px solid #4a4b50;
+  border-left: 1px solid #4a4b50;
+  border-right: 1px solid #141416;
+  border-bottom: 1px solid #141416;
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+  min-width: 170px;
+}
+
+.flight-speed-value {
+  font-family: 'Tahoma', 'Verdana', 'Lucida Console', monospace, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.flight-speed-unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: #c0c0c4;
+}
+
+.flight-speed-bar-track {
+  width: 100%;
+  height: 6px;
+  background: #141416;
+  border: 1px solid #38393e;
+  overflow: hidden;
+}
+
+.flight-speed-bar-fill {
+  width: 20%;
+  height: 100%;
+  background: #dcdce0;
+  transition: width 0.05s ease;
+}
+
+/* Индикатор силы броска / удара по ПКМ (осцилляция силы вверх-вниз) */
+#throw-power-overlay {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9500;
+  pointer-events: none;
+}
+
+#throw-power-overlay.hidden {
+  display: none !important;
+}
+
+.throw-power-box {
+  background: #242528;
+  border-top: 1px solid #4a4b50;
+  border-left: 1px solid #4a4b50;
+  border-right: 1px solid #141416;
+  border-bottom: 1px solid #141416;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+  min-width: 160px;
+}
+
+.throw-power-label {
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #e2e4e8;
+}
+
+.throw-power-bar-track {
+  width: 100%;
+  height: 8px;
+  background: #141416;
+  border: 1px solid #38393e;
+  overflow: hidden;
+  position: relative;
+}
+
+.throw-power-bar-fill {
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, #dcdce0 0%, #ffffff 100%);
+  transition: width 0.03s linear;
+}
+
+.throw-power-val {
+  font-family: 'Tahoma', 'Verdana', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   ПРЕЛОАДЕР И ГЛАВНОЕ МЕНЮ (3D SANDBOX)
+   (Чистый черный экран, без лишнего свечения / glow, аутентичный ретро-стиль)
+   ========================================================================== */
+#preloader-overlay {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background-color: #000000;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1.0s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#preloader-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preloader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 320px;
+}
+
+.preloader-title {
+  color: #ffffff;
+  font-family: 'Tahoma', 'Verdana', monospace, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.preloader-track {
+  width: 100%;
+  height: 16px;
+  background-color: #0a0a0c;
+  border-top: 2px solid #202024;
+  border-left: 2px solid #202024;
+  border-right: 2px solid #3c3d42;
+  border-bottom: 2px solid #3c3d42;
+  padding: 2px;
+}
+
+.preloader-fill {
+  width: 0%;
+  height: 100%;
+  background-color: #ffffff;
+  transition: width 0.15s ease-out;
+}
+
+/* Главное меню с живым 3D-фоном */
+#main-menu {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background: radial-gradient(circle at center, rgba(10, 11, 14, 0.12) 0%, rgba(5, 6, 8, 0.40) 100%);
+  backdrop-filter: none;
+  z-index: 15000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+#main-menu.visible {
+  opacity: 1;
+}
+
+#main-menu.fade-out-game {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.8s ease;
+}
+
+#main-menu.hidden {
+  display: none !important;
+}
+
+.main-menu-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 36px;
+  min-width: 280px;
+}
+
+.main-menu-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-menu-logo-img {
+  width: 340px;
+  max-width: 85vw;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  user-select: none;
+  pointer-events: none;
+}
+
+.main-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 220px;
+}
+
+.menu-btn {
+  background: #1c1d20;
+  color: #e0e2e6;
+  border-top: 2px solid #3c3e44;
+  border-left: 2px solid #3c3e44;
+  border-right: 2px solid #0d0d0f;
+  border-bottom: 2px solid #0d0d0f;
+  padding: 10px 18px;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.12s, color 0.12s;
+}
+
+.menu-btn:hover {
+  background: #2b2d33;
+  color: #ffffff;
+  border-top-color: #555760;
+  border-left-color: #555760;
+}
+
+.menu-btn:active {
+  border-top: 2px solid #0d0d0f;
+  border-left: 2px solid #0d0d0f;
+  border-right: 2px solid #3c3e44;
+  border-bottom: 2px solid #3c3e44;
+  background: #151618;
+}
+
+.menu-btn:disabled,
+.menu-btn.menu-btn-disabled {
+  opacity: 0.45;
+  cursor: not-allowed !important;
+  background: #161719 !important;
+  color: #72747a !important;
+  border-top-color: #2c2d32 !important;
+  border-left-color: #2c2d32 !important;
+  border-right-color: #0d0d0f !important;
+  border-bottom-color: #0d0d0f !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+
+
+/* Модальное окно настроек */
+#settings-modal {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 16000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#settings-modal.hidden {
+  display: none !important;
+}
+
+.settings-window {
+  background: #202124;
+  border-top: 2px solid #3e4046;
+  border-left: 2px solid #3e4046;
+  border-right: 2px solid #101113;
+  border-bottom: 2px solid #101113;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-titlebar {
+  background: #151618;
+  padding: 6px 10px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #101113;
+}
+
+.settings-close-btn {
+  background: #2a2b2f;
+  border: 1px solid #4a4b52;
+  color: #ffffff;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.settings-tabs {
+  display: flex;
+  background: #18191c;
+  border-bottom: 2px solid #101113;
+  padding: 4px 8px 0 8px;
+  gap: 4px;
+}
+
+.settings-tab-btn {
+  background: #242528;
+  color: #9a9ca4;
+  border-top: 2px solid #3c3e44;
+  border-left: 2px solid #3c3e44;
+  border-right: 2px solid #0d0d0f;
+  border-bottom: none;
+  padding: 6px 14px;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s, color 0.1s;
+}
+
+.settings-tab-btn:hover {
+  color: #ffffff;
+}
+
+.settings-tab-btn.active {
+  background: #202124;
+  color: #ffffff;
+  border-top-color: #555760;
+  border-left-color: #555760;
+  margin-bottom: -1px;
+  padding-bottom: 7px;
+}
+
+.settings-tab-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settings-tab-pane.hidden {
+  display: none !important;
+}
+
+.settings-label-val {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-label-val span {
+  font-family: monospace;
+  font-size: 11px;
+  color: #e0e2e8;
+  font-weight: bold;
+}
+
+.settings-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 160px;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-row label {
+  color: #c4c6cc;
+  font-size: 11px;
+}
+
+.settings-row input[type="range"] {
+  accent-color: #888a92;
+  cursor: pointer;
+}
+
+.settings-footer {
+  padding: 8px 16px 14px 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.settings-btn {
+  font-size: 12px;
+  padding: 4px 16px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   МОДАЛЬНОЕ ОКНО ВЫБОРА МИРОВ И ЭКРАН ЗАГРУЗКИ МИРА
+   ========================================================================== */
+#worlds-modal {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 16000;
+}
+
+#worlds-modal.hidden {
+  display: none !important;
+}
+
+.worlds-window {
+  background: #25262a;
+  border-top: 2px solid #5a5b62;
+  border-left: 2px solid #5a5b62;
+  border-right: 2px solid #141518;
+  border-bottom: 2px solid #141518;
+  width: 540px;
+  max-width: 92vw;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.85);
+}
+
+.worlds-titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background: linear-gradient(180deg, #3c3d44 0%, #26272c 100%);
+  border-bottom: 1px solid #141518;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.worlds-close-btn {
+  background: #2d2e32;
+  border-top: 1px solid #55575e;
+  border-left: 1px solid #55575e;
+  border-right: 1px solid #141518;
+  border-bottom: 1px solid #141518;
+  color: #fff;
+  font-size: 14px;
+  line-height: 14px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.worlds-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.worlds-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.world-card {
+  background: #1c1d20;
+  border-top: 1px solid #3c3e44;
+  border-left: 1px solid #3c3e44;
+  border-right: 1px solid #101114;
+  border-bottom: 1px solid #101114;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.world-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.world-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.world-card-meta {
+  font-size: 11px;
+  color: #90949e;
+}
+
+.world-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.world-btn-play {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.world-btn-export {
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #4cd137;
+}
+
+.world-btn-delete {
+  padding: 5px 8px;
+  font-size: 12px;
+  color: #ff6b6b;
+}
+
+.worlds-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding-top: 6px;
+}
+
+.worlds-action-btn {
+  flex: 1;
+  font-size: 12px;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+/* Экран загрузки мира */
+#world-loading-overlay {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background-color: #000000;
+  z-index: 25000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease;
+}
+
+#world-loading-overlay.hidden {
+  display: none !important;
+}
+
+.world-loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 340px;
+  text-align: center;
+}
+
+.world-loading-title {
+  color: #ffffff;
+  font-family: 'Tahoma', 'Verdana', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.world-loading-status {
+  color: #8c8f99;
+  font-size: 12px;
+}
+
+/* Ретро диалоговое окно (замена prompt/confirm/alert) */
+#retro-dialog-modal {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 26px);
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 22000;
+}
+
+#retro-dialog-modal.hidden {
+  display: none !important;
+}
+
+.retro-dialog-window {
+  background: #25262a;
+  border-top: 2px solid #5a5b62;
+  border-left: 2px solid #5a5b62;
+  border-right: 2px solid #141518;
+  border-bottom: 2px solid #141518;
+  width: 360px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.85);
+}
+
+.retro-dialog-titlebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background: linear-gradient(180deg, #3c3d44 0%, #26272c 100%);
+  border-bottom: 1px solid #141518;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.retro-dialog-close-btn {
+  background: #2d2e32;
+  border-top: 1px solid #55575e;
+  border-left: 1px solid #55575e;
+  border-right: 1px solid #141518;
+  border-bottom: 1px solid #141518;
+  color: #fff;
+  font-size: 14px;
+  line-height: 14px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.retro-dialog-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#retro-dialog-message {
+  color: #e2e4e8;
+  font-size: 13px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.retro-dialog-input {
+  background: #151618;
+  border: 1px solid #4a4b52;
+  color: #ffffff;
+  padding: 6px 8px;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 13px;
+  outline: none;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.retro-dialog-input:focus {
+  border-color: #8c8f99;
+}
+
+.retro-dialog-input.hidden {
+  display: none !important;
+}
+
+.retro-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.retro-dialog-btn {
+  min-width: 72px;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.retro-dialog-btn.hidden {
+  display: none !important;
+}
+
+
+

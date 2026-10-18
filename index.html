@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Sandbox</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <!-- Аутентичный заголовок окна в стиле классической Windows (98 / 2000) -->
+  <div id="win-titlebar">
+    <div class="win-title-left">
+      <img src="./app-icon.png" class="win-icon" alt="icon" />
+      <span class="win-title-text">3D Sandbox</span>
+    </div>
+    <div class="win-controls">
+      <button class="win-btn" id="win-minimize" aria-label="Свернуть">_</button>
+      <button class="win-btn" id="win-maximize" aria-label="Развернуть">&#9633;</button>
+      <button class="win-btn win-close" id="win-close" aria-label="Закрыть">&times;</button>
+    </div>
+  </div>
+  <script>
+    (function() {
+      function getIpc() {
+        try {
+          if (typeof window !== 'undefined' && window.require) {
+            return window.require('electron').ipcRenderer;
+          }
+          if (typeof window !== 'undefined' && window.electron && window.electron.ipcRenderer) {
+            return window.electron.ipcRenderer;
+          }
+        } catch (_) {}
+        return null;
+      }
+      function setupWinControls() {
+        const minBtn = document.getElementById('win-minimize');
+        const maxBtn = document.getElementById('win-maximize');
+        const closeBtn = document.getElementById('win-close');
+        const ipc = getIpc();
+
+        if (minBtn) {
+          minBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (ipc) ipc.send('win-minimize');
+          };
+        }
+        if (maxBtn) {
+          maxBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (ipc) ipc.send('win-maximize');
+          };
+        }
+        if (closeBtn) {
+          closeBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (ipc) ipc.send('win-close');
+            else window.close();
+          };
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupWinControls);
+      } else {
+        setupWinControls();
+      }
+    })();
+  </script>
+
+  <!-- Прелоадер: чистый черный экран и шкала загрузки -->
+  <div id="preloader-overlay">
+    <div class="preloader-container">
+      <div class="preloader-title">3D SANDBOX</div>
+      <div class="preloader-track">
+        <div class="preloader-fill" id="preloader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Главное меню игры (3D Sandbox, минималистичный черный фон) -->
+  <div id="main-menu" class="hidden">
+    <div class="main-menu-panel">
+      <div class="main-menu-header">
+        <img src="./logo.png" class="main-menu-logo-img" alt="3D Sandbox Logo" />
+      </div>
+      <div class="main-menu-buttons">
+        <button class="menu-btn" id="btn-play">Играть</button>
+        <button class="menu-btn menu-btn-disabled" id="btn-multiplayer" disabled title="Мультиплеер находится в разработке">Мультиплеер (в разработке)</button>
+        <button class="menu-btn" id="btn-settings">Настройки</button>
+        <button class="menu-btn" id="btn-exit">Выход</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно выбора и создания миров (Макс 5 миров) -->
+  <div id="worlds-modal" class="hidden">
+    <div class="worlds-window">
+      <div class="worlds-titlebar">
+        <span>Выбор мира (Максимум 5)</span>
+        <button class="worlds-close-btn" id="btn-close-worlds">&times;</button>
+      </div>
+      <div class="worlds-body">
+        <div class="worlds-list" id="worlds-list"></div>
+        <div class="worlds-footer">
+          <button class="menu-btn worlds-action-btn" id="btn-create-world">+ Создать новый мир</button>
+          <button class="menu-btn worlds-action-btn" id="btn-import-world">Импорт мира (.json)</button>
+          <input type="file" id="input-import-world" accept=".json" style="display: none;" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ретро диалоговое окно (замена prompt/confirm/alert без ошибок Electron) -->
+  <div id="retro-dialog-modal" class="hidden">
+    <div class="retro-dialog-window">
+      <div class="retro-dialog-titlebar">
+        <span id="retro-dialog-title">Диалог</span>
+        <button class="retro-dialog-close-btn" id="btn-retro-dialog-close">&times;</button>
+      </div>
+      <div class="retro-dialog-body">
+        <div id="retro-dialog-message">Введите название:</div>
+        <input type="text" id="retro-dialog-input" class="retro-dialog-input hidden" maxlength="32" autocomplete="off" />
+        <div class="retro-dialog-buttons">
+          <button class="menu-btn retro-dialog-btn" id="btn-retro-dialog-ok">OK</button>
+          <button class="menu-btn retro-dialog-btn" id="btn-retro-dialog-cancel">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Экран загрузки мира (World Loading Screen) -->
+  <div id="world-loading-overlay" class="hidden">
+    <div class="world-loading-box">
+      <div class="world-loading-title" id="world-loading-title">ЗАГРУЗКА МИРА...</div>
+      <div class="world-loading-status" id="world-loading-status">Восстановление блоков и физики</div>
+      <div class="preloader-track">
+        <div class="preloader-fill" id="world-loading-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Окно настроек в ретро-стиле Windows с разделами (Звук, Игра) -->
+  <div id="settings-modal" class="hidden">
+    <div class="settings-window">
+      <div class="settings-titlebar">
+        <span>Настройки игры</span>
+        <button class="settings-close-btn" id="btn-close-settings">&times;</button>
+      </div>
+      <div class="settings-tabs">
+        <button class="settings-tab-btn active" data-tab="sound">Звук</button>
+        <button class="settings-tab-btn" data-tab="gameplay">Игра</button>
+      </div>
+      <div class="settings-body">
+        <!-- Вкладка: Звук -->
+        <div class="settings-tab-pane active" id="tab-pane-sound">
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Общая громкость:</label>
+              <span id="val-vol-master">100%</span>
+            </div>
+            <input type="range" id="setting-vol-master" min="0" max="100" value="100" />
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Громкость эффектов (SFX):</label>
+              <span id="val-vol-sfx">80%</span>
+            </div>
+            <input type="range" id="setting-vol-sfx" min="0" max="100" value="80" />
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Громкость музыки:</label>
+              <span id="val-vol-music">50%</span>
+            </div>
+            <input type="range" id="setting-vol-music" min="0" max="100" value="50" />
+          </div>
+        </div>
+
+        <!-- Вкладка: Игра / Функции -->
+        <div class="settings-tab-pane hidden" id="tab-pane-gameplay">
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Поле зрения (FOV):</label>
+              <span id="val-fov">70°</span>
+            </div>
+            <input type="range" id="setting-fov" min="60" max="90" value="70" />
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Чувствительность мыши:</label>
+              <span id="val-sens">5</span>
+            </div>
+            <input type="range" id="setting-sens" min="1" max="10" value="5" />
+          </div>
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="menu-btn settings-btn" id="btn-apply-settings">Готово</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="crosshair"></div>
+  <div id="custom-cursor" class="hidden"></div>
+
+  <!-- Оверлей Паузы: полноценное меню в ретро-стиле -->
+  <div id="pause-overlay" class="hidden">
+    <div class="pause-window">
+      <div class="pause-header">ПАУЗА</div>
+      <div class="pause-menu-buttons">
+        <button class="menu-btn pause-btn" id="btn-pause-resume">Продолжить игру</button>
+        <button class="menu-btn pause-btn" id="btn-pause-settings">Настройки</button>
+        <button class="menu-btn pause-btn" id="btn-pause-exit">Сохранить и выйти</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="spawn-menu" class="hidden">
+    <div class="spawn-header">
+      <span>Предметы</span>
+      <button id="close-menu" aria-label="Закрыть">&times;</button>
+    </div>
+    <div class="items-grid">
+      <div class="item-card" data-item="cube">
+        <canvas id="cube-preview-canvas" width="100" height="100"></canvas>
+        <span class="item-name">Куб</span>
+        <button class="spawn-btn" data-item="cube">Создать</button>
+      </div>
+      <div class="item-card" data-item="sphere">
+        <canvas id="sphere-preview-canvas" width="100" height="100"></canvas>
+        <span class="item-name">Круг</span>
+        <button class="spawn-btn" data-item="sphere">Создать</button>
+      </div>
+      <div class="item-card" data-item="triangle">
+        <canvas id="triangle-preview-canvas" width="100" height="100"></canvas>
+        <span class="item-name">Треугольник</span>
+        <button class="spawn-btn" data-item="triangle">Создать</button>
+      </div>
+      <div class="item-card" data-item="ramp">
+        <canvas id="ramp-preview-canvas" width="100" height="100"></canvas>
+        <span class="item-name">Рампа</span>
+        <button class="spawn-btn" data-item="ramp">Создать</button>
+      </div>
+      <div class="item-card" data-item="nuke">
+        <canvas id="nuke-preview-canvas" width="100" height="100"></canvas>
+        <span class="item-name">Ядерка</span>
+        <button class="spawn-btn" data-item="nuke">Создать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Garry's Mod Fast Weapon Switch HUD (Слоты предметов) -->
+  <div id="weapon-hud" class="hidden">
+    <div class="gmod-slots-container">
+      <div class="gmod-slot-col" data-cat="1">
+        <div class="gmod-slot-header">1</div>
+        <div class="gmod-item" data-slot="1-1">
+          <div class="gmod-item-title">Руки (Физика)</div>
+          <div class="gmod-item-sub">Пустые руки</div>
+        </div>
+        <div class="gmod-item" data-slot="1-2">
+          <div class="gmod-item-title">Монтировка</div>
+          <div class="gmod-item-sub">Скоро</div>
+        </div>
+      </div>
+
+      <div class="gmod-slot-col" data-cat="2">
+        <div class="gmod-slot-header">2</div>
+        <div class="gmod-item active" data-slot="2-1">
+          <div class="gmod-item-title">9mm Пистолет</div>
+          <div class="gmod-item-sub">Пистолет с глушителем</div>
+        </div>
+        <div class="gmod-item" data-slot="2-2">
+          <div class="gmod-item-title">Револьвер .357</div>
+          <div class="gmod-item-sub">Скоро</div>
+        </div>
+      </div>
+
+      <div class="gmod-slot-col" data-cat="3">
+        <div class="gmod-slot-header">3</div>
+        <div class="gmod-item" data-slot="3-1">
+          <div class="gmod-item-title">SMG</div>
+          <div class="gmod-item-sub">Скоро</div>
+        </div>
+        <div class="gmod-item" data-slot="3-2">
+          <div class="gmod-item-title">Shotgun</div>
+          <div class="gmod-item-sub">Скоро</div>
+        </div>
+      </div>
+
+      <div class="gmod-slot-col" data-cat="4">
+        <div class="gmod-slot-header">4</div>
+        <div class="gmod-item" data-slot="4-1">
+          <div class="gmod-item-title">Гранаты</div>
+          <div class="gmod-item-sub">Скоро</div>
+        </div>
+        <div class="gmod-item" data-slot="4-2">
+          <div class="gmod-item-title">РПГ</div>
+          <div class="gmod-item-sub">Скоро</div>
+        </div>
+      </div>
+
+      <div class="gmod-slot-col" data-cat="5">
+        <div class="gmod-slot-header">5</div>
+        <div class="gmod-item" data-slot="5-1">
+          <div class="gmod-item-title">Tool Gun</div>
+          <div class="gmod-item-sub">Тулган (Скоро)</div>
+        </div>
+        <div class="gmod-item" data-slot="5-2">
+          <div class="gmod-item-title">Физган</div>
+          <div class="gmod-item-sub">Physics Gun</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD патронов пистолета снизу справа в стиле Garry's Mod / Half-Life 2 -->
+  <div id="ammo-hud" class="hidden">
+    <div class="ammo-box">
+      <span class="ammo-label">AMMO</span>
+      <span class="ammo-current" id="ammo-current">18</span>
+      <span class="ammo-divider">/</span>
+      <span class="ammo-reserve" id="ammo-reserve">54</span>
+    </div>
+  </div>
+
+  <!-- Окошко настройки скорости полёта -->
+  <div id="flight-speed-overlay" class="hidden">
+    <div class="flight-speed-box">
+      <div class="flight-speed-value" id="flight-speed-val">12.0 <span class="flight-speed-unit">м/с</span></div>
+      <div class="flight-speed-bar-track">
+        <div class="flight-speed-bar-fill" id="flight-speed-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Индикатор силы броска / удара при зажатии ПКМ (осциллирует вверх-вниз) -->
+  <div id="throw-power-overlay" class="hidden">
+    <div class="throw-power-box">
+      <div class="throw-power-label">СИЛА БРОСКА</div>
+      <div class="throw-power-bar-track">
+        <div class="throw-power-bar-fill" id="throw-power-fill"></div>
+      </div>
+      <div class="throw-power-val" id="throw-power-val">50%</div>
+    </div>
+  </div>
+
+  <div id="hint-bottom-left">[1-5] Оружие | [ЛКМ] Огонь / Взять | [ПКМ] Прицел | [Q] Зум | [V] Полёт</div>
+  <canvas id="fall-wind-canvas"></canvas>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
