@@ -1257,6 +1257,21 @@ function resetNukeGagToNormal() {
     nukeWarningCircle = null;
   }
 
+  // 6. ПОСЛЕ ВЗРЫВА ЯДЕРКИ: сброс фона до заново, когда стоят только 2 пирамидки!
+  for (const item of menuPhysicsBodies) {
+    if (item.body) world.removeBody(item.body);
+    if (item.mesh) menuChaosSceneGroup.remove(item.mesh);
+  }
+  menuPhysicsBodies.length = 0;
+
+  // Строим ровно две свежие пирамидки слева и справа
+  buildMenuTowerAt(-12.5, 4);
+  buildMenuTowerAt(12.5, 4);
+  leftTowerBuilt = true;
+  rightTowerBuilt = true;
+  leftTowerTimer = 14.0;
+  rightTowerTimer = 16.0;
+
   // Следующий редкий ивент произойдет не скоро (через 85-130 сек)
   nukeRareTrollTimer = 85.0 + Math.random() * 45.0;
 }
@@ -2264,7 +2279,7 @@ function renderWorldsListUI() {
       card.innerHTML = `
         <div class="world-card-info">
           <div class="world-card-name">${w.name || 'Мир ' + w.id}</div>
-          <div class="world-card-meta">Сохранено: ${dateStr} • Блоков: ${w.blocksCount || (w.blocks ? w.blocks.length : 0)}</div>
+          <div class="world-card-meta">Карта: ${w.mapTitle || (w.map === 'flat_grid' ? 'Сетка инженера' : 'Baseplate')} • Сохранено: ${dateStr} • Блоков: ${w.blocksCount || (w.blocks ? w.blocks.length : 0)}</div>
         </div>
         <div class="world-card-actions">
           <button class="menu-btn world-btn-play" data-world-id="${w.id}">Загрузить</button>
@@ -2720,39 +2735,98 @@ function spawnNukePropAt(pos, rot, vel, angVel) {
   return nukeObj;
 }
 
-// Создание нового мира
-async function createNewWorldFlow() {
+// DOM элементы модального окна создания мира с картами
+const worldCreateDialog = document.getElementById('world-create-dialog');
+const btnWorldCreateClose = document.getElementById('btn-world-create-close');
+const btnWorldCreateConfirm = document.getElementById('btn-world-create-confirm');
+const btnWorldCreateCancel = document.getElementById('btn-world-create-cancel');
+const worldCreateNameInput = document.getElementById('world-create-name');
+let selectedMapId = 'baseplate';
+
+// Выбор карты кликом по карточке
+document.querySelectorAll('.map-card').forEach(card => {
+  card.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.querySelectorAll('.map-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedMapId = card.getAttribute('data-map-id') || 'baseplate';
+  });
+});
+
+if (btnWorldCreateClose) {
+  btnWorldCreateClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (worldCreateDialog) worldCreateDialog.classList.add('hidden');
+  });
+}
+
+if (btnWorldCreateCancel) {
+  btnWorldCreateCancel.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (worldCreateDialog) worldCreateDialog.classList.add('hidden');
+  });
+}
+
+if (btnWorldCreateConfirm) {
+  btnWorldCreateConfirm.addEventListener('click', () => {
+    const worlds = getAllWorlds();
+    if (worlds.length >= MAX_WORLDS_COUNT) {
+      showRetroAlert('Достигнут максимум миров (5). Удалите один из миров, чтобы создать новый.', 'Лимит миров');
+      if (worldCreateDialog) worldCreateDialog.classList.add('hidden');
+      return;
+    }
+
+    const worldName = (worldCreateNameInput ? worldCreateNameInput.value.trim() : '') || `Мир #${worlds.length + 1}`;
+    const newId = 'world_' + Date.now();
+    const mapName = selectedMapId === 'flat_grid' ? 'Сетка инженера' : 'Baseplate';
+
+    const newWorldData = {
+      id: newId,
+      name: worldName,
+      map: selectedMapId,
+      mapTitle: mapName,
+      lastSaved: Date.now(),
+      blocksCount: 0,
+      player: {
+        pos: { x: 0, y: standHeight, z: 0 },
+        pitch: 0,
+        yaw: 0,
+        isFlying: false,
+        flySpeed: 12.0,
+        equippedWeapon: '1-1',
+        ammo: { current: 18, maxClip: 18, reserve: 54, isReloading: false, reloadTimer: 0, lastShotTime: 0, fireRate: 0.16 }
+      },
+      blocks: []
+    };
+
+    worlds.unshift(newWorldData);
+    saveAllWorlds(worlds);
+
+    // Закрываем модалку создания мира и обновляем список в меню миров (НЕ закидываем сразу в игру!)
+    if (worldCreateDialog) worldCreateDialog.classList.add('hidden');
+    renderWorldsListUI();
+    showFlightHudNotification(`Мир «${worldName}» [${mapName}] успешно создан!`);
+  });
+}
+
+// Открытие окна создания нового мира
+function openCreateWorldDialog() {
   const worlds = getAllWorlds();
   if (worlds.length >= MAX_WORLDS_COUNT) {
-    await showRetroAlert('Достигнут максимум миров (5). Удалите один из миров, чтобы создать новый.', 'Лимит миров');
+    showRetroAlert('Достигнут максимум миров (5). Удалите один из миров, чтобы создать новый.', 'Лимит миров');
     return;
   }
-  const defaultName = `Мир #${worlds.length + 1}`;
-  const worldName = await showRetroPrompt('Введите название нового мира:', defaultName);
-  if (!worldName || !worldName.trim()) return;
+  if (worldCreateNameInput) {
+    worldCreateNameInput.value = `Мир #${worlds.length + 1}`;
+  }
+  if (worldCreateDialog) {
+    worldCreateDialog.classList.remove('hidden');
+  }
+}
 
-  const newId = 'world_' + Date.now();
-  const newWorldData = {
-    id: newId,
-    name: worldName.trim(),
-    lastSaved: Date.now(),
-    blocksCount: 0,
-    player: {
-      pos: { x: 0, y: standHeight, z: 0 },
-      pitch: 0,
-      yaw: 0,
-      isFlying: false,
-      flySpeed: 12.0,
-      equippedWeapon: '1-1',
-      ammo: { current: 18, maxClip: 18, reserve: 54, isReloading: false, reloadTimer: 0, lastShotTime: 0, fireRate: 0.16 }
-    },
-    blocks: []
-  };
-
-  worlds.unshift(newWorldData);
-  saveAllWorlds(worlds);
-
-  loadWorldAndEnterGame(newId, true);
+// Создание нового мира
+function createNewWorldFlow() {
+  openCreateWorldDialog();
 }
 
 // Сохранение текущего активного мира

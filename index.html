@@ -196,6 +196,57 @@
     </div>
   </div>
 
+  <!-- Диалог создания нового мира с выбором карты и 3D превью -->
+  <div id="world-create-dialog" class="hidden">
+    <div class="retro-dialog-window world-create-window">
+      <div class="retro-dialog-titlebar">
+        <span>Создание нового мира</span>
+        <button class="retro-dialog-close-btn" id="btn-world-create-close">&times;</button>
+      </div>
+      <div class="retro-dialog-body world-create-body">
+        <div class="mp-form-row">
+          <label>Название мира:</label>
+          <input type="text" id="world-create-name" class="retro-dialog-input" maxlength="32" value="Новый мир" autocomplete="off" />
+        </div>
+
+        <div class="mp-form-row" style="margin-top: 6px;">
+          <label>Выберите карту:</label>
+          <div class="map-selector-grid">
+            <!-- Карта 1: Baseplate -->
+            <div class="map-card selected" data-map-id="baseplate">
+              <div class="map-preview-wrapper">
+                <img src="./maps/baseplate.png" alt="Baseplate" class="map-preview-img" />
+                <div class="map-badge">По умолчанию</div>
+              </div>
+              <div class="map-card-info">
+                <span class="map-card-title">Baseplate</span>
+                <span class="map-card-desc">Классическая ровная плита со стадом серых блоков и свободным горизонтом.</span>
+              </div>
+            </div>
+            <!-- Карта 2: Flat Grid -->
+            <div class="map-card" data-map-id="flat_grid">
+              <div class="map-preview-wrapper">
+                <div class="map-preview-fallback">
+                  <div class="map-fallback-grid"></div>
+                  <span class="map-fallback-text">GRID MAP</span>
+                </div>
+              </div>
+              <div class="map-card-info">
+                <span class="map-card-title">Сетка инженера</span>
+                <span class="map-card-desc">Высокоточная разметка пола для точного строительства и тестов физики.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="retro-dialog-buttons" style="margin-top: 14px;">
+          <button class="menu-btn retro-dialog-btn" id="btn-world-create-confirm">Создать</button>
+          <button class="menu-btn retro-dialog-btn" id="btn-world-create-cancel">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Ретро диалоговое окно (замена prompt/confirm/alert без ошибок Electron) -->
   <div id="retro-dialog-modal" class="hidden">
     <div class="retro-dialog-window">

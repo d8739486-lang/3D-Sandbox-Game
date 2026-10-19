@@ -20,14 +20,17 @@
     "copyright": "Copyright © 2026 Eternal Studio",
     "files": [
       "dist/**/*",
+      "!dist/*.exe",
+      "!dist/*.zip",
+      "!dist/*.blockmap",
+      "!dist/win-unpacked/**/*",
       "electron-main.cjs",
       "icon.png",
       "package.json"
     ],
     "win": {
       "target": [
-        "nsis",
-        "zip"
+        "nsis"
       ],
       "icon": "icon.png",
       "legalTrademarks": "Eternal Studio",
@@ -41,8 +44,10 @@
       "createStartMenuShortcut": true,
       "shortcutName": "3D Sandbox",
       "artifactName": "3D-Sandbox-Setup.exe",
-      "uninstallDisplayName": "3D Sandbox (Eternal Studio)"
-    }
+      "uninstallDisplayName": "3D Sandbox (Eternal Studio)",
+      "differentialPackage": false
+    },
+    "compression": "maximum"
   },
   "dependencies": {
     "cannon-es": "^0.20.0",
