@@ -1,25 +1,58 @@
 {
   "name": "sandbox",
   "version": "1.0.0",
-  "description": "",
+  "description": "3D Physics Sandbox with P2P Multiplayer",
   "main": "electron-main.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "vite build && electron electron-main.cjs"
+    "start": "vite build && electron electron-main.cjs",
+    "dist": "vite build && electron-builder --win --dir",
+    "dist:portable": "vite build && electron-builder --win portable"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Eternal Studio",
   "license": "ISC",
   "type": "commonjs",
+  "build": {
+    "appId": "com.eternalstudio.sandbox",
+    "productName": "3D Sandbox",
+    "copyright": "Copyright © 2026 Eternal Studio",
+    "files": [
+      "dist/**/*",
+      "electron-main.cjs",
+      "icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "icon.png",
+      "legalTrademarks": "Eternal Studio",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "3D Sandbox",
+      "artifactName": "3D-Sandbox-Setup.exe",
+      "uninstallDisplayName": "3D Sandbox (Eternal Studio)"
+    }
+  },
   "dependencies": {
     "cannon-es": "^0.20.0",
+    "peerjs": "^1.5.5",
     "three": "^0.186.1",
     "vite": "^8.3.4"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.12.3",
-    "electron": "^44.9.0"
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3"
   }
 }

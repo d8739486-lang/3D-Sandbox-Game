@@ -1,7 +1,18 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+// Предотвращаем спам SecurityError / PointerLockControls в консоли
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerlockerror', (e) => {
+    if (e && typeof e.stopImmediatePropagation === 'function') {
+      e.stopImmediatePropagation();
+    }
+  }, true);
+}
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as CANNON from 'cannon-es';
+import { Peer } from 'peerjs';
+
 
 // --- Инициализация физического мира CANNON с высокой оптимизацией ---
 const world = new CANNON.World({
@@ -11,8 +22,8 @@ const world = new CANNON.World({
 world.broadphase = new CANNON.SAPBroadphase(world);
 // Включаем засыпание (sleep) неподвижных тел: они больше не тратят ресурсы процессора
 world.allowSleep = true;
-world.solver.iterations = 10;
-world.solver.tolerance = 0.001;
+world.solver.iterations = 35;
+world.solver.tolerance = 0.0001;
 world.defaultContactMaterial.friction = 0.4;
 world.defaultContactMaterial.restitution = 0.05;
 
@@ -215,6 +226,9 @@ const crosshairEl = document.getElementById('crosshair');
 const pauseOverlay = document.getElementById('pause-overlay');
 let isMenuOpen = false;
 let isPaused = false;
+let isRotateMenuOpen = false;
+let rotateTargetObj = null;
+const rotateMenuEl = document.getElementById('rotate-menu');
 
 // Позиция виртуального кастомного курсора в окне
 let mouseScreenX = window.innerWidth / 2;
@@ -1869,6 +1883,9 @@ function updateMenuChaos(delta) {
   // Шаг физики Cannon
   world.step(Math.min(delta, 0.05));
 
+  // Жесткая синхронизация скрепленных кубов: полное отсутствие люфта, болтанки и колебаний
+  syncWeldConstraintsPositions();
+
   // Синхронизация мешей с физическими телами и очистка упавших в бездну
   for (let i = menuPhysicsBodies.length - 1; i >= 0; i--) {
     const item = menuPhysicsBodies[i];
@@ -1901,38 +1918,55 @@ function updateMenuChaos(delta) {
 }
 
 // Загрузка только ключевых игровых ресурсов: 3D-модель оружия, текстуры и звуковые эффекты
+// Реальный предварительный загрузчик всех звуков и ресурсов (кэширование без задержек при первом воспроизведении)
 function loadEssentialAssets(onProgress) {
   return new Promise((resolve) => {
+    const soundNames = [
+      'pistol_shoot', 'pistol_reload', 'empty_click', 'weapon_switch',
+      'weapon_deploy', 'spawn', 'secret_cube_fall', 'block_hit',
+      'block_drop', 'button_click', 'throw_object', 'weld', 'unweld', 'toolgun_weld', 'toolgun_remove'
+    ];
+
     const assetsToLoad = [
       { type: 'model', url: './9mm_pistol.glb' },
+      { type: 'model', url: './tool_gun.glb' },
       { type: 'texture', url: './logo.png' },
       { type: 'texture', url: './secret-cube-texture.png' },
       { type: 'texture', url: './app-icon.png' },
-      { type: 'sound', url: './sounds/pistol_shoot.wav' },
-      { type: 'sound', url: './sounds/pistol_reload.wav' },
-      { type: 'sound', url: './sounds/empty_click.wav' },
-      { type: 'sound', url: './sounds/weapon_switch.wav' },
-      { type: 'sound', url: './sounds/weapon_deploy.wav' },
-      { type: 'sound', url: './sounds/spawn.wav' },
-      { type: 'sound', url: './sounds/secret_cube_fall.wav' }
+      ...soundNames.map(name => ({ type: 'sound', name, url: `./sounds/${name}.wav` }))
     ];
 
     let loadedCount = 0;
     const total = assetsToLoad.length;
 
+    function itemDone() {
+      loadedCount++;
+      if (onProgress) onProgress(loadedCount / total);
+      if (loadedCount >= total) resolve();
+    }
+
     assetsToLoad.forEach((asset) => {
-      fetch(asset.url)
-        .then(() => {
-          loadedCount++;
-          if (onProgress) onProgress(loadedCount / total);
-          if (loadedCount >= total) resolve();
-        })
-        .catch(() => {
-          // Если файл не загрузился, не блокируем игру
-          loadedCount++;
-          if (onProgress) onProgress(loadedCount / total);
-          if (loadedCount >= total) resolve();
-        });
+      if (asset.type === 'sound') {
+        fetch(asset.url)
+          .then(res => {
+            if (!res.ok) throw new Error('Not found');
+            return res.blob();
+          })
+          .then(blob => {
+            const objectUrl = URL.createObjectURL(blob);
+            const audio = new Audio(objectUrl);
+            audio.preload = 'auto';
+            audioFiles[asset.name] = audio;
+            itemDone();
+          })
+          .catch(() => {
+            itemDone();
+          });
+      } else {
+        fetch(asset.url)
+          .then(() => itemDone())
+          .catch(() => itemDone());
+      }
     });
   });
 }
@@ -2322,7 +2356,7 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
   if (worldLoadingOverlay) {
     worldLoadingOverlay.classList.remove('hidden');
     if (worldLoadingTitle) worldLoadingTitle.textContent = isNewWorld ? 'СОЗДАНИЕ НОВОГО МИРА...' : `ЗАГРУЗКА «${worldData.name}»...`;
-    if (worldLoadingStatus) worldLoadingStatus.textContent = 'Подготовка физического пространства...';
+    if (worldLoadingStatus) worldLoadingStatus.textContent = '\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...';
     if (worldLoadingFill) worldLoadingFill.style.width = '15%';
   }
 
@@ -2330,7 +2364,7 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
     // 1. Очищаем старые объекты
     clearGameplayWorldObjects();
     if (worldLoadingFill) worldLoadingFill.style.width = '45%';
-    if (worldLoadingStatus) worldLoadingStatus.textContent = 'Восстановление блоков и конструкций...';
+    if (worldLoadingStatus) worldLoadingStatus.textContent = '\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...';
 
     // 2. Если мир сохраненный — восстанавливаем блоки
     if (worldData && worldData.blocks) {
@@ -2381,26 +2415,24 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
     camera.updateProjectionMatrix();
 
     if (worldLoadingFill) worldLoadingFill.style.width = '85%';
-    if (worldLoadingStatus) worldLoadingStatus.textContent = 'Синхронизация физики...';
+    if (worldLoadingStatus) worldLoadingStatus.textContent = '\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...';
 
     setTimeout(() => {
       if (worldLoadingFill) worldLoadingFill.style.width = '100%';
 
       setTimeout(() => {
-        if (worldLoadingOverlay) worldLoadingOverlay.classList.add('hidden');
+        // Мгновенно скрываем главное меню ДО показа 3D мира
+        if (mainMenuEl) {
+          mainMenuEl.classList.remove('visible');
+          mainMenuEl.classList.add('hidden');
+        }
 
-        // Показываем игровой интерфейс и передаем управление
         renderer.domElement.style.display = 'block';
         prevTime = performance.now();
         isInMainMenu = false;
         isGameStarted = true;
         cleanupMenuChaosObjects();
-        if (viewmodelRoot) {
-          viewmodelRoot.visible = (currentEquippedSlot === '2-1');
-        }
-        if (pistolMeshGroup) {
-          pistolMeshGroup.visible = (currentEquippedSlot === '2-1');
-        }
+        if (viewmodelRoot) viewmodelRoot.visible = (!isInMainMenu && currentEquippedSlot === '2-1'); if (pistolMeshGroup) pistolMeshGroup.visible = (!isInMainMenu && currentEquippedSlot === '2-1');
         controls.enabled = true;
         crosshairEl.style.display = '';
 
@@ -2409,13 +2441,13 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
 
         requestPointerLockSafely();
 
-        if (mainMenuEl) {
-          mainMenuEl.classList.remove('visible');
-          mainMenuEl.classList.add('fade-out-game');
+        // Плавное оттухание экрана загрузки
+        if (worldLoadingOverlay) {
+          worldLoadingOverlay.classList.add('fade-out');
           setTimeout(() => {
-            mainMenuEl.classList.add('hidden');
-            mainMenuEl.classList.remove('fade-out-game');
-          }, 800);
+            worldLoadingOverlay.classList.add('hidden');
+            worldLoadingOverlay.classList.remove('fade-out');
+          }, 550);
         }
       }, 250);
     }, 300);
@@ -2441,6 +2473,7 @@ function spawnCubeAt(pos, rot, vel, angVel) {
   setupBodyCollisionAudio(cubeBody, false);
   world.addBody(cubeBody);
   physicsObjects.push({ mesh: cubeMesh, body: cubeBody, isCube: true, geo: cubeGeo });
+  return physicsObjects[physicsObjects.length - 1];
 }
 
 function spawnSecretCubeAt(pos, rot, vel, angVel) {
@@ -2461,6 +2494,7 @@ function spawnSecretCubeAt(pos, rot, vel, angVel) {
   setupBodyCollisionAudio(cubeBody, false);
   world.addBody(cubeBody);
   physicsObjects.push({ mesh: cubeMesh, body: cubeBody, isCube: true, isSecretCube: true, geo: cubeGeo });
+  return physicsObjects[physicsObjects.length - 1];
 }
 
 function spawnSphereAt(pos, rot, vel, angVel) {
@@ -2516,6 +2550,7 @@ function spawnTriangleAt(pos, rot, vel, angVel) {
   setupBodyCollisionAudio(triBody, false);
   world.addBody(triBody);
   physicsObjects.push({ mesh: triMesh, body: triBody, isTriangle: true, geo: triGeo });
+  return physicsObjects[physicsObjects.length - 1];
 }
 
 function spawnRampAt(pos, rot, vel, angVel) {
@@ -2547,6 +2582,7 @@ function spawnRampAt(pos, rot, vel, angVel) {
   setupBodyCollisionAudio(rampBody, false);
   world.addBody(rampBody);
   physicsObjects.push({ mesh: rampMesh, body: rampBody, isRamp: true, geo: rampGeo });
+  return physicsObjects[physicsObjects.length - 1];
 }
 
 function detonateNukeProp(nukeObj) {
@@ -3004,29 +3040,41 @@ if (document.readyState === 'loading') {
 }
 
 let isLockingRequested = false;
+let lastPointerUnlockTime = 0;
+
+document.addEventListener('pointerlockchange', () => {
+  if (!document.pointerLockElement) {
+    lastPointerUnlockTime = performance.now();
+  }
+});
 
 function requestPointerLockSafely(retryCount = 0) {
-  if (isInMainMenu || isPaused || isMenuOpen) return;
+  if (isInMainMenu || isPaused || isMenuOpen || isRotateMenuOpen) return;
+  if (controls && controls.isLocked) return;
+
+  const timeSinceUnlock = performance.now() - lastPointerUnlockTime;
+  if (timeSinceUnlock < 140) {
+    setTimeout(() => requestPointerLockSafely(retryCount), 140 - timeSinceUnlock + 20);
+    return;
+  }
+
   isLockingRequested = true;
   try {
     const el = (renderer && renderer.domElement) ? renderer.domElement : document.body;
     const promise = el.requestPointerLock ? el.requestPointerLock() : null;
     if (promise && typeof promise.catch === 'function') {
       promise.then(() => {
-        controls.isLocked = true;
-        controls.enabled = true;
+        if (controls) {
+          controls.isLocked = true;
+          controls.enabled = true;
+        }
       }).catch(() => {
-        // Защита от кулдауна Chromium на повторный захват после ESC
-        if (retryCount < 3 && !isInMainMenu && !isPaused && !isMenuOpen && !controls.isLocked) {
-          setTimeout(() => requestPointerLockSafely(retryCount + 1), 300 * (retryCount + 1));
+        if (retryCount < 2 && !isInMainMenu && !isPaused && !isMenuOpen && !isRotateMenuOpen && controls && !controls.isLocked) {
+          setTimeout(() => requestPointerLockSafely(retryCount + 1), 250 * (retryCount + 1));
         }
       });
     }
-  } catch (_) {
-    if (retryCount < 3 && !isInMainMenu && !isPaused && !isMenuOpen && !controls.isLocked) {
-      setTimeout(() => requestPointerLockSafely(retryCount + 1), 300 * (retryCount + 1));
-    }
-  }
+  } catch (_) {}
 }
 
 function openPause() {
@@ -3238,6 +3286,11 @@ document.addEventListener('pointerlockchange', () => {
     if (isMenuOpen) {
       isLockingRequested = true;
       closeMenu();
+      return;
+    }
+
+    // Если было открыто меню вращения — не открываем паузу!
+    if (isRotateMenuOpen) {
       return;
     }
 
@@ -3642,6 +3695,13 @@ const SPAWN_COOLDOWN_MS = 1000;
 
 // Привязка кликов по карточкам меню
 function spawnItemByType(type) {
+  if (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') {
+    toolGunSelectedItem = type;
+    updateToolGunHologramMesh();
+    closeMenu();
+    showFlightHudNotification(`Tool Gun: выбран блок [${type}]`);
+    return;
+  }
   const now = performance.now();
   if (now - lastSpawnTime < SPAWN_COOLDOWN_MS) {
     const remainingSec = ((SPAWN_COOLDOWN_MS - (now - lastSpawnTime)) / 1000).toFixed(1);
@@ -3727,7 +3787,7 @@ const previewNukeObj = createCardPreview('nuke-preview-canvas', () => {
   return m;
 });
 
-const allPreviews = [previewCubeObj, previewSphereObj, previewTriangleObj, previewRampObj, previewNukeObj].filter(Boolean);
+const allPreviews = [previewCubeObj, previewSphereObj, previewTriangleObj, previewRampObj].filter(Boolean);
 
 function updatePreview3D() {
   if (isMenuOpen) {
@@ -3764,16 +3824,13 @@ function releaseGrabbedBody(applySwing = true) {
     const swingSpeed = grabVelocityHistory.length();
     // Бросок срабатывает только если игрок РЕАЛЬНО взмахнул рукой/камерой (> 1.2 м/с)
     if (swingSpeed > 1.2) {
-      grabbedBody.velocity.set(
-        grabVelocityHistory.x,
-        grabVelocityHistory.y,
-        grabVelocityHistory.z
-      );
-      grabbedBody.angularVelocity.set(
+      const swingVel = new THREE.Vector3(grabVelocityHistory.x, grabVelocityHistory.y, grabVelocityHistory.z);
+      const swingAngVel = new THREE.Vector3(
         (Math.random() - 0.5) * Math.min(swingSpeed, 5.0),
         (Math.random() - 0.5) * Math.min(swingSpeed, 5.0),
         (Math.random() - 0.5) * Math.min(swingSpeed, 5.0)
       );
+      setWeldClusterVelocity(grabbedBody, swingVel, swingAngVel);
     } else {
       // Игрок стоял неподвижно и просто отпустил кнопку — кубик аккуратно падает вниз под гравитацией
       grabbedBody.velocity.set(0, -0.5, 0);
@@ -3799,6 +3856,408 @@ window.addEventListener('contextmenu', (e) => {
 
 // --- Система связок/закрепов (Weld / LockConstraint на Z) ---
 const weldConstraints = [];
+
+// ============================================================================
+// --- СИСТЕМА ДИНАМИЧЕСКИХ СВЯЗОК И КЛАСТЕРОВ СВАРЕННЫХ БЛОКОВ ---
+// ============================================================================
+function getWeldClusterForBody(body) {
+  if (!body) return [];
+  const cluster = new Set([body]);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const w of weldConstraints) {
+      if (cluster.has(w.bodyA) && !cluster.has(w.bodyB)) {
+        cluster.add(w.bodyB);
+        changed = true;
+      } else if (cluster.has(w.bodyB) && !cluster.has(w.bodyA)) {
+        cluster.add(w.bodyA);
+        changed = true;
+      }
+    }
+  }
+  return Array.from(cluster);
+}
+
+function wakeWeldCluster(body) {
+  if (!body) return;
+  const cluster = getWeldClusterForBody(body);
+  for (const b of cluster) {
+    b.wakeUp();
+  }
+}
+
+function setWeldClusterVelocity(body, vel, angVel) {
+  if (!body) return;
+  const cluster = getWeldClusterForBody(body);
+  for (const b of cluster) {
+    b.wakeUp();
+    if (vel) b.velocity.set(vel.x, vel.y, vel.z);
+    if (angVel) b.angularVelocity.set(angVel.x, angVel.y, angVel.z);
+  }
+}
+
+function syncWeldConstraintsPositions() {
+  if (weldConstraints.length === 0) return;
+  // Итерируем 3 раза для мгновенного и стабильного распространения координат по цепочкам любой длины
+  for (let iter = 0; iter < 3; iter++) {
+    for (const w of weldConstraints) {
+      if (!w.parentBody || !w.childBody) continue;
+      const pPos = w.parentBody.position;
+      const pQuat = w.parentBody.quaternion;
+      const worldRelPos = pQuat.vmult(w.relPos);
+      w.childBody.position.set(pPos.x + worldRelPos.x, pPos.y + worldRelPos.y, pPos.z + worldRelPos.z);
+      const worldRelQuat = pQuat.mult(w.relQuat);
+      w.childBody.quaternion.set(worldRelQuat.x, worldRelQuat.y, worldRelQuat.z, worldRelQuat.w);
+      w.childBody.velocity.copy(w.parentBody.velocity);
+      w.childBody.angularVelocity.copy(w.parentBody.angularVelocity);
+    }
+  }
+}
+
+
+// ============================================================================
+// --- СИСТЕМА TOOL GUN (MINECRAFT-STYLE СЕТКА, ТОЧКИ ПРИВЯЗКИ И СВАРКА) ---
+// ============================================================================
+const toolGunPreviewMaterial = new THREE.MeshBasicMaterial({
+  color: 0x00f0ff,
+  transparent: true,
+  opacity: 0.40,
+  wireframe: false,
+  depthWrite: false
+});
+
+// Создаем видимые интерактивные точки на гранях блоков (как в Minecraft / Spore)
+const MAX_SNAP_DOTS = 18;
+const toolGunSnapDotsGroup = new THREE.Group();
+scene.add(toolGunSnapDotsGroup);
+
+const snapDotGeo = new THREE.SphereGeometry(0.065, 12, 12);
+const snapDotMatNormal = new THREE.MeshBasicMaterial({ color: 0x00e1ff, transparent: true, opacity: 0.75 });
+const snapDotMatActive = new THREE.MeshBasicMaterial({ color: 0x00ff88 });
+
+const snapDotMeshes = [];
+for (let i = 0; i < MAX_SNAP_DOTS; i++) {
+  const dot = new THREE.Mesh(snapDotGeo, snapDotMatNormal);
+  dot.visible = false;
+  toolGunSnapDotsGroup.add(dot);
+  snapDotMeshes.push(dot);
+}
+
+let activeSnapPoint = null; // { pos: Vector3, normal: Vector3, parentObj: object }
+
+function getToolGunGeometry(type) {
+  if (type === 'triangle') {
+    return createEquilateralPrismGeometry(1.0, 1.0);
+  } else if (type === 'ramp') {
+    return createRampGeometry(1.0);
+  } else if (type === 'secret_cube') {
+    return new THREE.BoxGeometry(1, 1, 1);
+  }
+  return new THREE.BoxGeometry(1, 1, 1);
+}
+
+function updateToolGunHologramMesh() {
+  if (toolGunHologram) {
+    scene.remove(toolGunHologram);
+    toolGunHologram.geometry.dispose();
+    toolGunHologram = null;
+  }
+  const geo = getToolGunGeometry(toolGunSelectedItem);
+  toolGunHologram = new THREE.Mesh(geo, toolGunPreviewMaterial);
+  toolGunHologram.visible = false;
+  scene.add(toolGunHologram);
+}
+
+// Вычисляет 6 центров граней блока для идеального примагничивания
+function getObjectSnapFacePoints(obj) {
+  const points = [];
+  const p = obj.mesh.position;
+  const q = obj.mesh.quaternion;
+
+  // 6 направлений граней куба: +X, -X, +Y, -Y, +Z, -Z
+  const faceDirs = [
+    new THREE.Vector3(1, 0, 0),
+    new THREE.Vector3(-1, 0, 0),
+    new THREE.Vector3(0, 1, 0),
+    new THREE.Vector3(0, -1, 0),
+    new THREE.Vector3(0, 0, 1),
+    new THREE.Vector3(0, 0, -1)
+  ];
+
+  for (const dir of faceDirs) {
+    const worldNormal = dir.clone().applyQuaternion(q).normalize();
+    // Позиция центра грани (смещение 0.5м)
+    const faceCenter = p.clone().addScaledVector(worldNormal, 0.5);
+    // Позиция центра нового блока (смещение 1.0м - ровно сетка 1x1x1 вплотную)
+    const blockCenter = p.clone().addScaledVector(worldNormal, 1.0);
+    points.push({
+      dotPos: faceCenter,
+      blockPos: blockCenter,
+      normal: worldNormal,
+      parentObj: obj
+    });
+  }
+  return points;
+}
+
+function updateToolGunLoop() {
+  const isToolActive = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') && controls.isLocked && !isMenuOpen && !isPaused;
+  if (!isToolActive) {
+    if (toolGunHologram) toolGunHologram.visible = false;
+    snapDotMeshes.forEach(d => d.visible = false);
+    activeSnapPoint = null;
+    return;
+  }
+
+  if (!toolGunHologram) {
+    updateToolGunHologramMesh();
+  }
+
+  raycaster.setFromCamera(centerScreen, camera);
+  const eligibleObjects = physicsObjects.filter(obj => !obj.isSphere);
+  const meshes = eligibleObjects.map(obj => obj.mesh);
+  
+  // Также проверяем попадание по базовой плите
+  const targets = [...meshes, baseplate];
+  const intersects = raycaster.intersectObjects(targets, true);
+
+  if (intersects.length > 0 && intersects[0].distance < 16.0) {
+    const hit = intersects[0];
+    let hitObj = physicsObjects.find(obj => obj.mesh === hit.object || (obj.mesh && obj.mesh.children.includes(hit.object)));
+
+    if (hitObj && !hitObj.isSphere) {
+      // 1. Показываем точки привязки на гранях целевого куба (как в Minecraft)
+      const snapPoints = getObjectSnapFacePoints(hitObj);
+
+      let closestSnap = null;
+      let minRayDist = Infinity;
+
+      // Находим грань, ближе всего к лучу прицела
+      const ray = raycaster.ray;
+      snapPoints.forEach((sp, idx) => {
+        if (idx < snapDotMeshes.length) {
+          const dotMesh = snapDotMeshes[idx];
+          dotMesh.position.copy(sp.dotPos);
+          dotMesh.visible = true;
+
+          const distToRay = ray.distanceToPoint(sp.dotPos);
+          if (distToRay < minRayDist) {
+            minRayDist = distToRay;
+            closestSnap = sp;
+          }
+        }
+      });
+
+      // Скрываем неиспользуемые точки
+      for (let i = snapPoints.length; i < snapDotMeshes.length; i++) {
+        snapDotMeshes[i].visible = false;
+      }
+
+      // Подсвечиваем активную выбранную точку зеленым
+      snapPoints.forEach((sp, idx) => {
+        if (idx < snapDotMeshes.length) {
+          snapDotMeshes[idx].material = (sp === closestSnap) ? snapDotMatActive : snapDotMatNormal;
+        }
+      });
+
+      if (closestSnap) {
+        activeSnapPoint = closestSnap;
+
+        // Идеальное позиционирование блока в сетку 1х1х1 вплотную
+        toolGunHologram.position.copy(closestSnap.blockPos);
+
+        // Вращение: сориентировано по родителю + поворот R/T
+        const parentQ = hitObj.mesh.quaternion.clone();
+        const rotEuler = new THREE.Euler(toolGunRotX, toolGunRotY, 0, 'YXZ');
+        const addQuat = new THREE.Quaternion().setFromEuler(rotEuler);
+        toolGunHologram.quaternion.copy(parentQ).multiply(addQuat);
+
+        toolGunHologram.visible = true;
+        return;
+      }
+    } else if (hit.object === baseplate && hit.face) {
+      // Спавн прямо на полу по сетке 1x1x1
+      snapDotMeshes.forEach(d => d.visible = false);
+      const snapX = Math.round(hit.point.x);
+      const snapZ = Math.round(hit.point.z);
+      const holoPos = new THREE.Vector3(snapX, 0.5, snapZ);
+      
+      activeSnapPoint = {
+        dotPos: hit.point.clone(),
+        blockPos: holoPos,
+        normal: new THREE.Vector3(0, 1, 0),
+        parentObj: null
+      };
+
+      toolGunHologram.position.copy(holoPos);
+      const rotEuler = new THREE.Euler(toolGunRotX, toolGunRotY, 0, 'YXZ');
+      toolGunHologram.quaternion.setFromEuler(rotEuler);
+      toolGunHologram.visible = true;
+      return;
+    }
+  }
+
+  if (toolGunHologram) toolGunHologram.visible = false;
+  snapDotMeshes.forEach(d => d.visible = false);
+  activeSnapPoint = null;
+}
+
+function fireToolGun() {
+  if (!activeSnapPoint || !toolGunHologram || !toolGunHologram.visible) {
+    playCustomOrSynth('empty_click', (ctx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(750, ctx.currentTime);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    });
+    return;
+  }
+
+  const pos = toolGunHologram.position.clone();
+  const quat = toolGunHologram.quaternion.clone();
+  const rotObj = { x: quat.x, y: quat.y, z: quat.z, w: quat.w };
+
+  let newObj = null;
+  if (toolGunSelectedItem === 'secret_cube') {
+    newObj = spawnSecretCubeAt(pos, rotObj);
+  } else if (toolGunSelectedItem === 'triangle') {
+    newObj = spawnTriangleAt(pos, rotObj);
+  } else if (toolGunSelectedItem === 'ramp') {
+    newObj = spawnRampAt(pos, rotObj);
+  } else {
+    newObj = spawnCubeAt(pos, rotObj);
+  }
+
+  if (newObj) {
+    // Вспышка и анимация выстрела Tool Gun
+    if (toolgunMeshGroup) {
+      toolgunMeshGroup.position.z += 0.08;
+      setTimeout(() => {
+        if (toolgunMeshGroup) toolgunMeshGroup.position.z -= 0.08;
+      }, 70);
+    }
+
+    // Если строим на блоке — свариваем намертво (LockConstraint)
+    if (activeSnapPoint.parentObj) {
+      const parentBody = activeSnapPoint.parentObj.body;
+      const childBody = newObj.body;
+
+      const lock = new CANNON.LockConstraint(childBody, parentBody, {
+        maxForce: 1e12,
+        collideConnected: false
+      });
+      for (const eq of lock.equations) {
+        if (eq.setSpookParams) {
+          eq.setSpookParams(1e12, 1, 1 / 120);
+        }
+      }
+      world.addConstraint(lock);
+      wakeWeldCluster(parentBody);
+      wakeWeldCluster(childBody);
+
+      const invParentQuat = parentBody.quaternion.clone().inverse();
+      const relPos = invParentQuat.vmult(childBody.position.vsub(parentBody.position));
+      const relQuat = invParentQuat.mult(childBody.quaternion);
+
+      weldConstraints.push({
+        constraint: lock,
+        bodyA: childBody,
+        bodyB: parentBody,
+        objA: newObj,
+        objB: activeSnapPoint.parentObj,
+        parentBody: parentBody,
+        childBody: childBody,
+        relPos: relPos,
+        relQuat: relQuat
+      });
+
+      playWeldSound();
+      showFlightHudNotification('Блок приварен (Z - отсоединить)');
+    } else {
+      playWeldSound();
+      showFlightHudNotification('Блок установлен на платформу');
+    }
+  }
+}
+
+
+function removeToolGunTarget() {
+  raycaster.setFromCamera(centerScreen, camera);
+  const eligibleObjects = physicsObjects.filter(obj => !obj.isSphere);
+  const meshes = eligibleObjects.map(obj => obj.mesh);
+  const intersects = raycaster.intersectObjects(meshes, true);
+
+  if (intersects.length === 0 || intersects[0].distance > 16.0) {
+    playCustomOrSynth('empty_click', (ctx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(550, ctx.currentTime);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.04);
+    });
+    return;
+  }
+
+  const hit = intersects[0];
+  const targetObj = physicsObjects.find(obj => obj.mesh === hit.object || (obj.mesh && obj.mesh.children.includes(hit.object)));
+  if (!targetObj) return;
+
+  // 1. Удаляем все связанные с объектом сварки (weld constraints)
+  for (let i = weldConstraints.length - 1; i >= 0; i--) {
+    const c = weldConstraints[i];
+    if (c.bodyA === targetObj.body || c.bodyB === targetObj.body) {
+      world.removeConstraint(c.constraint);
+      weldConstraints.splice(i, 1);
+    }
+  }
+
+  // 2. Если объект удерживался в руках — сбрасываем захват
+  if (grabbedBody === targetObj.body) {
+    grabbedBody = null;
+    crosshairEl.classList.remove('grabbed');
+  }
+
+  // 3. Удаляем физическое тело и 3D меш
+  const idx = physicsObjects.indexOf(targetObj);
+  if (idx !== -1) {
+    physicsObjects.splice(idx, 1);
+  }
+  if (targetObj.body) {
+    world.removeBody(targetObj.body);
+  }
+  if (targetObj.mesh) {
+    scene.remove(targetObj.mesh);
+  }
+
+  // 4. Отдача тулгана при удалении
+  if (toolgunMeshGroup) {
+    toolgunMeshGroup.position.z += 0.06;
+    setTimeout(() => {
+      if (toolgunMeshGroup) toolgunMeshGroup.position.z -= 0.06;
+    }, 60);
+  }
+
+  // 5. Звук разборки/удаления
+    // Сетевая синхронизация удаления
+  broadcastNetworkPacket({
+    type: 'remove_block',
+    netId: targetObj.netId || null,
+    pos: { x: targetObj.mesh.position.x, y: targetObj.mesh.position.y, z: targetObj.mesh.position.z }
+  });
+  playUnweldSound();
+  showFlightHudNotification('Блок удален (ПКМ Tool Gun)');
+}
+
 
 function toggleWeldAtCrosshair() {
   raycaster.setFromCamera(centerScreen, camera);
@@ -3846,27 +4305,35 @@ function toggleWeldAtCrosshair() {
     targetObj.body.wakeUp();
     closestNeighbor.body.wakeUp();
 
-    // Создаем абсолютно жесткий LockConstraint с выключенной коллизией между ними
-    // (исключает взаимоотталкивание и пружинящий wobble-эффект)
+    // Создаем абсолютно жесткий LockConstraint с максимальной жесткостью
     const lock = new CANNON.LockConstraint(targetObj.body, closestNeighbor.body, {
-      maxForce: 1e9,
+      maxForce: 1e12,
       collideConnected: false
     });
 
-    // Настраиваем уравнения связки на максимальную жесткость без раскачки
     for (const eq of lock.equations) {
       if (eq.setSpookParams) {
-        eq.setSpookParams(1e8, 2, 1 / 60);
+        eq.setSpookParams(1e12, 1, 1 / 120);
       }
     }
 
     world.addConstraint(lock);
+
+    // Запоминаем точное относительное положение и вращение для 100% монолитности (как единое целое)
+    const invParentQuat = closestNeighbor.body.quaternion.clone().inverse();
+    const relPos = invParentQuat.vmult(targetObj.body.position.vsub(closestNeighbor.body.position));
+    const relQuat = invParentQuat.mult(targetObj.body.quaternion);
+
     weldConstraints.push({
       constraint: lock,
       bodyA: targetObj.body,
       bodyB: closestNeighbor.body,
       objA: targetObj,
-      objB: closestNeighbor
+      objB: closestNeighbor,
+      parentBody: closestNeighbor.body,
+      childBody: targetObj.body,
+      relPos: relPos,
+      relQuat: relQuat
     });
 
     playWeldSound();
@@ -3878,7 +4345,7 @@ function toggleWeldAtCrosshair() {
 
 // Звук скрепления и разъединения кубов (Weld Sound)
 function playWeldSound() {
-  playCustomOrSynth('weld', (ctx) => {
+  playCustomOrSynth('toolgun_weld', (ctx) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'triangle';
@@ -3910,7 +4377,7 @@ function playWeldSound() {
 }
 
 function playUnweldSound() {
-  playCustomOrSynth('unweld', (ctx) => {
+  playCustomOrSynth('toolgun_remove', (ctx) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
@@ -3927,6 +4394,199 @@ function playUnweldSound() {
 
 // Активные плавные анимации выравнивания (для объектов в мире и в руках)
 const aligningObjects = new Map();
+
+// ============================================================================
+// --- СИСТЕМА МЕНЮ ПОВОРОТА ОБЪЕКТА (УДЕРЖАНИЕ R) ---
+// ============================================================================
+let rotateKeyHoldTimer = null;
+let isRPressed = false;
+let isRotateKeyHeld = false;
+
+function getTargetObjectForRotation() {
+  if (grabbedBody) {
+    return physicsObjects.find(o => o.body === grabbedBody) || null;
+  }
+  raycaster.setFromCamera(centerScreen, camera);
+  const meshes = physicsObjects.map(obj => obj.mesh);
+  const intersects = raycaster.intersectObjects(meshes);
+  if (intersects.length > 0) {
+    const hitMesh = intersects[0].object;
+    return physicsObjects.find(obj => obj.mesh === hitMesh || (obj.mesh && obj.mesh.children.includes(hitMesh))) || null;
+  }
+  return null;
+}
+
+function openRotateMenu(targetObj) {
+  if (!targetObj || isRotateMenuOpen || isInMainMenu || isPaused) return;
+  rotateTargetObj = targetObj;
+  isRotateMenuOpen = true;
+
+  if (controls && controls.isLocked) {
+    try {
+      controls.unlock();
+    } catch (_) {}
+  }
+  controls.enabled = false;
+
+  if (rotateMenuEl) {
+    rotateMenuEl.classList.remove('hidden');
+  }
+  if (customCursorEl) {
+    customCursorEl.classList.remove('hidden');
+    mouseScreenX = window.innerWidth / 2;
+    mouseScreenY = window.innerHeight / 2;
+    customCursorEl.style.transform = `translate3d(${mouseScreenX}px, ${mouseScreenY}px, 0)`;
+  }
+  crosshairEl.style.display = 'none';
+}
+
+function closeRotateMenu() {
+  if (!isRotateMenuOpen) return;
+  isRotateMenuOpen = false;
+  if (rotateMenuEl) {
+    rotateMenuEl.classList.add('hidden');
+  }
+  if (customCursorEl) {
+    customCursorEl.classList.add('hidden');
+  }
+  crosshairEl.style.display = '';
+  controls.enabled = !isPaused && !isMenuOpen;
+
+  if (!isPaused && !isMenuOpen) {
+    requestPointerLockSafely();
+  }
+}
+
+// Применение поворота к целевому объекту
+function applyObjectRotationPreset(actionType, extraDeg = 0) {
+  if (!rotateTargetObj || !rotateTargetObj.mesh) return;
+
+  // Направление взгляда игрока (плоское по XZ)
+  const camDir = new THREE.Vector3();
+  camera.getWorldDirection(camDir);
+  camDir.y = 0;
+  camDir.normalize();
+
+  // Вектор вправо от взгляда игрока
+  const camRight = new THREE.Vector3().crossVectors(camDir, new THREE.Vector3(0, 1, 0)).normalize();
+
+  // Базовый угол взгляда в радианах вокруг Y
+  const playerYaw = Math.atan2(camDir.x, camDir.z); // угол в XZ
+
+  const newQuat = new THREE.Quaternion();
+
+  switch (actionType) {
+    case 'look-away': {
+      // Смотрит прямо от игрока
+      const euler = new THREE.Euler(0, playerYaw, 0, 'YXZ');
+      newQuat.setFromEuler(euler);
+      break;
+    }
+    case 'look-right': {
+      // Ровно на 90 градусов вправо от игрока
+      const euler = new THREE.Euler(0, playerYaw - Math.PI / 2, 0, 'YXZ');
+      newQuat.setFromEuler(euler);
+      break;
+    }
+    case 'look-towards': {
+      // Смотрит прямо на игрока
+      const euler = new THREE.Euler(0, playerYaw + Math.PI, 0, 'YXZ');
+      newQuat.setFromEuler(euler);
+      break;
+    }
+    case 'look-left': {
+      // Ровно на 90 градусов влево от игрока
+      const euler = new THREE.Euler(0, playerYaw + Math.PI / 2, 0, 'YXZ');
+      newQuat.setFromEuler(euler);
+      break;
+    }
+    case 'pitch-up': {
+      // Вертикально основанием вниз
+      newQuat.setFromEuler(new THREE.Euler(0, playerYaw, 0, 'YXZ'));
+      break;
+    }
+    case 'pitch-down': {
+      // Вверх ногами (180 по Z или X)
+      const qYaw = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), playerYaw);
+      const qFlip = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI);
+      newQuat.multiplyQuaternions(qYaw, qFlip);
+      break;
+    }
+    case 'snap-grid': {
+      // Выравнивание по мировой сетке 90°
+      const currentEuler = new THREE.Euler().setFromQuaternion(rotateTargetObj.mesh.quaternion, 'YXZ');
+      const snapAngle = (a) => Math.round(a / (Math.PI / 2)) * (Math.PI / 2);
+      newQuat.setFromEuler(new THREE.Euler(snapAngle(currentEuler.x), snapAngle(currentEuler.y), snapAngle(currentEuler.z), 'YXZ'));
+      break;
+    }
+    case 'reset': {
+      newQuat.set(0, 0, 0, 1);
+      break;
+    }
+    case 'step-yaw': {
+      const deltaQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), (extraDeg * Math.PI) / 180);
+      newQuat.multiplyQuaternions(deltaQ, rotateTargetObj.mesh.quaternion);
+      break;
+    }
+    case 'step-pitch': {
+      const deltaQ = new THREE.Quaternion().setFromAxisAngle(camRight, (extraDeg * Math.PI) / 180);
+      newQuat.multiplyQuaternions(deltaQ, rotateTargetObj.mesh.quaternion);
+      break;
+    }
+    case 'step-roll': {
+      const deltaQ = new THREE.Quaternion().setFromAxisAngle(camDir, (extraDeg * Math.PI) / 180);
+      newQuat.multiplyQuaternions(deltaQ, rotateTargetObj.mesh.quaternion);
+      break;
+    }
+  }
+
+  // Применяем плавно через alignObjectToGrid / slerp
+  if (rotateTargetObj.body) {
+    rotateTargetObj.body.angularVelocity.set(0, 0, 0);
+    rotateTargetObj.body.wakeUp();
+  }
+
+  aligningObjects.set(rotateTargetObj, {
+    startQuat: rotateTargetObj.mesh.quaternion.clone(),
+    targetQuat: newQuat.clone(),
+    progress: 0,
+    duration: 0.22,
+    onComplete: (q) => {
+      if (grabbedBody && rotateTargetObj.body === grabbedBody) {
+        fixedGrabQuat.copy(q);
+        isGrabRotationLocked = true;
+      }
+    }
+  });
+
+  if (grabbedBody && rotateTargetObj.body === grabbedBody) {
+    fixedGrabQuat.copy(newQuat);
+    isGrabRotationLocked = true;
+  }
+
+  showFlightHudNotification('Поворот применен!');
+}
+
+// Слушатели кнопок внутри меню поворота
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    const rotateBtn = e.target.closest('.rotate-btn');
+    if (rotateBtn) {
+      const action = rotateBtn.dataset.action;
+      applyObjectRotationPreset(action);
+      return;
+    }
+
+    const stepBtn = e.target.closest('.rotate-step-btn');
+    if (stepBtn) {
+      const stepType = stepBtn.dataset.step;
+      const deg = parseFloat(stepBtn.dataset.deg) || 45;
+      applyObjectRotationPreset(`step-${stepType}`, deg);
+      return;
+    }
+  });
+}
+
 
 // --- Функция плавного выравнивания предмета на R ---
 function alignObjectToGrid(target, onComplete = null) {
@@ -4341,7 +5001,7 @@ function playReloadSound() {
   });
 }
 
-// 6. Холостой щелчок (пустой магазин)
+// 6. Холостой щелчок (осечка)
 function playEmptyClickSound() {
   playCustomOrSynth('empty_click', (ctx) => {
     const osc = ctx.createOscillator();
@@ -4349,13 +5009,40 @@ function playEmptyClickSound() {
     osc.type = 'square';
     osc.frequency.setValueAtTime(950, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.03);
-    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.setValueAtTime(0.2 * masterVolume * sfxVolume, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start();
     osc.stop(ctx.currentTime + 0.03);
   });
+}
+
+// 6.1 Звук клика по кнопкам UI (поддерживает кастомный button_click.wav из public/sounds/)
+function playButtonClickSound() {
+  playCustomOrSynth('button_click', (ctx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(540, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.04);
+    gain.gain.setValueAtTime(0.18 * masterVolume * sfxVolume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.045);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.045);
+  });
+}
+
+// Глобальный обработчик клика по любым кнопкам в интерфейсе
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button, .menu-btn, .spawn-btn, .rotate-btn, .rotate-step-btn');
+    if (btn) {
+      playButtonClickSound();
+    }
+  }, true);
 }
 
 // 7. Звук спавна предмета из меню (spawn.mp3 / spawn.wav)
@@ -4375,80 +5062,98 @@ function playSpawnSound() {
   });
 }
 
-// 8. Приятный тихий процедурный звук физического соприкосновения/удара/переката краями
+// 8. Физический звук удара блока об пол/блок (глухой удар малюсенького камешка без пищания)
+// Поддерживает кастомные WAV из public/sounds/: block_hit.wav, block_drop.wav
 let lastPhysicsSoundTime = 0;
 function playPhysicsCollisionSound(impactSpeed, worldPos, isSphere = false) {
   const now = performance.now();
-  // Ограничиваем частоту тиков, чтобы не возникало каши при сотнях контактов (мин. 25 мс между звуками)
-  if (now - lastPhysicsSoundTime < 24) return;
+  if (now - lastPhysicsSoundTime < 32) return;
   lastPhysicsSoundTime = now;
 
   try {
+    const toSource = new THREE.Vector3().subVectors(worldPos, camera.position);
+    const dist = toSource.length();
+
+    // Реалистичная дистанция слышимости: дальше 32 метров звук полностью затихает в 0
+    const maxAudibleDist = 32.0;
+    if (dist >= maxAudibleDist) return;
+
+    // Квадратичное затухание громкости с расстоянием
+    const distFactor = Math.max(0, 1.0 - (dist / maxAudibleDist));
+    const distAtten = distFactor * distFactor;
+
+    // Проверяем наличие кастомного звука block_hit.wav в public/sounds/
+    if (audioFiles['block_hit']) {
+      playCustomOrSynth('block_hit', () => {});
+      return;
+    }
+
     const ctx = getAudioContext();
     if (!ctx) return;
 
-    // Громкость зависит от силы удара (тихий легкий клик при касании краем, более ощутимый при падении)
-    const normSpeed = Math.min(1.0, impactSpeed / 7.0);
-    const volume = Math.max(0.03, Math.min(0.24, 0.04 + normSpeed * 0.18));
+    const normSpeed = Math.min(1.0, impactSpeed / 8.0);
+    const volume = Math.max(0.02, Math.min(0.20, 0.03 + normSpeed * 0.15)) * (masterVolume * sfxVolume);
+    const finalGainVal = volume * distAtten;
+    if (finalGainVal <= 0.001) return;
 
-    // Пространственная стерео-панорама и затухание от расстояния до игрока
     const camDir = new THREE.Vector3();
     camera.getWorldDirection(camDir);
     camDir.y = 0;
     camDir.normalize();
     const camRight = new THREE.Vector3().crossVectors(camDir, new THREE.Vector3(0, 1, 0)).normalize();
-
-    const toSource = new THREE.Vector3().subVectors(worldPos, camera.position);
-    const dist = Math.max(0.5, toSource.length());
     toSource.normalize();
-
     const pan = Math.max(-0.95, Math.min(0.95, toSource.dot(camRight)));
-    const distAtten = Math.max(0.12, Math.min(1.0, 14.0 / (dist + 8.0)));
-    const finalGainVal = volume * distAtten;
 
     const mainGain = ctx.createGain();
     mainGain.gain.setValueAtTime(finalGainVal, ctx.currentTime);
 
+    // Низкочастотный фильтр: срезаем высокие частоты, делаем звук глухим как маленький камушек
+    const cutoffFreq = Math.max(160, 480 - dist * 9);
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.setValueAtTime(cutoffFreq, ctx.currentTime);
+
     const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
     if (panner) {
       panner.pan.setValueAtTime(pan, ctx.currentTime);
-      mainGain.connect(panner);
+      mainGain.connect(lowpass);
+      lowpass.connect(panner);
       panner.connect(ctx.destination);
     } else {
-      mainGain.connect(ctx.destination);
+      mainGain.connect(lowpass);
+      lowpass.connect(ctx.destination);
     }
 
-    // Тонкий щелчок касания грани/ребра (Click/Tick)
-    const oscClick = ctx.createOscillator();
-    const clickGain = ctx.createGain();
-    const baseFreq = isSphere ? 460 + Math.random() * 80 : 850 + (Math.random() - 0.5) * 220;
-    oscClick.type = 'triangle';
-    oscClick.frequency.setValueAtTime(baseFreq, ctx.currentTime);
-    oscClick.frequency.exponentialRampToValueAtTime(baseFreq * 0.45, ctx.currentTime + 0.025);
-
-    clickGain.gain.setValueAtTime(0.7, ctx.currentTime);
-    clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.028);
-
-    oscClick.connect(clickGain);
-    clickGain.connect(mainGain);
-    oscClick.start(ctx.currentTime);
-    oscClick.stop(ctx.currentTime + 0.03);
-
-    // Легкий деревянно-каменный глухой стук (Thud)
+    // Глухой удар (мягкий саб-импульс 95Hz -> 36Hz)
     const oscBody = ctx.createOscillator();
     const bodyGain = ctx.createGain();
-    const bodyFreq = 160 + Math.random() * 50;
+    const bodyFreq = 95 + Math.random() * 25;
     oscBody.type = 'sine';
     oscBody.frequency.setValueAtTime(bodyFreq, ctx.currentTime);
-    oscBody.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.045);
+    oscBody.frequency.exponentialRampToValueAtTime(36, ctx.currentTime + 0.024);
 
-    bodyGain.gain.setValueAtTime(0.6, ctx.currentTime);
-    bodyGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    bodyGain.gain.setValueAtTime(0.55, ctx.currentTime);
+    bodyGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.026);
 
     oscBody.connect(bodyGain);
     bodyGain.connect(mainGain);
     oscBody.start(ctx.currentTime);
-    oscBody.stop(ctx.currentTime + 0.05);
+    oscBody.stop(ctx.currentTime + 0.028);
+
+    // Легкий глухой щелчок камешка (без высокого пищания, 180Hz -> 60Hz)
+    const oscPebble = ctx.createOscillator();
+    const pebbleGain = ctx.createGain();
+    oscPebble.type = 'triangle';
+    oscPebble.frequency.setValueAtTime(180 + (Math.random() - 0.5) * 30, ctx.currentTime);
+    oscPebble.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.016);
+
+    pebbleGain.gain.setValueAtTime(0.25, ctx.currentTime);
+    pebbleGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.018);
+
+    oscPebble.connect(pebbleGain);
+    pebbleGain.connect(mainGain);
+    oscPebble.start(ctx.currentTime);
+    oscPebble.stop(ctx.currentTime + 0.02);
   } catch (err) {}
 }
 
@@ -4717,14 +5422,14 @@ function checkEasterEggFormation(delta) {
 // Раздел 5: Tool Gun / Physgun
 const WEAPON_REGISTRY = {
   '1-1': { id: 'hands', name: 'Руки (Физика)', category: 1, sub: 1, hasAmmo: false },
-  '1-2': { id: 'crowbar', name: 'Монтировка', category: 1, sub: 2, hasAmmo: false, locked: true },
-  '2-1': { id: 'pistol', name: '9mm Пистолет', category: 2, sub: 1, hasAmmo: true, maxClip: 18, damage: 25 },
+  '1-2': { id: 'toolgun', name: 'Tool Gun', category: 1, sub: 2, hasAmmo: false, locked: false },
+  '2-1': { id: 'pistol', name: 'Glock-19', category: 2, sub: 1, hasAmmo: true, maxClip: 18, damage: 25 },
   '2-2': { id: 'revolver', name: 'Револьвер .357', category: 2, sub: 2, hasAmmo: true, locked: true },
   '3-1': { id: 'smg', name: 'SMG', category: 3, sub: 1, hasAmmo: true, locked: true },
   '3-2': { id: 'shotgun', name: 'Shotgun', category: 3, sub: 2, hasAmmo: true, locked: true },
   '4-1': { id: 'grenade', name: 'Гранаты', category: 4, sub: 1, hasAmmo: true, locked: true },
   '4-2': { id: 'rpg', name: 'РПГ', category: 4, sub: 2, hasAmmo: true, locked: true },
-  '5-1': { id: 'toolgun', name: 'Tool Gun', category: 5, sub: 1, hasAmmo: false, locked: true },
+  '5-1': { id: 'toolgun', name: 'Tool Gun', category: 5, sub: 1, hasAmmo: false, locked: false },
   '5-2': { id: 'physgun', name: 'Физган', category: 5, sub: 2, hasAmmo: false, locked: true },
 };
 
@@ -4850,11 +5555,17 @@ function equipWeapon(slotId) {
   currentEquippedSlot = slotId;
   selectedSlot = slotId;
 
+  const isToolGun = (slotId === '1-2' || slotId === '5-1');
+  const isPistol = (slotId === '2-1');
+
   if (viewmodelRoot) {
-    viewmodelRoot.visible = (!isInMainMenu && slotId === '2-1');
+    viewmodelRoot.visible = (!isInMainMenu && (isPistol || isToolGun));
   }
   if (pistolMeshGroup) {
-    pistolMeshGroup.visible = (!isInMainMenu && slotId === '2-1');
+    pistolMeshGroup.visible = (!isInMainMenu && isPistol);
+  }
+  if (toolgunMeshGroup) {
+    toolgunMeshGroup.visible = (!isInMainMenu && isToolGun);
   }
 
   // Воспроизводим звук доставания специально для 9mm пистолета (Слот 2-1)
@@ -4894,6 +5605,16 @@ const PISTOL_AIM_ROT = new THREE.Euler(0.0, 0.0, 0.0);
 const PISTOL_DRAW_OFFSET_Y = -0.75;
 
 let pistolMeshGroup = null;
+let toolgunMeshGroup = null;
+let toolGunSelectedItem = 'cube';
+let toolGunRotX = 0;
+let toolGunRotY = 0;
+let toolGunHologram = null;
+let toolGunFaceNormal = new THREE.Vector3(0, 1, 0);
+let toolGunHitPoint = new THREE.Vector3();
+let toolGunHitObject = null;
+let isToolGunActive = false;
+
 let slideMesh = null;
 let initialSlidePos = new THREE.Vector3();
 let slideBlowback = 0;
@@ -5231,6 +5952,77 @@ gltfLoader.load(
     console.error('Ошибка загрузки 9mm_pistol.glb:', err);
   }
 );
+// Загрузка 3D модели Tool Gun (public/tool_gun.glb)
+// Загрузка 3D модели Tool Gun (public/tool_gun.glb) с исправлением освещения и материалов
+gltfLoader.load(
+  './tool_gun.glb',
+  (gltf) => {
+    const rawScene = gltf.scene;
+
+    // Удаляем встроенные источники света и камеры из GLB, которые ослепляли модель белым цветом
+    const toRemove = [];
+    rawScene.traverse((child) => {
+      if (child.isLight || child.isCamera || child.name === 'Area' || child.name === 'Camera') {
+        toRemove.push(child);
+      }
+      if (child.isMesh && child.material) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        
+        // Исправляем белые пересвеченные материалы
+        const mats = Array.isArray(child.material) ? child.material : [child.material];
+        mats.forEach((m) => {
+          if (m) {
+            // Если материал чисто белый (из блендера по умолчанию) — даем ему благородный темный металл/пластик
+            if (m.color && (m.color.r > 0.5 && m.color.g > 0.5 && m.color.b > 0.5)) {
+              m.color.setRGB(0.18, 0.20, 0.24); // темный оружейный графит
+            }
+            if (m.emissive) {
+              m.emissive.setRGB(0, 0, 0); // гасим белое самосвечение
+            }
+            m.roughness = 0.45;
+            m.metalness = 0.25;
+            m.needsUpdate = true;
+          }
+        });
+      }
+    });
+
+    toRemove.forEach((item) => {
+      if (item.parent) item.parent.remove(item);
+    });
+
+    const box = new THREE.Box3().setFromObject(rawScene);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scaleFactor = 0.35 / (maxDim || 1.0);
+    rawScene.scale.setScalar(scaleFactor);
+
+    // Центрируем внутри контейнера
+    rawScene.position.set(
+      -center.x * scaleFactor,
+      -center.y * scaleFactor,
+      -center.z * scaleFactor
+    );
+
+    const wrapper = new THREE.Group();
+    wrapper.add(rawScene);
+    wrapper.visible = false;
+    viewmodelRoot.add(wrapper);
+    toolgunMeshGroup = wrapper;
+
+    console.log('tool_gun.glb успешно загружен с оптимизированными материалами!');
+  },
+  undefined,
+  (err) => {
+    console.error('Ошибка загрузки tool_gun.glb:', err);
+  }
+);
+
 
 // Функция выстрела из пистолета
 function shootPistol() {
@@ -5390,7 +6182,7 @@ function spawnBulletImpactSparks(pos, normal) {
 
 window.addEventListener('mousedown', (e) => {
   // Клик в окно восстанавливает захват мыши только в игре, но не в главном меню и не при открытых модалках
-  if (!isInMainMenu && !controls.isLocked && !isMenuOpen && !isPaused && !e.target.closest('#win-titlebar') && !e.target.closest('#spawn-menu') && !e.target.closest('#pause-overlay') && !e.target.closest('#settings-modal') && !e.target.closest('#worlds-modal') && !e.target.closest('#retro-dialog-modal')) {
+  if (!isInMainMenu && !controls.isLocked && !isMenuOpen && !isPaused && !e.target.closest('#win-titlebar') && !e.target.closest('#spawn-menu') && !e.target.closest('#pause-overlay') && !e.target.closest('#settings-modal') && !e.target.closest('#worlds-modal') && !e.target.closest('#retro-dialog-modal') && !e.target.closest('#rotate-menu')) {
     requestPointerLockSafely();
   }
 
@@ -5409,6 +6201,13 @@ window.addEventListener('mousedown', (e) => {
 
   // ПКМ (e.button === 2):
   // 1. Если в руках пистолет — ЗАЖАТИЕ прицела (Hold to ADS)
+  // ПКМ на Tool Gun (Слот 1-2 или 5-1): удаление целевого блока
+  if (e.button === 2 && (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') && controls.isLocked && !isMenuOpen) {
+    e.preventDefault();
+    removeToolGunTarget();
+    return;
+  }
+
   if (e.button === 2 && currentEquippedSlot === '2-1' && controls.isLocked && !isMenuOpen) {
     e.preventDefault();
     isAiming = true;
@@ -5437,67 +6236,58 @@ window.addEventListener('mousedown', (e) => {
 
   // 2. Если экипированы руки (Слот 1-1): Основной физический режим — Hold & Drag!
   // Зажимаешь — держишь и несёшь. Отпускаешь палец — предмет сразу отпускается и летит по инерции!
-  if (e.button === 0 && controls.isLocked && !isMenuOpen) {
-    const now = performance.now();
+  // Выстрел Tool Gun (Слот 1-2 / 5-1)
+  if (e.button === 0 && (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') && controls.isLocked && !isMenuOpen) {
+    fireToolGun();
+    return;
+  }
 
-    // Если предмет уже зафиксирован (по двойному клику) — клик сразу отпускает его
-    if (grabbedBody && isGrabLocked) {
+  // Захват/отпускание руками в 1 клик (Слот 1-1 Hands)
+  if (e.button === 0 && currentEquippedSlot === '1-1' && controls.isLocked && !isMenuOpen) {
+    if (grabbedBody) {
       releaseGrabbedBody(false);
-      lastGrabClickTime = now;
       return;
     }
 
-    // Если держим предмет и сделали быстрый повторный клик (двойной клик < 320мс) — фиксируем его в руках!
-    if (grabbedBody && (now - lastGrabClickTime < 320)) {
-      isGrabLocked = true;
-      lastGrabClickTime = 0;
-      return;
-    }
+    raycaster.setFromCamera(centerScreen, camera);
+    const meshes = physicsObjects.map(obj => obj.mesh);
+    const intersects = raycaster.intersectObjects(meshes);
 
-    lastGrabClickTime = now;
+    if (intersects.length > 0) {
+      const hitMesh = intersects[0].object;
+      const target = physicsObjects.find(obj => obj.mesh === hitMesh || (obj.mesh && obj.mesh.children.includes(hitMesh)));
+      if (target) {
+        grabbedBody = target.body;
+        target.wasHeldByPlayer = true;
+        grabDistance = intersects[0].distance;
+        targetGrabDistance = Math.min(3.2, Math.max(MIN_GRAB_DISTANCE, intersects[0].distance));
 
-    if (!grabbedBody) {
-      raycaster.setFromCamera(centerScreen, camera);
-      const meshes = physicsObjects.map(obj => obj.mesh);
-      const intersects = raycaster.intersectObjects(meshes);
+        isGrabLocked = false;
+        isGrabRotationLocked = false;
+        grabbedBody.wakeUp();
+        grabbedBody.angularVelocity.set(0, 0, 0);
+        crosshairEl.classList.remove('hovered');
+        crosshairEl.classList.add('grabbed');
+        playGrabSound();
 
-      if (intersects.length > 0) {
-        const hitMesh = intersects[0].object;
-        const target = physicsObjects.find(obj => obj.mesh === hitMesh || obj.mesh.children.includes(hitMesh));
-        if (target) {
-          grabbedBody = target.body;
-          target.wasHeldByPlayer = true;
-          grabDistance = intersects[0].distance;
-          targetGrabDistance = Math.min(3.2, Math.max(MIN_GRAB_DISTANCE, intersects[0].distance));
-
-          isGrabLocked = false;
-          isGrabRotationLocked = false;
-          grabbedBody.wakeUp();
-          grabbedBody.angularVelocity.set(0, 0, 0);
-          crosshairEl.classList.remove('hovered');
-          crosshairEl.classList.add('grabbed');
-          playGrabSound(); // Аутентичный звук взятия предмета в руки
-
-          // Вычисляем относительный поворот объекта к камере в момент взятия
-          const invCamQ = camera.quaternion.clone().invert();
-          const objQ = new THREE.Quaternion(
-            grabbedBody.quaternion.x,
-            grabbedBody.quaternion.y,
-            grabbedBody.quaternion.z,
-            grabbedBody.quaternion.w
-          );
-          grabRelativeQuat.multiplyQuaternions(invCamQ, objQ);
-        }
+        const invCamQ = camera.quaternion.clone().invert();
+        const objQ = new THREE.Quaternion(
+          grabbedBody.quaternion.x,
+          grabbedBody.quaternion.y,
+          grabbedBody.quaternion.z,
+          grabbedBody.quaternion.w
+        );
+        grabRelativeQuat.multiplyQuaternions(invCamQ, objQ);
       }
     }
+    return;
   }
 });
 
 window.addEventListener('mouseup', (e) => {
-  // При отпускании ЛКМ: если предмет не зафиксирован намертво двойным кликом — бросаем по инерции!
-  if (e.button === 0 && grabbedBody && !isGrabLocked) {
-    releaseGrabbedBody(true);
-  }
+  // При отпускании ЛКМ предмет НЕ бросается (захват работает по клику-переключателю)
+  // Для броска используется зажатие ПКМ или повторный клик ЛКМ
+  // (исправлено по требованию: достаточно 1 клика чтобы взять и 1 клика чтобы отпустить)
   // При отпускании ПКМ: если в руках пистолет — выходим из режима прицеливания (Hold to Aim)
   if (e.button === 2 && currentEquippedSlot === '2-1') {
     isAiming = false;
@@ -5516,38 +6306,34 @@ window.addEventListener('mouseup', (e) => {
       const maxForce = 38.0;
       const effectiveForce = minForce + (maxForce - minForce) * throwChargeProgress;
 
-      grabbedBody.velocity.set(
+      const throwVel = new THREE.Vector3(
         throwDir.x * effectiveForce,
         throwDir.y * effectiveForce + 1.2 * (1.0 + throwChargeProgress * 0.8),
         throwDir.z * effectiveForce
       );
-
-      // Вращение пропорционально силе броска
       const rotStrength = 2.0 + throwChargeProgress * 6.0;
-      grabbedBody.angularVelocity.set(
+      const throwAngVel = new THREE.Vector3(
         (Math.random() - 0.5) * rotStrength,
         (Math.random() - 0.5) * rotStrength,
         (Math.random() - 0.5) * rotStrength
       );
+      setWeldClusterVelocity(grabbedBody, throwVel, throwAngVel);
 
-      // Звук мощного свиста броска через Web Audio
-      try {
-        const ctx = getAudioContext();
-        if (ctx) {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'triangle';
-          const startF = 260 + throwChargeProgress * 300;
-          osc.frequency.setValueAtTime(startF, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.16);
-          gain.gain.setValueAtTime(0.22 + throwChargeProgress * 0.2, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.18);
-        }
-      } catch (err) {}
+      // Озвучка броска (поддерживает кастомный throw_object.wav из public/sounds/)
+      playCustomOrSynth('throw_object', (ctx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        const startF = 180 + throwChargeProgress * 160;
+        osc.frequency.setValueAtTime(startF, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(65, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime((0.15 + throwChargeProgress * 0.15) * masterVolume * sfxVolume, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.16);
+      });
 
       grabbedBody = null;
       isGrabLocked = false;
@@ -5558,7 +6344,7 @@ window.addEventListener('mouseup', (e) => {
 
 // Клик по экрану захватывает курсор только если меню закрыто и игра начата
 window.addEventListener('click', (e) => {
-  if (!isInMainMenu && !isMenuOpen && !isPaused && !controls.isLocked && !e.target.closest('#win-titlebar') && !e.target.closest('#spawn-menu') && !e.target.closest('#pause-overlay') && !e.target.closest('#settings-modal') && !e.target.closest('#worlds-modal') && !e.target.closest('#retro-dialog-modal')) {
+  if (!isInMainMenu && !isMenuOpen && !isPaused && !controls.isLocked && !e.target.closest('#win-titlebar') && !e.target.closest('#spawn-menu') && !e.target.closest('#pause-overlay') && !e.target.closest('#settings-modal') && !e.target.closest('#worlds-modal') && !e.target.closest('#retro-dialog-modal') && !e.target.closest('#rotate-menu')) {
     requestPointerLockSafely();
   }
 });
@@ -5742,6 +6528,17 @@ window.addEventListener('wheel', (e) => {
 }, { passive: false });
 
 window.addEventListener('keydown', (e) => {
+  // Если фокус находится в поле ввода (диалог, поиск сервера, пароль и т.д.) — НЕ перехватывать буквы (B, W, A, S, D, пробел и др.)!
+  const targetTag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
+  const isInputFocused = targetTag === 'INPUT' || targetTag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
+  if (isInputFocused) {
+    // В полях ввода позволяем вводить любые буквы (b, r, v, z, пробел), выходим из игрового обработчика
+    if (e.code === 'Escape') {
+      e.target.blur();
+    }
+    return;
+  }
+
   // Блокируем разрушительные хоткеи браузера (Ctrl+W закрытие окна, Ctrl+R перезагрузка, F5, Ctrl+S и т.д.)
   // НО позволяем движение на WASD при зажатом Ctrl (присед)!
   if (
@@ -5753,6 +6550,15 @@ window.addEventListener('keydown', (e) => {
   }
   if (e.ctrlKey && ['KeyW', 'KeyS'].includes(e.code)) {
     e.preventDefault(); // Предотвращаем закрытие вкладки/окна по Ctrl+W в браузере, но НЕ выходим, чтобы сработал switch (e.code)!
+  }
+
+  if (e.code === 'Tab') {
+    e.preventDefault();
+    if ((isHostingServer || isConnectedToHost) && mpTabOverlay) {
+      updateTabPlayerListUI();
+      mpTabOverlay.classList.remove('hidden');
+    }
+    return;
   }
 
   if (e.code === 'Escape') {
@@ -5831,38 +6637,37 @@ window.addEventListener('keydown', (e) => {
         isOnGround = false;
       }
       break;
+    case 'KeyT':
+      if (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') {
+        toolGunRotY += Math.PI / 2;
+        showFlightHudNotification('Tool Gun: поворот Y на 90°');
+        break;
+      }
+      break;
     case 'KeyR':
-      // Если в руках пистолет — клавиша R перезаряжает его!
+      if (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') {
+        toolGunRotX += Math.PI / 2;
+        showFlightHudNotification('Tool Gun: поворот X на 90°');
+        break;
+      }
       if (currentEquippedSlot === '2-1') {
         reloadPistol();
         break;
       }
+      if (e.repeat) break;
+      isRPressed = true;
+      isRotateKeyHeld = false;
 
-      // При удержании предмета: плавно выравниваем и фиксируем его ориентацию в пространстве,
-      // чтобы он свободно перемещался, но не вращался вслед за поворотом камеры
-      if (grabbedBody) {
-        const heldObj = physicsObjects.find(o => o.body === grabbedBody);
-        if (heldObj) {
-          isGrabRotationLocked = true;
-          // Плавно доворачиваем к сетке с коллбэком на фиксацию итогового кватерниона
-          alignObjectToGrid(heldObj, (finalQuat) => {
-            fixedGrabQuat.copy(finalQuat);
-          });
-          showFlightHudNotification('Поворот плавно зафиксирован (R)');
-        }
-      } else {
-        // Если смотрим на объект — плавно выравниваем его на месте
-        raycaster.setFromCamera(centerScreen, camera);
-        const meshes = physicsObjects.map(obj => obj.mesh);
-        const intersects = raycaster.intersectObjects(meshes);
-        if (intersects.length > 0) {
-          const hitMesh = intersects[0].object;
-          const target = physicsObjects.find(obj => obj.mesh === hitMesh || obj.mesh.children.includes(hitMesh));
-          if (target) {
-            alignObjectToGrid(target);
-            showFlightHudNotification('Объект выровнен по сетке (R)');
+      // При зажатии R (> 220мс) открывается интерактивное радиальное меню поворота
+      const targetObj = getTargetObjectForRotation();
+      if (targetObj) {
+        if (rotateKeyHoldTimer) clearTimeout(rotateKeyHoldTimer);
+        rotateKeyHoldTimer = setTimeout(() => {
+          if (isRPressed) {
+            isRotateKeyHeld = true;
+            openRotateMenu(targetObj);
           }
-        }
+        }, 220);
       }
       break;
     case 'KeyZ':
@@ -5873,6 +6678,37 @@ window.addEventListener('keydown', (e) => {
 });
 
 window.addEventListener('keyup', (e) => {
+  if (e.code === 'Tab') {
+    if (mpTabOverlay) mpTabOverlay.classList.add('hidden');
+    return;
+  }
+
+  if (e.code === 'KeyR') {
+    isRPressed = false;
+    if (rotateKeyHoldTimer) {
+      clearTimeout(rotateKeyHoldTimer);
+      rotateKeyHoldTimer = null;
+    }
+
+    if (isRotateMenuOpen) {
+      // Отпустили R - закрываем меню и возвращаемся в игру
+      closeRotateMenu();
+    } else if (!isRotateKeyHeld && currentEquippedSlot !== '2-1') {
+      // Короткое быстрое нажатие R - быстрое выравнивание по сетке (snap)
+      const target = getTargetObjectForRotation();
+      if (target) {
+        alignObjectToGrid(target, (finalQuat) => {
+          if (grabbedBody && target.body === grabbedBody) {
+            fixedGrabQuat.copy(finalQuat);
+            isGrabRotationLocked = true;
+          }
+        });
+        showFlightHudNotification('Выровнено по сетке (R)');
+      }
+    }
+    isRotateKeyHeld = false;
+  }
+
   switch (e.code) {
     case 'KeyW':
       keys.forward = false;
@@ -5940,6 +6776,653 @@ const flyVelocity = new THREE.Vector3(); // вектор инерции полё
 let prevTime = performance.now();
 
 // --- Анимационный цикл ---
+
+// ============================================================================
+// --- СИСТЕМА СЕТЕВОГО МУЛЬТИПЛЕЕРА (PEER-TO-PEER WEBRTC) ---
+// ============================================================================
+let localPeer = null;
+let activePeerConnections = new Map(); // peerId -> DataConnection
+let isHostingServer = false;
+let isConnectedToHost = false;
+let hostConnection = null;
+let currentLobbyId = null;
+let localPlayerNick = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
+
+// Хранилище удаленных 3D аватаров игроков: peerId -> { group, headMesh, torsoMesh, leftArm, rightArm, weaponMesh, targetPos, targetQuat, pitch }
+const remotePlayerAvatars = new Map();
+
+// Создание 3D модели гуманоида (стилизованный блочный персонаж, не пилюля!)
+function createPlayerAvatar(nick = "Игрок") {
+  const avatarGroup = new THREE.Group();
+
+  // Материалы (стильный матовый темный комбинезон с неоновыми синими акцентами)
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xdfb498, roughness: 0.5 });
+  const shirtMat = new THREE.MeshStandardMaterial({ color: 0x222630, roughness: 0.4, metalness: 0.1 });
+  const pantsMat = new THREE.MeshStandardMaterial({ color: 0x16181e, roughness: 0.6 });
+  const visorMat = new THREE.MeshStandardMaterial({ color: 0x00f0ff, roughness: 0.2, metalness: 0.8, emissive: 0x007799, emissiveIntensity: 0.6 });
+
+  // 1. Торс (0.5 x 0.7 x 0.28)
+  const torsoGeo = new THREE.BoxGeometry(0.5, 0.7, 0.28);
+  const torsoMesh = new THREE.Mesh(torsoGeo, shirtMat);
+  torsoMesh.position.y = 1.0;
+  torsoMesh.castShadow = true;
+  avatarGroup.add(torsoMesh);
+
+  // 2. Голова (0.32 x 0.32 x 0.32)
+  const headGroup = new THREE.Group();
+  headGroup.position.set(0, 1.52, 0);
+
+  const headGeo = new THREE.BoxGeometry(0.32, 0.32, 0.32);
+  const headMesh = new THREE.Mesh(headGeo, skinMat);
+  headMesh.castShadow = true;
+  headGroup.add(headMesh);
+
+  // Очки / Визор на лице
+  const visorGeo = new THREE.BoxGeometry(0.26, 0.08, 0.06);
+  const visorMesh = new THREE.Mesh(visorGeo, visorMat);
+  visorMesh.position.set(0, 0.03, -0.16);
+  headGroup.add(visorMesh);
+
+  avatarGroup.add(headGroup);
+
+  // 3. Руки (0.16 x 0.65 x 0.16)
+  const armGeo = new THREE.BoxGeometry(0.16, 0.65, 0.16);
+  
+  const leftArm = new THREE.Mesh(armGeo, shirtMat);
+  leftArm.position.set(-0.35, 1.0, 0);
+  leftArm.castShadow = true;
+  avatarGroup.add(leftArm);
+
+  const rightArm = new THREE.Mesh(armGeo, shirtMat);
+  rightArm.position.set(0.35, 1.0, -0.15);
+  rightArm.rotation.x = -Math.PI / 4; // удерживает оружие перед собой
+  rightArm.castShadow = true;
+  avatarGroup.add(rightArm);
+
+  // Оружие в руке (маленькая модель пистолета)
+  const gunGeo = new THREE.BoxGeometry(0.08, 0.12, 0.25);
+  const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8, roughness: 0.2 });
+  const gunMesh = new THREE.Mesh(gunGeo, gunMat);
+  gunMesh.position.set(0, -0.3, -0.12);
+  rightArm.add(gunMesh);
+
+  // 4. Ноги (0.2 x 0.65 x 0.2)
+  const legGeo = new THREE.BoxGeometry(0.2, 0.65, 0.2);
+  
+  const leftLeg = new THREE.Mesh(legGeo, pantsMat);
+  leftLeg.position.set(-0.13, 0.325, 0);
+  leftLeg.castShadow = true;
+  avatarGroup.add(leftLeg);
+
+  const rightLeg = new THREE.Mesh(legGeo, pantsMat);
+  rightLeg.position.set(0.13, 0.325, 0);
+  rightLeg.castShadow = true;
+  avatarGroup.add(rightLeg);
+
+  // 5. Никнейм над головой (Canvas 2D Sprite)
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(10, 14, 20, 0.75)';
+  ctx.roundRect ? ctx.roundRect(10, 10, 236, 44, 8) : ctx.fillRect(10, 10, 236, 44);
+  ctx.fill();
+  ctx.strokeStyle = '#00f0ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.font = 'bold 24px Tahoma, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.fillText(nick, 128, 40);
+
+  const nameTexture = new THREE.CanvasTexture(canvas);
+  const spriteMat = new THREE.SpriteMaterial({ map: nameTexture, depthTest: false });
+  const nameSprite = new THREE.Sprite(spriteMat);
+  nameSprite.position.set(0, 1.95, 0);
+  nameSprite.scale.set(1.5, 0.38, 1);
+  avatarGroup.add(nameSprite);
+
+  scene.add(avatarGroup);
+
+  return {
+    group: avatarGroup,
+    headGroup,
+    rightArm,
+    leftArm,
+    leftLeg,
+    rightLeg,
+    gunMesh,
+    targetPos: new THREE.Vector3(0, 0, 0),
+    targetYaw: 0,
+    targetPitch: 0,
+    walkAnimTimer: 0
+  };
+}
+
+// Удаление аватара при отключении игрока
+function removeRemotePlayer(peerId) {
+  const avatar = remotePlayerAvatars.get(peerId);
+  if (avatar) {
+    scene.remove(avatar.group);
+    remotePlayerAvatars.delete(peerId);
+  }
+}
+
+// Рассылка сетевого пакета всем участникам
+function broadcastNetworkPacket(packet, excludePeerId = null) {
+  const raw = JSON.stringify(packet);
+  if (isHostingServer) {
+    activePeerConnections.forEach((conn, id) => {
+      if (id !== excludePeerId && conn.open) {
+        try { conn.send(raw); } catch (_) {}
+      }
+    });
+  } else if (hostConnection && hostConnection.open) {
+    try { hostConnection.send(raw); } catch (_) {}
+  }
+}
+
+// Обработка входящих сетевых сообщений
+function handleNetworkPacket(packet, senderId) {
+  if (!packet || !packet.type) return;
+
+  switch (packet.type) {
+    case 'player_transform': {
+      // Синхронизация движения и поворота
+      let avatar = remotePlayerAvatars.get(packet.id);
+      if (!avatar) {
+        avatar = createPlayerAvatar(packet.nick || "Игрок");
+        remotePlayerAvatars.set(packet.id, avatar);
+        showFlightHudNotification(`Игрок ${packet.nick || packet.id} вошел на сервер!`);
+      }
+      avatar.targetPos.set(packet.x, packet.y, packet.z);
+      avatar.targetYaw = packet.yaw;
+      avatar.targetPitch = packet.pitch;
+      avatar.isMoving = packet.isMoving;
+
+      // Если мы хост — ретранслируем остальным клиентам
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'spawn_block': {
+      // Синхронизация спавна блока через тулган или меню
+      const rot = { x: packet.qx, y: packet.qy, z: packet.qz, w: packet.qw };
+      let created = null;
+      if (packet.blockType === 'secret_cube') {
+        created = spawnSecretCubeAt(packet.pos, rot);
+      } else if (packet.blockType === 'triangle') {
+        created = spawnTriangleAt(packet.pos, rot);
+      } else if (packet.blockType === 'ramp') {
+        created = spawnRampAt(packet.pos, rot);
+      } else {
+        created = spawnCubeAt(packet.pos, rot);
+      }
+
+      if (created) {
+        created.netId = packet.netId;
+        playWeldSound();
+      }
+
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'remove_block': {
+      // Синхронизация удаления блока через ПКМ тулгана
+      const target = physicsObjects.find(o => o.netId === packet.netId || (o.mesh.position.distanceTo(packet.pos) < 0.25));
+      if (target) {
+        for (let i = weldConstraints.length - 1; i >= 0; i--) {
+          const c = weldConstraints[i];
+          if (c.bodyA === target.body || c.bodyB === target.body) {
+            world.removeConstraint(c.constraint);
+            weldConstraints.splice(i, 1);
+          }
+        }
+        const idx = physicsObjects.indexOf(target);
+        if (idx !== -1) physicsObjects.splice(idx, 1);
+        if (target.body) world.removeBody(target.body);
+        if (target.mesh) scene.remove(target.mesh);
+        playUnweldSound();
+      }
+
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'shoot_bullet': {
+      // Звук выстрела удаленного игрока
+      playCustomOrSynth('pistol_shoot', (ctx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.setValueAtTime(320, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.13);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.13);
+      });
+
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'player_disconnect': {
+      removeRemotePlayer(packet.id);
+      showFlightHudNotification(`Игрок покинул сервер`);
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+  }
+}
+
+// Конфигурация WebRTC с надежными публичными STUN серверами Google и Cloudflare
+const ICE_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' }
+  ]
+};
+
+// Переменные комнаты
+let currentServerInfo = {
+  name: "Песочница",
+  maxPlayers: 4,
+  isPrivate: false,
+  password: ""
+};
+
+// DOM элементы индикаторов комнаты и списка игроков (TAB)
+const mpRoomHud = document.getElementById('mp-room-hud');
+const mpHudRoomId = document.getElementById('mp-hud-room-id');
+const btnMpCopyCode = document.getElementById('btn-mp-copy-code');
+
+const mpTabOverlay = document.getElementById('mp-tab-overlay');
+const mpTabSrvTitle = document.getElementById('mp-tab-srv-title');
+const mpTabCountLabel = document.getElementById('mp-tab-count-label');
+const mpTabPlayersList = document.getElementById('mp-tab-players-list');
+
+if (btnMpCopyCode) {
+  btnMpCopyCode.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentLobbyId) {
+      navigator.clipboard.writeText(currentLobbyId).then(() => {
+        showFlightHudNotification('Код комнаты скопирован в буфер обмена!');
+      }).catch(() => {
+        showFlightHudNotification(`Код: ${currentLobbyId}`);
+      });
+    }
+  });
+}
+
+function updateTabPlayerListUI() {
+  if (!mpTabPlayersList) return;
+  const totalCount = 1 + remotePlayerAvatars.size;
+  if (mpTabSrvTitle) mpTabSrvTitle.textContent = currentServerInfo.name;
+  if (mpTabCountLabel) mpTabCountLabel.textContent = `${totalCount}/${currentServerInfo.maxPlayers}`;
+
+  let html = `
+    <div class="mp-tab-player-item is-me ${isHostingServer ? 'is-host' : ''}">
+      <span>${localPlayerNick} ${isHostingServer ? '(Хост)' : ''} (Вы)</span>
+      <span class="mp-tab-ping">0 ms</span>
+    </div>
+  `;
+
+  remotePlayerAvatars.forEach((avatar, id) => {
+    const isHost = !isHostingServer && (id === currentLobbyId);
+    html += `
+      <div class="mp-tab-player-item ${isHost ? 'is-host' : ''}">
+        <span>${avatar.nick || 'Игрок'} ${isHost ? '(Хост)' : ''}</span>
+        <span class="mp-tab-ping">${Math.floor(25 + Math.random() * 30)} ms</span>
+      </div>
+    `;
+  });
+
+  mpTabPlayersList.innerHTML = html;
+}
+
+// Master Server Registry (через общий канал BroadcastChannel и публичный WebRTC Signaling)
+const MP_REGISTRY_CHANNEL = 'sbx_servers_discovery_v1';
+let mpDiscoveryBc = null;
+try {
+  mpDiscoveryBc = new BroadcastChannel(MP_REGISTRY_CHANNEL);
+  mpDiscoveryBc.onmessage = (ev) => {
+    const data = ev.data;
+    if (!data) return;
+    if (data.type === 'announce') {
+      registerDiscoveredServer(data.server);
+    } else if (data.type === 'query') {
+      if (isHostingServer && currentLobbyId && !currentServerInfo.isPrivate) {
+        mpDiscoveryBc.postMessage({
+          type: 'announce',
+          server: {
+            id: currentLobbyId,
+            name: currentServerInfo.name,
+            players: 1 + activePeerConnections.size,
+            maxPlayers: currentServerInfo.maxPlayers,
+            map: "Sandbox Flat",
+            ping: 30,
+            hasPassword: !!currentServerInfo.password,
+            timestamp: Date.now()
+          }
+        });
+      }
+    }
+  };
+} catch (_) {}
+
+function registerDiscoveredServer(srv) {
+  if (!srv || !srv.id) return;
+  const existingIdx = activeServerList.findIndex(s => s.id === srv.id);
+  if (existingIdx !== -1) {
+    activeServerList[existingIdx] = { ...activeServerList[existingIdx], ...srv, timestamp: Date.now() };
+  } else {
+    activeServerList.push({ ...srv, timestamp: Date.now() });
+  }
+  renderServerList();
+}
+
+function queryActiveServers() {
+  if (mpDiscoveryBc) {
+    mpDiscoveryBc.postMessage({ type: 'query' });
+  }
+}
+
+// Инициализация хоста (создание сервера)
+function initMultiplayerHost(options = {}) {
+  const srvName = options.name || "Песочница #" + Math.floor(100 + Math.random() * 900);
+  const maxPlayers = parseInt(options.maxPlayers) || 4;
+  const isPrivate = !!options.isPrivate;
+  const password = options.password || "";
+
+  currentServerInfo = { name: srvName, maxPlayers, isPrivate, password };
+
+  const cleanId = "sbx-" + Math.random().toString(36).substring(2, 8);
+  currentLobbyId = cleanId;
+
+  if (localPeer) {
+    try { localPeer.destroy(); } catch (_) {}
+  }
+
+  localPeer = new Peer(cleanId, {
+    debug: 1,
+    config: ICE_CONFIG
+  });
+
+  localPeer.on('open', (id) => {
+    isHostingServer = true;
+    isConnectedToHost = false;
+
+    // Включаем HUD с кодом комнаты слева сверху
+    if (mpHudRoomId) mpHudRoomId.textContent = id;
+    if (mpRoomHud) mpRoomHud.classList.remove('hidden');
+
+    showFlightHudNotification(`Сервер «${srvName}» запущен! Код: ${id}`, 6000);
+
+    // Закрываем модалки и входим в чистый мир
+    if (multiplayerModal) multiplayerModal.classList.add('hidden');
+    const mpCreateDialog = document.getElementById('mp-create-dialog');
+    if (mpCreateDialog) mpCreateDialog.classList.add('hidden');
+    loadWorldAndEnterGame(null, true);
+
+    updateTabPlayerListUI();
+
+    // Анонсируем сервер в общий канал
+    if (!isPrivate && mpDiscoveryBc) {
+      mpDiscoveryBc.postMessage({
+        type: 'announce',
+        server: {
+          id: cleanId,
+          name: srvName,
+          players: 1,
+          maxPlayers: maxPlayers,
+          map: "Sandbox Flat",
+          ping: 30,
+          hasPassword: !!password,
+          timestamp: Date.now()
+        }
+      });
+    }
+  });
+
+  localPeer.on('connection', (conn) => {
+    // Проверка лимита игроков
+    if (1 + activePeerConnections.size >= currentServerInfo.maxPlayers) {
+      conn.send(JSON.stringify({ type: 'server_full' }));
+      setTimeout(() => conn.close(), 500);
+      return;
+    }
+
+    activePeerConnections.set(conn.peer, conn);
+
+    conn.on('data', (data) => {
+      try {
+        const parsed = JSON.parse(data);
+        if (parsed.type === 'auth_request') {
+          // Проверка пароля сервера
+          if (currentServerInfo.password && parsed.password !== currentServerInfo.password) {
+            conn.send(JSON.stringify({ type: 'auth_fail', reason: 'Неверный пароль сервера' }));
+            setTimeout(() => conn.close(), 500);
+            return;
+          }
+          conn.send(JSON.stringify({
+            type: 'auth_ok',
+            serverInfo: {
+              name: currentServerInfo.name,
+              maxPlayers: currentServerInfo.maxPlayers
+            }
+          }));
+          return;
+        }
+        handleNetworkPacket(parsed, conn.peer);
+      } catch (err) {
+        console.error('Data error:', err);
+      }
+    });
+
+    conn.on('close', () => {
+      activePeerConnections.delete(conn.peer);
+      removeRemotePlayer(conn.peer);
+      updateTabPlayerListUI();
+    });
+
+    // Отправляем новому игроку текущее состояние мира
+    const currentBlocks = physicsObjects.filter(o => !o.isSphere).map(o => ({
+      netId: o.netId || "b_" + Math.random().toString(36).substring(2, 7),
+      blockType: o.isTriangle ? 'triangle' : (o.isRamp ? 'ramp' : 'cube'),
+      pos: { x: o.mesh.position.x, y: o.mesh.position.y, z: o.mesh.position.z },
+      qx: o.mesh.quaternion.x,
+      qy: o.mesh.quaternion.y,
+      qz: o.mesh.quaternion.z,
+      qw: o.mesh.quaternion.w
+    }));
+
+    setTimeout(() => {
+      currentBlocks.forEach(b => {
+        try { conn.send(JSON.stringify({ type: 'spawn_block', ...b })); } catch (_) {}
+      });
+      updateTabPlayerListUI();
+    }, 400);
+  });
+
+  localPeer.on('error', (err) => {
+    console.error('Peer error:', err);
+    let msg = 'Ошибка сети: ' + (err.type || err.message);
+    if (err.type === 'unavailable-id') {
+      msg = 'ID сервера уже занят, пробуем другой...';
+    }
+    showRetroAlert(msg, 'Ошибка сервера');
+  });
+}
+
+// Подключение клиента к существующему серверу по коду комнаты
+function connectToMultiplayerHost(targetId, enteredPassword = "") {
+  if (!targetId || !targetId.trim()) return;
+
+  // Автоматическая нормализация кода (убираем пробелы, добавляем префикс sbx- если друг ввел только 6 символов)
+  let cleanId = targetId.trim().toLowerCase();
+  if (!cleanId.startsWith('sbx-')) {
+    cleanId = 'sbx-' + cleanId;
+  }
+
+  if (localPeer) {
+    try { localPeer.destroy(); } catch (_) {}
+  }
+
+  localPeer = new Peer({
+    debug: 1,
+    config: ICE_CONFIG
+  });
+
+  localPeer.on('open', (myId) => {
+    hostConnection = localPeer.connect(cleanId, {
+      reliable: true
+    });
+
+    let isConnected = false;
+
+    hostConnection.on('open', () => {
+      isConnected = true;
+      isHostingServer = false;
+      isConnectedToHost = true;
+      currentLobbyId = cleanId;
+
+      // Отправляем запрос авторизации хосту
+      hostConnection.send(JSON.stringify({
+        type: 'auth_request',
+        nick: localPlayerNick,
+        password: enteredPassword
+      }));
+
+      // Показываем HUD кода комнаты слева вверху
+      if (mpHudRoomId) mpHudRoomId.textContent = cleanId;
+      if (mpRoomHud) mpRoomHud.classList.remove('hidden');
+
+      showFlightHudNotification(`Успешное подключение к серверу!`, 3000);
+      if (multiplayerModal) multiplayerModal.classList.add('hidden');
+      loadWorldAndEnterGame(null, true);
+      updateTabPlayerListUI();
+    });
+
+    hostConnection.on('data', (data) => {
+      try {
+        const parsed = JSON.parse(data);
+        if (parsed.type === 'auth_fail') {
+          showRetroAlert(parsed.reason || 'Ошибка входа', 'Доступ запрещен');
+          return;
+        }
+        if (parsed.type === 'server_full') {
+          showRetroAlert('Сервер заполнен (достигнут лимит игроков)!', 'Сервер полон');
+          return;
+        }
+        if (parsed.type === 'auth_ok') {
+          if (parsed.serverInfo) {
+            currentServerInfo = { ...currentServerInfo, ...parsed.serverInfo };
+            updateTabPlayerListUI();
+          }
+          return;
+        }
+        handleNetworkPacket(parsed, cleanId);
+      } catch (err) {
+        console.error('Client data error:', err);
+      }
+    });
+
+    hostConnection.on('close', () => {
+      isConnectedToHost = false;
+      if (mpRoomHud) mpRoomHud.classList.add('hidden');
+      if (mpTabOverlay) mpTabOverlay.classList.add('hidden');
+      showRetroAlert('Соединение с сервером разорвано', 'Отключение');
+    });
+
+    hostConnection.on('error', (err) => {
+      showRetroAlert('Не удалось подключиться: ' + (err.message || 'Проверьте код комнаты'), 'Ошибка подключения');
+    });
+  });
+
+  localPeer.on('error', (err) => {
+    console.error('Peer client error:', err);
+    if (err.type === 'peer-unavailable') {
+      showRetroAlert(
+        `Сервер с кодом «${cleanId}» не найден!\n\nУбедитесь, что ваш друг:\n1. Нажал «+ Создать сервер» и остаётся в игре.\n2. Скопировал точный код комнаты (например, sbx-xxxxxx).\n3. Вы оба подключены к интернету.`,
+        'Сервер не найден'
+      );
+    } else {
+      showRetroAlert('Ошибка соединения: ' + (err.type || err.message), 'Ошибка сети');
+    }
+  });
+}
+
+// Отправка наших координат с частотой 20 раз в секунду (50мс тикрейт)
+let lastNetworkSyncTime = 0;
+function updateMultiplayerNetwork(now, delta) {
+  if (!isHostingServer && !isConnectedToHost) return;
+
+  // 1. Плавная интерполяция позиции и анимация ходьбы удаленных игроков
+  remotePlayerAvatars.forEach((avatar) => {
+    avatar.group.position.lerp(avatar.targetPos, Math.min(14.0 * delta, 1.0));
+
+    // Поворот тела по Yaw
+    avatar.group.rotation.y += (avatar.targetYaw - avatar.group.rotation.y) * Math.min(14.0 * delta, 1.0);
+    // Наклон головы по Pitch
+    if (avatar.headGroup) {
+      avatar.headGroup.rotation.x += (avatar.targetPitch - avatar.headGroup.rotation.x) * Math.min(14.0 * delta, 1.0);
+    }
+
+    // Анимация шагов ног и рук
+    if (avatar.isMoving) {
+      avatar.walkAnimTimer += delta * 10.0;
+      const legAngle = Math.sin(avatar.walkAnimTimer) * 0.45;
+      if (avatar.leftLeg) avatar.leftLeg.rotation.x = legAngle;
+      if (avatar.rightLeg) avatar.rightLeg.rotation.x = -legAngle;
+      if (avatar.leftArm) avatar.leftArm.rotation.x = -legAngle * 0.8;
+    } else {
+      if (avatar.leftLeg) avatar.leftLeg.rotation.x *= 0.8;
+      if (avatar.rightLeg) avatar.rightLeg.rotation.x *= 0.8;
+      if (avatar.leftArm) avatar.leftArm.rotation.x *= 0.8;
+    }
+  });
+
+  // 2. Отправка пакета нашего положения
+  if (now - lastNetworkSyncTime > 45) { // ~22 пакета в секунду (экономно и плавно)
+    lastNetworkSyncTime = now;
+
+    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ');
+    const isMoving = (keys.forward || keys.backward || keys.left || keys.right) && !isFlying && isOnGround;
+
+    const myTransformPacket = {
+      type: 'player_transform',
+      id: localPeer ? localPeer.id : 'me',
+      nick: localPlayerNick,
+      x: camera.position.x,
+      y: camera.position.y - standHeight, // уровень ног для аватара
+      z: camera.position.z,
+      yaw: euler.y,
+      pitch: euler.x,
+      isMoving: isMoving
+    };
+
+    broadcastNetworkPacket(myTransformPacket);
+  }
+}
+
+
 function animate() {
   requestAnimationFrame(animate);
 
@@ -5970,7 +7453,9 @@ function animate() {
 
   // Если игра на паузе (как в S.T.A.L.K.E.R.) — физика и перемещения заморожены, только отрисовываем кадр
   if (isPaused) {
-    renderer.render(scene, camera);
+    updateMultiplayerNetwork(time, delta);
+
+  renderer.render(scene, camera);
     return;
   }
 
@@ -6051,73 +7536,52 @@ function animate() {
 
     // Опора под ногами: если над Baseplate — земля (y=0), иначе бездна (-Infinity)
     let groundBaseY = isOverBaseplate ? 0 : -Infinity;
-    const playerRadius = 0.38;
+    const playerRadius = 0.36;
     const playerFeetY = jumpY;
 
-    // Сначала раздельно перемещаем по X и по Z с проверкой твердой коллизии (Sliding collision)
+    // Плавная коллизия со скольжением (без дерганий и телепортаций в углах)
     if (moveVector.lengthSq() > 0) {
       moveVector.normalize().multiplyScalar(currentSpeed * delta);
+      camera.position.add(moveVector);
 
-      // Проверка движения по X
-      camera.position.x += moveVector.x;
-      for (const obj of physicsObjects) {
-        if (obj.body === grabbedBody) continue;
-        const bPos = obj.body.position;
-        let halfX = 0.5, halfY = 0.5, halfZ = 0.5;
-        if (obj.isTriangle) halfY = (Math.sqrt(3) / 2) * 0.5;
+      // Итерируем 3 раза для стабильного разрешения коллизий в углах
+      for (let iter = 0; iter < 3; iter++) {
+        for (const obj of physicsObjects) {
+          if (obj.body === grabbedBody) continue;
+          const bPos = obj.body.position;
+          let halfX = 0.5, halfY = 0.5, halfZ = 0.5;
+          if (obj.isTriangle) halfY = (Math.sqrt(3) / 2) * 0.5;
 
-        const topY = bPos.y + halfY;
-        const bottomY = bPos.y - halfY;
-        const isVertOverlap = (playerFeetY < topY - 0.12) && (playerFeetY + standHeight * 0.7 > bottomY);
+          const topY = bPos.y + halfY;
+          const bottomY = bPos.y - halfY;
+          const isVertOverlap = (playerFeetY < topY - 0.08) && (playerFeetY + standHeight * 0.7 > bottomY);
 
-        if (isVertOverlap) {
-          const dx = Math.abs(camera.position.x - bPos.x);
-          const dz = Math.abs(camera.position.z - bPos.z);
-          const minXDist = halfX + playerRadius;
-          const minZDist = halfZ + playerRadius;
+          if (isVertOverlap) {
+            // Находим ближайшую точку на AABB куба к игроку
+            const closestX = Math.max(bPos.x - halfX, Math.min(camera.position.x, bPos.x + halfX));
+            const closestZ = Math.max(bPos.z - halfZ, Math.min(camera.position.z, bPos.z + halfZ));
 
-          if (dx < minXDist && dz < minZDist) {
-            // Выталкиваем игрока обратно по X
-            if (camera.position.x > bPos.x) {
-              camera.position.x = bPos.x + minXDist;
-            } else {
-              camera.position.x = bPos.x - minXDist;
+            const distX = camera.position.x - closestX;
+            const distZ = camera.position.z - closestZ;
+            const distSq = distX * distX + distZ * distZ;
+
+            if (distSq < playerRadius * playerRadius) {
+              const dist = Math.sqrt(distSq);
+              if (dist > 0.0001) {
+                const overlap = playerRadius - dist;
+                camera.position.x += (distX / dist) * overlap;
+                camera.position.z += (distZ / dist) * overlap;
+              } else {
+                // Если строго внутри центра — плавно выталкиваем по направлению движения
+                camera.position.x += (camera.position.x >= bPos.x ? 1 : -1) * 0.05;
+                camera.position.z += (camera.position.z >= bPos.z ? 1 : -1) * 0.05;
+              }
+
+              // Передаем мягкий кинетический импульс блоку без рывков
+              obj.body.velocity.x += (moveVector.x || 0) * 1.5 * delta * 10.0;
+              obj.body.velocity.z += (moveVector.z || 0) * 1.5 * delta * 10.0;
+              obj.body.wakeUp();
             }
-            // Передаем импульс толкания объекту
-            obj.body.velocity.x += (moveVector.x > 0 ? 1 : -1) * 2.5 * delta * 20.0;
-            obj.body.wakeUp();
-          }
-        }
-      }
-
-      // Проверка движения по Z
-      camera.position.z += moveVector.z;
-      for (const obj of physicsObjects) {
-        if (obj.body === grabbedBody) continue;
-        const bPos = obj.body.position;
-        let halfX = 0.5, halfY = 0.5, halfZ = 0.5;
-        if (obj.isTriangle) halfY = (Math.sqrt(3) / 2) * 0.5;
-
-        const topY = bPos.y + halfY;
-        const bottomY = bPos.y - halfY;
-        const isVertOverlap = (playerFeetY < topY - 0.12) && (playerFeetY + standHeight * 0.7 > bottomY);
-
-        if (isVertOverlap) {
-          const dx = Math.abs(camera.position.x - bPos.x);
-          const dz = Math.abs(camera.position.z - bPos.z);
-          const minXDist = halfX + playerRadius;
-          const minZDist = halfZ + playerRadius;
-
-          if (dx < minXDist && dz < minZDist) {
-            // Выталкиваем игрока обратно по Z
-            if (camera.position.z > bPos.z) {
-              camera.position.z = bPos.z + minZDist;
-            } else {
-              camera.position.z = bPos.z - minZDist;
-            }
-            // Передаем импульс толкания объекту
-            obj.body.velocity.z += (moveVector.z > 0 ? 1 : -1) * 2.5 * delta * 20.0;
-            obj.body.wakeUp();
           }
         }
       }
@@ -6181,6 +7645,9 @@ function animate() {
   // --- Обновление физического мира и удержание объекта ---
   world.step(Math.min(delta, 0.05));
 
+  // Монолитная синхронизация сваренных объектов (абсолютная жесткость)
+  syncWeldConstraintsPositions();
+
   // --- Проверка наведения прицела на куб (Raycast hover) ---
   if (!grabbedBody && controls.isLocked && !isMenuOpen) {
     raycaster.setFromCamera(centerScreen, camera);
@@ -6216,7 +7683,7 @@ function animate() {
       toTarget.y * 12.0,
       toTarget.z * 12.0
     );
-    grabbedBody.velocity.set(currentVel.x, currentVel.y, currentVel.z);
+    setWeldClusterVelocity(grabbedBody, currentVel, null);
 
     // Запоминаем скорость маха для броска по инерции:
     // Замеряем ТОЛЬКО реальное перемещение точки в пространстве за кадр (движение игрока / поворот мыши)
@@ -6337,6 +7804,7 @@ function animate() {
 
   // Обновление анимации 3D оружия (Viewmodel)
   updateWeaponViewmodel(delta);
+  updateToolGunLoop();
 
   // Небосвод всегда центрирован относительно игрока
   skyDome.position.copy(camera.position);
@@ -6415,7 +7883,16 @@ function updateWeaponViewmodel(delta) {
 
   // Видимость пистолета: только если экипирован слот 2-1 (9mm Пистолет)
   const isPistolActive = currentEquippedSlot === '2-1';
-  pistolMeshGroup.visible = isPistolActive;
+  const isToolGunActiveSlot = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1');
+
+  if (pistolMeshGroup) pistolMeshGroup.visible = isPistolActive;
+  if (toolgunMeshGroup) {
+    toolgunMeshGroup.visible = isToolGunActiveSlot;
+    if (isToolGunActiveSlot) {
+      toolgunMeshGroup.position.set(0.24, -0.22, -0.42);
+      toolgunMeshGroup.rotation.set(0, -Math.PI / 2, 0);
+    }
+  }
 
   if (!isPistolActive) return;
 
@@ -6704,3 +8181,226 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, contentHeight);
   resizeWindCanvas();
 });
+
+
+
+// ============================================================================
+// --- SOURCE ENGINE SERVER BROWSER (ЧИСТЫЙ СПИСОК, БЕЗ ФЕЙКОВЫХ СЕРВЕРОВ) ---
+// ============================================================================
+const multiplayerModal = document.getElementById('multiplayer-modal');
+const btnMultiplayer = document.getElementById('btn-multiplayer');
+const btnCloseMultiplayer = document.getElementById('btn-close-multiplayer');
+const btnMpBack = document.getElementById('btn-mp-back');
+const btnMpCreate = document.getElementById('btn-mp-create-server');
+const btnMpRefresh = document.getElementById('btn-mp-refresh');
+const mpSearchInput = document.getElementById('mp-search-input');
+const mpServerList = document.getElementById('mp-server-list');
+const sortByNameBtn = document.getElementById('sort-by-name');
+const sortByCountBtn = document.getElementById('sort-by-count');
+
+// Реальный список серверов (пустой, так как сетевой бэкенд еще не запущен)
+let activeServerList = [];
+
+let mpSortField = 'name';
+let mpSortAsc = true;
+
+function renderServerList() {
+  if (!mpServerList) return;
+  const filter = (mpSearchInput ? mpSearchInput.value.toLowerCase() : '').trim();
+
+  // Удаляем устаревшие серверы (не обновлявшиеся более 45 сек)
+  const now = Date.now();
+  activeServerList = activeServerList.filter(s => !s.timestamp || (now - s.timestamp < 45000));
+
+  let list = activeServerList.filter(s => s.name.toLowerCase().includes(filter));
+
+  list.sort((a, b) => {
+    if (mpSortField === 'name') {
+      return mpSortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+    } else if (mpSortField === 'players') {
+      return mpSortAsc ? a.players - b.players : b.players - a.players;
+    }
+    return 0;
+  });
+
+  mpServerList.innerHTML = '';
+  if (list.length === 0) {
+    mpServerList.innerHTML = '<div class="sb-empty-msg">Серверов не найдено. Нажмите «+ Создать сервер» или проверьте поиск.</div>';
+    return;
+  }
+
+  list.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'sb-server-row';
+    row.innerHTML = `
+      <div class="sb-col-name">
+        ${s.hasPassword ? '<span class="sb-lock-icon" title="Защищено паролем">🔒</span>' : ''}
+        <span>${s.name}</span>
+      </div>
+      <div class="sb-col-players">${s.players} / ${s.maxPlayers}</div>
+      <div class="sb-col-map">${s.map || 'Песочница'}</div>
+      <div class="sb-col-ping">${s.ping || 30} ms</div>
+    `;
+
+    row.addEventListener('click', async () => {
+      mpServerList.querySelectorAll('.sb-server-row').forEach(el => el.classList.remove('selected'));
+      row.classList.add('selected');
+
+      let pwd = "";
+      if (s.hasPassword) {
+        pwd = await showRetroPrompt(`Введите пароль для сервера «${s.name}»:`, "");
+        if (pwd === null) return;
+      }
+
+      connectToMultiplayerHost(s.id, pwd);
+    });
+
+    mpServerList.appendChild(row);
+  });
+}
+
+// Элементы модального окна создания сервера
+const mpCreateDialog = document.getElementById('mp-create-dialog');
+const btnMpCreateClose = document.getElementById('btn-mp-create-close');
+const btnMpStartHost = document.getElementById('btn-mp-start-host');
+const btnMpCancelHost = document.getElementById('btn-mp-cancel-host');
+const mpInputSrvName = document.getElementById('mp-input-srv-name');
+const mpSelectMaxPlayers = document.getElementById('mp-select-max-players');
+const mpPasswordRow = document.getElementById('mp-password-row');
+const mpInputSrvPassword = document.getElementById('mp-input-srv-password');
+
+// Переключение радиокнопок приватности
+document.querySelectorAll('input[name="mp-visibility"]').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    if (mpPasswordRow) {
+      if (e.target.value === 'private') {
+        mpPasswordRow.classList.remove('hidden');
+      } else {
+        mpPasswordRow.classList.add('hidden');
+      }
+    }
+  });
+});
+
+if (btnMultiplayer) {
+  btnMultiplayer.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (multiplayerModal) {
+      multiplayerModal.classList.remove('hidden');
+      queryActiveServers();
+      renderServerList();
+    }
+  });
+}
+
+if (btnCloseMultiplayer) {
+  btnCloseMultiplayer.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (multiplayerModal) multiplayerModal.classList.add('hidden');
+  });
+}
+
+if (btnMpBack) {
+  btnMpBack.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (multiplayerModal) multiplayerModal.classList.add('hidden');
+  });
+}
+
+if (btnMpCreate) {
+  btnMpCreate.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (mpCreateDialog) {
+      if (mpInputSrvName) {
+        mpInputSrvName.value = "Сервер #" + Math.floor(100 + Math.random() * 900);
+      }
+      mpCreateDialog.classList.remove('hidden');
+    }
+  });
+}
+
+if (btnMpCreateClose) {
+  btnMpCreateClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (mpCreateDialog) mpCreateDialog.classList.add('hidden');
+  });
+}
+
+if (btnMpCancelHost) {
+  btnMpCancelHost.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (mpCreateDialog) mpCreateDialog.classList.add('hidden');
+  });
+}
+
+if (btnMpStartHost) {
+  btnMpStartHost.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const srvName = (mpInputSrvName ? mpInputSrvName.value : '').trim() || "Песочница";
+    const maxPlayers = mpSelectMaxPlayers ? parseInt(mpSelectMaxPlayers.value) : 4;
+    const isPrivate = document.querySelector('input[name="mp-visibility"]:checked')?.value === 'private';
+    const password = (mpInputSrvPassword && isPrivate) ? mpInputSrvPassword.value.trim() : "";
+
+    initMultiplayerHost({
+      name: srvName,
+      maxPlayers: maxPlayers,
+      isPrivate: isPrivate,
+      password: password
+    });
+  });
+}
+
+// Кнопка быстрого подключения по коду комнаты (Direct Connect)
+const btnDirectConnect = document.getElementById('btn-mp-direct-connect');
+if (btnDirectConnect) {
+  btnDirectConnect.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const code = await showRetroPrompt("Введите код комнаты сервера (например, sbx-a1b2c3):", "");
+    if (!code || !code.trim()) return;
+
+    connectToMultiplayerHost(code.trim());
+  });
+}
+
+if (btnMpRefresh) {
+  btnMpRefresh.addEventListener('click', (e) => {
+    e.stopPropagation();
+    queryActiveServers();
+    if (mpServerList) {
+      mpServerList.innerHTML = '<div class="sb-empty-msg">Поиск серверов в сети...</div>';
+      setTimeout(() => {
+        renderServerList();
+      }, 500);
+    }
+  });
+}
+
+if (mpSearchInput) {
+  mpSearchInput.addEventListener('input', () => {
+    renderServerList();
+  });
+}
+
+if (sortByNameBtn) {
+  sortByNameBtn.addEventListener('click', () => {
+    if (mpSortField === 'name') {
+      mpSortAsc = !mpSortAsc;
+    } else {
+      mpSortField = 'name';
+      mpSortAsc = true;
+    }
+    renderServerList();
+  });
+}
+
+if (sortByCountBtn) {
+  sortByCountBtn.addEventListener('click', () => {
+    if (mpSortField === 'players') {
+      mpSortAsc = !mpSortAsc;
+    } else {
+      mpSortField = 'players';
+      mpSortAsc = false;
+    }
+    renderServerList();
+  });
+}

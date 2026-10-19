@@ -83,8 +83,8 @@
         <img src="./logo.png" class="main-menu-logo-img" alt="3D Sandbox Logo" />
       </div>
       <div class="main-menu-buttons">
-        <button class="menu-btn" id="btn-play">Играть</button>
-        <button class="menu-btn menu-btn-disabled" id="btn-multiplayer" disabled title="Мультиплеер находится в разработке">Мультиплеер (в разработке)</button>
+        <button class="menu-btn" id="btn-play">Одиночная</button>
+        <button class="menu-btn" id="btn-multiplayer">Мультиплеер</button>
         <button class="menu-btn" id="btn-settings">Настройки</button>
         <button class="menu-btn" id="btn-exit">Выход</button>
       </div>
@@ -92,6 +92,93 @@
   </div>
 
   <!-- Модальное окно выбора и создания миров (Макс 5 миров) -->
+        <!-- Окно Мультиплеера (Dark Sandbox Server Browser) -->
+  <div id="multiplayer-modal" class="hidden">
+    <div class="sb-mp-window">
+      <div class="sb-titlebar">
+        <span>Мультиплеер</span>
+        <button class="sb-close-btn" id="btn-close-multiplayer">&times;</button>
+      </div>
+
+      <!-- Тонкая линия разделителя сверху -->
+      <div class="sb-top-line"></div>
+
+      <div class="sb-mp-body">
+        <!-- Сверху справа под линией: поисковая строка -->
+        <div class="sb-search-row">
+          <div class="sb-search-box">
+            <span class="sb-search-icon">&#x2315;</span>
+            <input type="text" id="mp-search-input" placeholder="Поиск сервера по названию..." autocomplete="off" />
+          </div>
+        </div>
+
+        <!-- Таблица серверов с разделами по названию и количеству -->
+        <div class="sb-table-container">
+          <div class="sb-table-header">
+            <div class="sb-th sb-th-name" id="sort-by-name">Название сервера <span class="sort-icon">&#x25BC;</span></div>
+            <div class="sb-th sb-th-players" id="sort-by-count">Игроки <span class="sort-icon">&#x25BC;</span></div>
+            <div class="sb-th sb-th-map">Карта</div>
+            <div class="sb-th sb-th-ping">Пинг</div>
+          </div>
+
+          <div class="sb-table-body" id="mp-server-list">
+            <div class="sb-empty-msg">Пусто</div>
+          </div>
+        </div>
+
+        <!-- Нижняя панель действий -->
+        <div class="sb-footer">
+          <button class="menu-btn sb-action-btn" id="btn-mp-back">На главную</button>
+          <div class="sb-footer-right">
+            <button class="menu-btn sb-action-btn" id="btn-mp-refresh">&#x21bb; Обновить</button>
+            <button class="menu-btn sb-action-btn" id="btn-mp-direct-connect">&#x1f517; Войти по коду</button>
+            <button class="menu-btn sb-action-btn" id="btn-mp-create-server">+ Создать сервер</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Диалог параметров создания сервера -->
+  <div id="mp-create-dialog" class="hidden">
+    <div class="retro-dialog-window mp-create-window">
+      <div class="retro-dialog-titlebar">
+        <span>Создание сервера</span>
+        <button class="retro-dialog-close-btn" id="btn-mp-create-close">&times;</button>
+      </div>
+      <div class="retro-dialog-body mp-create-body">
+        <div class="mp-form-row">
+          <label>Название сервера:</label>
+          <input type="text" id="mp-input-srv-name" class="retro-dialog-input" maxlength="30" value="Песочница" autocomplete="off" />
+        </div>
+        <div class="mp-form-row">
+          <label>Максимум игроков:</label>
+          <select id="mp-select-max-players" class="retro-dialog-select">
+            <option value="2">2 игрока</option>
+            <option value="4" selected>4 игрока</option>
+            <option value="8">8 игроков</option>
+            <option value="16">16 игроков</option>
+          </select>
+        </div>
+        <div class="mp-form-row">
+          <label>Доступность:</label>
+          <div class="mp-radio-group">
+            <label class="mp-radio-lbl"><input type="radio" name="mp-visibility" value="public" checked /> Публичный (в списке)</label>
+            <label class="mp-radio-lbl"><input type="radio" name="mp-visibility" value="private" /> Приватный (по паролю/коду)</label>
+          </div>
+        </div>
+        <div class="mp-form-row hidden" id="mp-password-row">
+          <label>Пароль сервера:</label>
+          <input type="password" id="mp-input-srv-password" class="retro-dialog-input" placeholder="Необязательно" maxlength="20" autocomplete="off" />
+        </div>
+        <div class="retro-dialog-buttons" style="margin-top: 14px;">
+          <button class="menu-btn retro-dialog-btn" id="btn-mp-start-host">Создать сервер</button>
+          <button class="menu-btn retro-dialog-btn" id="btn-mp-cancel-host">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="worlds-modal" class="hidden">
     <div class="worlds-window">
       <div class="worlds-titlebar">
@@ -202,6 +289,29 @@
   <div id="crosshair"></div>
   <div id="custom-cursor" class="hidden"></div>
 
+  <!-- Индикатор кода комнаты слева вверху (при игре в мультиплеере) -->
+  <div id="mp-room-hud" class="hidden">
+    <div class="mp-room-badge">
+      <span class="mp-room-label">КОМНАТА:</span>
+      <span class="mp-room-id" id="mp-hud-room-id">sbx-xxxxxx</span>
+      <button class="mp-copy-btn" id="btn-mp-copy-code" title="Скопировать код">📋 Копировать</button>
+    </div>
+  </div>
+
+  <!-- Список игроков (TAB) справа вверху -->
+  <div id="mp-tab-overlay" class="hidden">
+    <div class="mp-tab-box">
+      <div class="mp-tab-header">
+        <span class="mp-tab-srv-name" id="mp-tab-srv-title">Песочница</span>
+        <span class="mp-tab-count" id="mp-tab-count-label">1/4</span>
+      </div>
+      <div class="mp-tab-players" id="mp-tab-players-list">
+        <!-- Заполняется в JS -->
+      </div>
+      <div class="mp-tab-footer">Удерживайте [TAB] для просмотра</div>
+    </div>
+  </div>
+
   <!-- Оверлей Паузы: полноценное меню в ретро-стиле -->
   <div id="pause-overlay" class="hidden">
     <div class="pause-window">
@@ -240,12 +350,7 @@
         <span class="item-name">Рампа</span>
         <button class="spawn-btn" data-item="ramp">Создать</button>
       </div>
-      <div class="item-card" data-item="nuke">
-        <canvas id="nuke-preview-canvas" width="100" height="100"></canvas>
-        <span class="item-name">Ядерка</span>
-        <button class="spawn-btn" data-item="nuke">Создать</button>
       </div>
-    </div>
   </div>
 
   <!-- Garry's Mod Fast Weapon Switch HUD (Слоты предметов) -->
@@ -258,16 +363,16 @@
           <div class="gmod-item-sub">Пустые руки</div>
         </div>
         <div class="gmod-item" data-slot="1-2">
-          <div class="gmod-item-title">Монтировка</div>
-          <div class="gmod-item-sub">Скоро</div>
+          <div class="gmod-item-title">Tool Gun</div>
+          <div class="gmod-item-sub">Строительный инструмент</div>
         </div>
       </div>
 
       <div class="gmod-slot-col" data-cat="2">
         <div class="gmod-slot-header">2</div>
         <div class="gmod-item active" data-slot="2-1">
-          <div class="gmod-item-title">9mm Пистолет</div>
-          <div class="gmod-item-sub">Пистолет с глушителем</div>
+          <div class="gmod-item-title">Glock-19</div>
+          <div class="gmod-item-sub">Пистолет</div>
         </div>
         <div class="gmod-item" data-slot="2-2">
           <div class="gmod-item-title">Револьвер .357</div>
@@ -348,5 +453,67 @@
   <canvas id="fall-wind-canvas"></canvas>
 
   <script type="module" src="./src/main.js"></script>
+
+  <!-- Rotation Menu (Hold R) -->
+  <div id="rotate-menu" class="hidden">
+    <div class="rotate-menu-panel">
+      <div class="rotate-menu-header">
+        <span class="rotate-title">ПОВОРОТ ОБЪЕКТА (ЗАЖАТИЕ R)</span>
+        <span class="rotate-hint">Отпустите R для фиксации</span>
+      </div>
+      <div class="rotate-actions-grid">
+        <button class="rotate-btn" data-action="look-away">
+          <span class="rotate-icon">⬆</span>
+          <span class="rotate-label">От меня (Вперед)</span>
+          <span class="rotate-desc">Смотрит прямо</span>
+        </button>
+        <button class="rotate-btn" data-action="look-right">
+          <span class="rotate-icon">➡</span>
+          <span class="rotate-label">Вправо от меня</span>
+          <span class="rotate-desc">Ровно 90° вправо</span>
+        </button>
+        <button class="rotate-btn" data-action="look-towards">
+          <span class="rotate-icon">⬇</span>
+          <span class="rotate-label">На меня (Назад)</span>
+          <span class="rotate-desc">Развернут лицом ко мне</span>
+        </button>
+        <button class="rotate-btn" data-action="look-left">
+          <span class="rotate-icon">⬅</span>
+          <span class="rotate-label">Влево от меня</span>
+          <span class="rotate-desc">Ровно 90° влево</span>
+        </button>
+        <button class="rotate-btn" data-action="pitch-up">
+          <span class="rotate-icon">▲</span>
+          <span class="rotate-label">Вертикально (Вверх)</span>
+          <span class="rotate-desc">Поставить на основание</span>
+        </button>
+        <button class="rotate-btn" data-action="pitch-down">
+          <span class="rotate-icon">▼</span>
+          <span class="rotate-label">Вниз головой</span>
+          <span class="rotate-desc">Перевернуть на 180°</span>
+        </button>
+        <button class="rotate-btn" data-action="snap-grid">
+          <span class="rotate-icon">⊞</span>
+          <span class="rotate-label">Выровнять по сетке</span>
+          <span class="rotate-desc">Округление до ближайших 90°</span>
+        </button>
+        <button class="rotate-btn" data-action="reset">
+          <span class="rotate-icon">↺</span>
+          <span class="rotate-label">Сброс вращения</span>
+          <span class="rotate-desc">Нулевые углы мира</span>
+        </button>
+      </div>
+      <div class="rotate-manual-controls">
+        <span class="rotate-manual-title">Шаг поворота:</span>
+        <button class="rotate-step-btn" data-step="yaw" data-deg="-45">Yaw -45°</button>
+        <button class="rotate-step-btn" data-step="yaw" data-deg="45">Yaw +45°</button>
+        <button class="rotate-step-btn" data-step="pitch" data-deg="-45">Pitch -45°</button>
+        <button class="rotate-step-btn" data-step="pitch" data-deg="45">Pitch +45°</button>
+        <button class="rotate-step-btn" data-step="roll" data-deg="-45">Roll -45°</button>
+        <button class="rotate-step-btn" data-step="roll" data-deg="45">Roll +45°</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
