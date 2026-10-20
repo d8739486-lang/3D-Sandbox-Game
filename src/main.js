@@ -7453,21 +7453,14 @@ function appendChatMessageToUI({ nick, text, isHost = false, isMe = false, isSys
   if (isSecurity) rowClass += ' is-security';
   row.className = rowClass;
 
-  const d = new Date(time);
-  const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-
   if (isSystem || isSecurity) {
-    row.innerHTML = `
-      <span class="chat-msg-time">[${timeStr}]</span>
-      <span class="chat-msg-text">${text}</span>
-    `;
+    row.innerHTML = `<span class="chat-msg-text">${text}</span>`;
   } else {
     let nickClass = 'chat-msg-nick';
     if (isHost) nickClass += ' is-host';
     if (isMe) nickClass += ' is-me';
 
     row.innerHTML = `
-      <span class="chat-msg-time">[${timeStr}]</span>
       <span class="${nickClass}">&lt;${nick}&gt;:</span>
       <span class="chat-msg-text">${text}</span>
     `;

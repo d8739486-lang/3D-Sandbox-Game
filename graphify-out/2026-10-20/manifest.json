@@ -48,9 +48,9 @@
     "semantic_hash": "db6dfd79e3118f99568c6c190b0ae86b"
   },
   "src/main.js": {
-    "mtime": 1792510243.0383859,
-    "seen": 1792510266.1094515,
-    "ast_hash": "cf1af949613416a6f4bbcbf03845a54b",
+    "mtime": 1792513237.2852774,
+    "seen": 1792513329.8960366,
+    "ast_hash": "23fd58bacdfb0230f7bde93bfd74579d",
     "semantic_hash": ""
   },
   "vite.config.js": {
@@ -180,9 +180,9 @@
     "semantic_hash": "80d4887dd05ea2f546669a6a4da8274c"
   },
   "version.json": {
-    "mtime": 1792508736.507797,
-    "seen": 1792509988.2121537,
-    "ast_hash": "4f74a3ed25b1b68e82668476e9791deb",
+    "mtime": 1792513309.5604239,
+    "seen": 1792513329.8960366,
+    "ast_hash": "25a8a2610d5d401071fa082cd6dfa959",
     "semantic_hash": ""
   },
   "TASKS_TODO.md": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1792508807.970248,
-    "seen": 1792509988.2121537,
-    "ast_hash": "c3cd3ec269ff83468bf61e91a6f6fced",
+    "mtime": 1792513301.3704302,
+    "seen": 1792513329.8960366,
+    "ast_hash": "71d6c90bd4ecdb4b06c62784695b972e",
     "semantic_hash": ""
   },
   "icon.png": {
@@ -315,6 +315,12 @@
     "mtime": 1792314958.7956626,
     "seen": 1792509988.2121537,
     "ast_hash": "9fdc4367276aafdd2c05ac214e9553c7",
+    "semantic_hash": ""
+  },
+  "src/supabaseClient.js": {
+    "mtime": 1792512387.2526104,
+    "seen": 1792513329.8960366,
+    "ast_hash": "4edc77743ed39e95140af0c9481cb20a",
     "semantic_hash": ""
   }
 }

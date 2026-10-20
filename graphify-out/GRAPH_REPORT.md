@@ -1,7 +1,7 @@
 # Graph Report - Sandbox  (2026-10-20)
 
 ## Corpus Check
-- 13 files · ~59,470 words
+- 13 files · ~59,453 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: .glb 3, (none) 2, .b64 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d9e64b7e`
+- Built from commit: `a40d8f10`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
