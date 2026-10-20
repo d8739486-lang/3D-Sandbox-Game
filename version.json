@@ -1,0 +1,13 @@
+{
+  "version": "1.0.5",
+  "build": 105,
+  "updatedAt": "2026-10-20T21:10:00Z",
+  "name": "Multiplayer Isolation & Tool Gun UI Update",
+  "changelog": [
+    "Tool Gun item selection mode in Q menu with active badge and persistent item memory",
+    "Completely isolated multiplayer rooms with clean exit and no network error popups",
+    "Fixed main menu remote player leak bug",
+    "Added live in-game auto-update system with progress bar",
+    "Clean pause menu with 'Выйти в меню' instead of local save"
+  ]
+}

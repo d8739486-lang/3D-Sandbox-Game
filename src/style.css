@@ -521,7 +521,7 @@ body > canvas {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
   color: #8fa0b5;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
   font-size: 11px;
   font-weight: 700;
   padding: 3px 8px;
@@ -542,7 +542,7 @@ body > canvas {
 }
 
 .gmod-item-title {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: #e2e8f0;
@@ -550,7 +550,7 @@ body > canvas {
 }
 
 .gmod-item-sub {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
   font-size: 10px;
   color: #64748b;
   margin-top: 2px;
@@ -1841,7 +1841,116 @@ body > canvas {
 }
 
 .mp-create-window {
-  width: 440px !important;
+  width: 480px !important;
+}
+
+/* Вкладки переключения между экранами мультиплеера */
+.mp-tabs-bar {
+  display: flex;
+  background: #191a1d;
+  border-bottom: 2px solid #101113;
+  padding: 4px 8px 0 8px;
+  gap: 4px;
+}
+
+.mp-tab-nav-btn {
+  background: #25272c;
+  border-top: 2px solid #3c3e44;
+  border-left: 2px solid #3c3e44;
+  border-right: 2px solid #141518;
+  border-bottom: none;
+  color: #8c9099;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.12s;
+}
+
+.mp-tab-nav-btn:hover {
+  background: #2f3138;
+  color: #e0e2e8;
+}
+
+.mp-tab-nav-btn.active {
+  background: #202124;
+  border-top: 2px solid #555760;
+  border-left: 2px solid #555760;
+  border-right: 2px solid #101113;
+  color: #ffffff;
+  position: relative;
+  top: 2px;
+  margin-bottom: -2px;
+}
+
+.sb-direct-connect-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #17181b;
+  border: 1px solid #282a2f;
+  margin-top: 4px;
+}
+
+.sb-direct-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a0a4ae;
+  white-space: nowrap;
+}
+
+.sb-direct-input {
+  flex: 1;
+  font-family: 'Lucida Console', 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.mp-players-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mp-stepper-btn {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(180deg, #3c3d42 0%, #26272a 100%);
+  border-top: 1px solid #55575e;
+  border-left: 1px solid #55575e;
+  border-right: 1px solid #141516;
+  border-bottom: 1px solid #141516;
+  color: #ffffff;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mp-stepper-btn:active {
+  border-top: 1px solid #141516;
+  border-left: 1px solid #141516;
+  border-right: 1px solid #55575e;
+  border-bottom: 1px solid #55575e;
+  background: #1d1e21;
+}
+
+.mp-players-input {
+  width: 60px !important;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px !important;
+}
+
+.mp-players-hint {
+  font-size: 11px;
+  color: #727682;
 }
 
 .mp-create-body {
@@ -2196,3 +2305,170 @@ body > canvas {
   color: #8b909a;
   line-height: 1.3;
 }
+
+/* ============================================================================
+   --- СТИЛИ РЕЖИМА TOOL GUN В МЕНЮ ПРЕДМЕТОВ ---
+   ============================================================================ */
+.spawn-mode-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: #101c26;
+  border-bottom: 1px solid #00f0ff;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+}
+
+.spawn-mode-tag {
+  color: #00f0ff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.spawn-mode-desc {
+  color: #8bc2d6;
+}
+
+.spawn-menu-toolgun-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #141518;
+  border-top: 1px solid #2f3035;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  color: #8c909a;
+}
+
+.spawn-menu-current-badge {
+  color: #00f0ff;
+  font-weight: 700;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid #00f0ff;
+  padding: 2px 10px;
+  border-radius: 0px;
+}
+
+/* Активное выделение выбранного для Tool Gun блока */
+.item-card.is-selected-for-toolgun {
+  border-top: 1px solid #00f0ff !important;
+  border-left: 1px solid #00f0ff !important;
+  border-right: 1px solid #008899 !important;
+  border-bottom: 1px solid #008899 !important;
+  background: #192a34 !important;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+}
+
+.item-card.is-selected-for-toolgun .item-name {
+  color: #00f0ff !important;
+}
+
+.spawn-btn.is-selected-btn {
+  background: #00505c !important;
+  border-color: #00f0ff !important;
+  color: #00f0ff !important;
+  font-weight: 700 !important;
+  box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.4);
+}
+
+/* ============================================================================
+   --- СТИЛИ МОДАЛЬНОГО ОКНА ОБНОВЛЕНИЯ (UPDATE SYSTEM) ---
+   ============================================================================ */
+.main-menu-version-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 14px;
+  padding: 4px 6px;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  color: #727683;
+}
+
+.update-link {
+  background: transparent;
+  border: none;
+  color: #00f0ff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 2px 4px;
+}
+
+.update-link:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+#update-dialog-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#update-dialog-modal.hidden {
+  display: none !important;
+}
+
+.update-window {
+  width: 440px;
+  background: #25262a;
+}
+
+.update-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.update-status-msg {
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 12px;
+  color: #dedee4;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.update-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.update-track {
+  width: 100%;
+  height: 16px;
+  background: #141517;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  border-right: 1px solid #4a4b50;
+  border-bottom: 1px solid #4a4b50;
+  overflow: hidden;
+}
+
+.update-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #007799 0%, #00f0ff 100%);
+  transition: width 0.1s ease;
+}
+
+.update-percent-label {
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #00f0ff;
+  text-align: right;
+}
+

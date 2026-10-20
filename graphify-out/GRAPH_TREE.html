@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>/ — graphify tree viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      margin: 20px 0 0 24px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #1e3a56;
+    }
+    .controls {
+      margin: 20px 0 15px 24px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 8px 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button:active {
+      background: #004085;
+    }
+    #tree-container {
+      width: calc(100vw - 48px); /* Adjust for body margin/padding */
+      height: 85vh;
+      overflow: auto;
+      border-radius: 8px;
+      background: #fff;
+      margin-left: 24px;
+      margin-right: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #ddd;
+    }
+    svg {
+      background: #fff;
+      border-radius: 8px;
+      display: block; /* Important for D3 */
+    }
+    .node circle {
+      stroke-width: 2.5px;
+    }
+    .node text { /* Base style for the <text> container */
+      font: 13px 'Segoe UI', sans-serif;
+      paint-order: stroke fill; /* Ensures text is readable over lines */
+      stroke: #fff; /* White halo */
+      stroke-width: 3px; /* Halo thickness */
+      stroke-linejoin: round;
+      stroke-opacity: 0.85; /* Halo opacity */
+    }
+    .link {
+      fill: none;
+      stroke-opacity: 0.7;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>/ — Knowledge Graph</h1>
+  <div class="controls">
+    <button onclick="expandAll()">Expand All</button>
+    <button onclick="collapseAll()">Collapse All</button>
+    <button onclick="resetView()">Reset View</button>
+  </div>
+  <div id="tree-container">
+    <svg id="tree-svg" width="6000" height="8000"></svg>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const initialJsonData = {"name":"/","total_count":447,"children":[{"name":"electron-main.cjs","total_count":4,"children":[{"name":"createWindow()","total_count":1,"children":[]},{"name":"fs","total_count":1,"children":[]},{"name":"path","total_count":1,"children":[]},{"name":"{ app, BrowserWindow, Menu, ipcMain }","total_count":1,"children":[]}]},{"name":"package.json","total_count":51,"children":[{"name":"@tauri-apps/cli","total_count":1,"children":[]},{"name":"@tauri-apps/cli","total_count":1,"children":[]},{"name":"allowToChangeInstallationDirectory","total_count":1,"children":[]},{"name":"appId","total_count":1,"children":[]},{"name":"artifactName","total_count":1,"children":[]},{"name":"author","total_count":1,"children":[]},{"name":"build","total_count":1,"children":[]},{"name":"build","total_count":1,"children":[]},{"name":"cannon-es","total_count":1,"children":[]},{"name":"cannon-es","total_count":1,"children":[]},{"name":"compression","total_count":1,"children":[]},{"name":"copyright","total_count":1,"children":[]},{"name":"createDesktopShortcut","total_count":1,"children":[]},{"name":"createStartMenuShortcut","total_count":1,"children":[]},{"name":"dependencies","total_count":1,"children":[]},{"name":"description","total_count":1,"children":[]},{"name":"dev","total_count":1,"children":[]},{"name":"devDependencies","total_count":1,"children":[]},{"name":"differentialPackage","total_count":1,"children":[]},{"name":"dist","total_count":1,"children":[]},{"name":"dist:portable","total_count":1,"children":[]},{"name":"electron","total_count":1,"children":[]},{"name":"electron","total_count":1,"children":[]},{"name":"electron-builder","total_count":1,"children":[]},{"name":"electron-builder","total_count":1,"children":[]},{"name":"files","total_count":1,"children":[]},{"name":"icon","total_count":1,"children":[]},{"name":"legalTrademarks","total_count":1,"children":[]},{"name":"license","total_count":1,"children":[]},{"name":"main","total_count":1,"children":[]},{"name":"name","total_count":1,"children":[]},{"name":"nsis","total_count":1,"children":[]},{"name":"oneClick","total_count":1,"children":[]},{"name":"peerjs","total_count":1,"children":[]},{"name":"peerjs","total_count":1,"children":[]},{"name":"perMachine","total_count":1,"children":[]},{"name":"preview","total_count":1,"children":[]},{"name":"productName","total_count":1,"children":[]},{"name":"requestedExecutionLevel","total_count":1,"children":[]},{"name":"scripts","total_count":1,"children":[]},{"name":"shortcutName","total_count":1,"children":[]},{"name":"start","total_count":1,"children":[]},{"name":"target","total_count":1,"children":[]},{"name":"three","total_count":1,"children":[]},{"name":"three","total_count":1,"children":[]},{"name":"type","total_count":1,"children":[]},{"name":"uninstallDisplayName","total_count":1,"children":[]},{"name":"version","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]},{"name":"win","total_count":1,"children":[]}]},{"name":"src","total_count":363,"children":[{"name":"main.js","total_count":363,"children":[{"name":"(+163 more)","total_count":163,"children":[]},{"name":"activeBulletDecals","total_count":1,"children":[]},{"name":"activeBulletTracers","total_count":1,"children":[]},{"name":"activePeerConnections","total_count":1,"children":[]},{"name":"activeServerList","total_count":1,"children":[]},{"name":"activeShellCasings","total_count":1,"children":[]},{"name":"activeSmokePuffs","total_count":1,"children":[]},{"name":"addMenuPhysicsItem()","total_count":1,"children":[]},{"name":"aligningObjects","total_count":1,"children":[]},{"name":"alignObjectToGrid()","total_count":1,"children":[]},{"name":"ALL_WEAPON_SLOTS","total_count":1,"children":[]},{"name":"allPreviews","total_count":1,"children":[]},{"name":"ambientLight","total_count":1,"children":[]},{"name":"ammoCurrentEl","total_count":1,"children":[]},{"name":"ammoHudEl","total_count":1,"children":[]},{"name":"ammoReserveEl","total_count":1,"children":[]},{"name":"animate()","total_count":1,"children":[]},{"name":"applyObjectRotationPreset()","total_count":1,"children":[]},{"name":"audioFiles","total_count":1,"children":[]},{"name":"baseplate","total_count":1,"children":[]},{"name":"baseplateGeo","total_count":1,"children":[]},{"name":"baseplateMat","total_count":1,"children":[]},{"name":"broadcastNetworkPacket()","total_count":1,"children":[]},{"name":"btnApplySettings","total_count":1,"children":[]},{"name":"btnCloseMultiplayer","total_count":1,"children":[]},{"name":"btnCloseSettings","total_count":1,"children":[]},{"name":"btnCloseWorlds","total_count":1,"children":[]},{"name":"btnCreateWorld","total_count":1,"children":[]},{"name":"btnDirectConnect","total_count":1,"children":[]},{"name":"btnExit","total_count":1,"children":[]},{"name":"btnImportWorld","total_count":1,"children":[]},{"name":"btnMpBack","total_count":1,"children":[]},{"name":"btnMpCancelHost","total_count":1,"children":[]},{"name":"btnMpCopyCode","total_count":1,"children":[]},{"name":"btnMpCreate","total_count":1,"children":[]},{"name":"btnMpCreateClose","total_count":1,"children":[]},{"name":"btnMpRefresh","total_count":1,"children":[]},{"name":"btnMpStartHost","total_count":1,"children":[]},{"name":"btnMultiplayer","total_count":1,"children":[]},{"name":"btnPauseExit","total_count":1,"children":[]},{"name":"btnPauseResume","total_count":1,"children":[]},{"name":"btnPauseSettings","total_count":1,"children":[]},{"name":"btnPlay","total_count":1,"children":[]},{"name":"btnRetroDialogCancel","total_count":1,"children":[]},{"name":"btnRetroDialogClose","total_count":1,"children":[]},{"name":"btnRetroDialogOk","total_count":1,"children":[]},{"name":"btnSettings","total_count":1,"children":[]},{"name":"btnWorldCreateCancel","total_count":1,"children":[]},{"name":"btnWorldCreateClose","total_count":1,"children":[]},{"name":"btnWorldCreateConfirm","total_count":1,"children":[]},{"name":"buildMenuTowerAt()","total_count":1,"children":[]},{"name":"bulletHoleGeo","total_count":1,"children":[]},{"name":"bulletHoleTexture","total_count":1,"children":[]},{"name":"camera","total_count":1,"children":[]},{"name":"casingGeo","total_count":1,"children":[]},{"name":"casingMat","total_count":1,"children":[]},{"name":"centerScreen","total_count":1,"children":[]},{"name":"checkEasterEggFormation()","total_count":1,"children":[]},{"name":"checkJumpPadCollisions()","total_count":1,"children":[]},{"name":"cleanupMenuChaosObjects()","total_count":1,"children":[]},{"name":"clearGameplayWorldObjects()","total_count":1,"children":[]},{"name":"closeMenu()","total_count":1,"children":[]},{"name":"closeMenuBtn","total_count":1,"children":[]},{"name":"closePause()","total_count":1,"children":[]},{"name":"closeRetroDialog()","total_count":1,"children":[]},{"name":"closeRotateMenu()","total_count":1,"children":[]},{"name":"confirmWeaponSelection()","total_count":1,"children":[]},{"name":"connectToMultiplayerHost()","total_count":1,"children":[]},{"name":"controls","total_count":1,"children":[]},{"name":"createBulletHoleTexture()","total_count":1,"children":[]},{"name":"createCardPreview()","total_count":1,"children":[]},{"name":"createEquilateralPrismGeometry()","total_count":1,"children":[]},{"name":"createNewWorldFlow()","total_count":1,"children":[]},{"name":"createNukePhysicsInstance()","total_count":1,"children":[]},{"name":"createPlayerAvatar()","total_count":1,"children":[]},{"name":"createProceduralNukeModel()","total_count":1,"children":[]},{"name":"createRampGeometry()","total_count":1,"children":[]},{"name":"createRobloxStudTexture()","total_count":1,"children":[]},{"name":"createSubtleReverbNode()","total_count":1,"children":[]},{"name":"crosshairEl","total_count":1,"children":[]},{"name":"cubeCubeContact","total_count":1,"children":[]},{"name":"cubeGroundContact","total_count":1,"children":[]},{"name":"cubeMaterial","total_count":1,"children":[]},{"name":"currentServerInfo","total_count":1,"children":[]},{"name":"customCursorEl","total_count":1,"children":[]},{"name":"deleteWorldById()","total_count":1,"children":[]},{"name":"detonateAllNukes()","total_count":1,"children":[]},{"name":"detonateNukeProp()","total_count":1,"children":[]},{"name":"dirLight","total_count":1,"children":[]},{"name":"equipWeapon()","total_count":1,"children":[]},{"name":"exportWorldById()","total_count":1,"children":[]},{"name":"fallStreakData","total_count":1,"children":[]},{"name":"fallStreakGeo","total_count":1,"children":[]},{"name":"fallStreakMat","total_count":1,"children":[]},{"name":"fallStreakMesh","total_count":1,"children":[]},{"name":"fallStreakPositions","total_count":1,"children":[]},{"name":"finishPreloader()","total_count":1,"children":[]},{"name":"firePos","total_count":1,"children":[]},{"name":"fireToolGun()","total_count":1,"children":[]},{"name":"fixedGrabQuat","total_count":1,"children":[]},{"name":"flightSpeedFillEl","total_count":1,"children":[]},{"name":"flightSpeedOverlay","total_count":1,"children":[]},{"name":"flightSpeedValEl","total_count":1,"children":[]},{"name":"flyVelocity","total_count":1,"children":[]},{"name":"getAllWorlds()","total_count":1,"children":[]},{"name":"getAudioContext()","total_count":1,"children":[]},{"name":"getAudioDestination()","total_count":1,"children":[]},{"name":"getElectronIpc()","total_count":1,"children":[]},{"name":"getMissingTextureMaterial()","total_count":1,"children":[]},{"name":"getMuzzleWorldPosition()","total_count":1,"children":[]},{"name":"getObjectSnapFacePoints()","total_count":1,"children":[]},{"name":"getRandomChaosColor()","total_count":1,"children":[]},{"name":"getTargetObjectForRotation()","total_count":1,"children":[]},{"name":"getToolGunGeometry()","total_count":1,"children":[]},{"name":"getWeldClusterForBody()","total_count":1,"children":[]},{"name":"gltfLoader","total_count":1,"children":[]},{"name":"grabRelativeQuat","total_count":1,"children":[]},{"name":"grabVelocityHistory","total_count":1,"children":[]},{"name":"groundBody","total_count":1,"children":[]},{"name":"groundMaterial","total_count":1,"children":[]},{"name":"groundShape","total_count":1,"children":[]},{"name":"handleNetworkPacket()","total_count":1,"children":[]},{"name":"ICE_CONFIG","total_count":1,"children":[]},{"name":"importWorldFromFile()","total_count":1,"children":[]},{"name":"initialSlidePos","total_count":1,"children":[]},{"name":"initMultiplayerHost()","total_count":1,"children":[]},{"name":"inputImportWorld","total_count":1,"children":[]},{"name":"itemDone()","total_count":1,"children":[]},{"name":"keys","total_count":1,"children":[]},{"name":"laserTargetPos","total_count":1,"children":[]},{"name":"lastTargetPos","total_count":1,"children":[]},{"name":"loadEssentialAssets()","total_count":1,"children":[]},{"name":"loadWorldAndEnterGame()","total_count":1,"children":[]},{"name":"mainMenuEl","total_count":1,"children":[]},{"name":"MENU_CAM_POS","total_count":1,"children":[]},{"name":"MENU_CAM_TARGET","total_count":1,"children":[]},{"name":"menuBallGeo","total_count":1,"children":[]},{"name":"menuBallShape","total_count":1,"children":[]},{"name":"menuBouncyMaterial","total_count":1,"children":[]},{"name":"menuBoxGeo","total_count":1,"children":[]},{"name":"menuBoxShape","total_count":1,"children":[]},{"name":"menuCamera","total_count":1,"children":[]},{"name":"menuChaosSceneGroup","total_count":1,"children":[]},{"name":"menuPhysicsBodies","total_count":1,"children":[]},{"name":"MONO_CHAOS_COLORS","total_count":1,"children":[]},{"name":"mpCreateDialog","total_count":1,"children":[]},{"name":"mpHudRoomId","total_count":1,"children":[]},{"name":"mpInputSrvName","total_count":1,"children":[]},{"name":"mpInputSrvPassword","total_count":1,"children":[]},{"name":"mpPasswordRow","total_count":1,"children":[]},{"name":"mpRoomHud","total_count":1,"children":[]},{"name":"mpSearchInput","total_count":1,"children":[]},{"name":"mpSelectMaxPlayers","total_count":1,"children":[]},{"name":"mpServerList","total_count":1,"children":[]},{"name":"mpTabCountLabel","total_count":1,"children":[]},{"name":"mpTabOverlay","total_count":1,"children":[]},{"name":"mpTabPlayersList","total_count":1,"children":[]},{"name":"mpTabSrvTitle","total_count":1,"children":[]},{"name":"multiplayerModal","total_count":1,"children":[]},{"name":"nukeFallingList","total_count":1,"children":[]},{"name":"nukeGltfLoader","total_count":1,"children":[]},{"name":"nukePileList","total_count":1,"children":[]},{"name":"nukePileOffsets","total_count":1,"children":[]},{"name":"nukeTargetCenter","total_count":1,"children":[]},{"name":"openCreateWorldDialog()","total_count":1,"children":[]},{"name":"openMenu()","total_count":1,"children":[]},{"name":"openPause()","total_count":1,"children":[]},{"name":"openRotateMenu()","total_count":1,"children":[]},{"name":"pauseOverlay","total_count":1,"children":[]},{"name":"physicsObjects","total_count":1,"children":[]},{"name":"PISTOL_AIM_POS","total_count":1,"children":[]},{"name":"PISTOL_AIM_ROT","total_count":1,"children":[]},{"name":"PISTOL_HIP_POS","total_count":1,"children":[]},{"name":"PISTOL_HIP_ROT","total_count":1,"children":[]},{"name":"pistolAmmo","total_count":1,"children":[]},{"name":"playButtonClickSound()","total_count":1,"children":[]},{"name":"playCustomOrSynth()","total_count":1,"children":[]},{"name":"playEmptyClickSound()","total_count":1,"children":[]},{"name":"playGlitchWinError()","total_count":1,"children":[]},{"name":"playGrabSound()","total_count":1,"children":[]},{"name":"playImpactSound()","total_count":1,"children":[]},{"name":"playKaboomSound()","total_count":1,"children":[]},{"name":"playLaunchSound()","total_count":1,"children":[]},{"name":"playMenuSound()","total_count":1,"children":[]},{"name":"playOminousRumbleSound()","total_count":1,"children":[]},{"name":"playPhysicsCollisionSound()","total_count":1,"children":[]},{"name":"playPistolShootSound()","total_count":1,"children":[]},{"name":"playReloadSound()","total_count":1,"children":[]},{"name":"playRitualHumSound()","total_count":1,"children":[]},{"name":"playSlotSwitchSound()","total_count":1,"children":[]},{"name":"playSpatialSecretCubeFall()","total_count":1,"children":[]},{"name":"playSpawnSound()","total_count":1,"children":[]},{"name":"playUnweldSound()","total_count":1,"children":[]},{"name":"playWeaponDeploySound()","total_count":1,"children":[]},{"name":"playWeldSound()","total_count":1,"children":[]},{"name":"playWinErrorSound()","total_count":1,"children":[]},{"name":"preloaderFill","total_count":1,"children":[]},{"name":"preloaderOverlay","total_count":1,"children":[]},{"name":"previewCubeObj","total_count":1,"children":[]},{"name":"previewNukeObj","total_count":1,"children":[]},{"name":"previewRampObj","total_count":1,"children":[]}]}]},{"name":"src-tauri","total_count":28,"children":[{"name":"build.rs","total_count":1,"children":[{"name":"main()","total_count":1,"children":[]}]},{"name":"capabilities","total_count":5,"children":[{"name":"default.json","total_count":5,"children":[{"name":"$schema","total_count":1,"children":[]},{"name":"description","total_count":1,"children":[]},{"name":"identifier","total_count":1,"children":[]},{"name":"permissions","total_count":1,"children":[]},{"name":"windows","total_count":1,"children":[]}]}]},{"name":"Cargo.toml","total_count":1,"children":[{"name":"app","total_count":1,"children":[]}]},{"name":"src","total_count":2,"children":[{"name":"lib.rs","total_count":1,"children":[{"name":"run()","total_count":1,"children":[]}]},{"name":"main.rs","total_count":1,"children":[{"name":"main()","total_count":1,"children":[]}]}]},{"name":"tauri.conf.json","total_count":19,"children":[{"name":"$schema","total_count":1,"children":[]},{"name":"active","total_count":1,"children":[]},{"name":"android","total_count":1,"children":[]},{"name":"app","total_count":1,"children":[]},{"name":"beforeBuildCommand","total_count":1,"children":[]},{"name":"beforeDevCommand","total_count":1,"children":[]},{"name":"build","total_count":1,"children":[]},{"name":"bundle","total_count":1,"children":[]},{"name":"csp","total_count":1,"children":[]},{"name":"debugApplicationIdSuffix","total_count":1,"children":[]},{"name":"devUrl","total_count":1,"children":[]},{"name":"frontendDist","total_count":1,"children":[]},{"name":"icon","total_count":1,"children":[]},{"name":"identifier","total_count":1,"children":[]},{"name":"productName","total_count":1,"children":[]},{"name":"security","total_count":1,"children":[]},{"name":"targets","total_count":1,"children":[]},{"name":"version","total_count":1,"children":[]},{"name":"windows","total_count":1,"children":[]}]}]},{"name":"vite.config.js","total_count":1,"children":[]}]};
+
+    function transformData(jsonData) {
+        // Helper function to recursively build the children structure
+        function processNode(node, parentL1StageName) {
+            let displayName = node.name;
+            // Append total_count if it exists and is not already in the name
+            if (node.total_count !== undefined) {
+                if (!/\(Total Count: \d+\)$/.test(displayName)) {
+                    displayName += ` (Total Count: ${node.total_count})`;
+                }
+            }
+
+            const newNode = { name: displayName };
+
+            if (parentL1StageName === "Root") {
+                 newNode.originalStageName = node.name;
+            } else {
+                newNode.originalStageName = parentL1StageName;
+            }
+
+            if (node.children && node.children.length > 0) {
+                const stageNameToPass = (parentL1StageName === "Root") ? node.name : parentL1StageName;
+                newNode.children = node.children.map(child => processNode(child, stageNameToPass));
+            }
+
+            return newNode;
+        }
+
+        let rootDisplayName = jsonData.name;
+        if (jsonData.total_count !== undefined && !/\(Total Count: \d+\)$/.test(rootDisplayName)) {
+            rootDisplayName += ` (Total Count: ${jsonData.total_count})`;
+        }
+
+        return {
+            name: rootDisplayName,
+            originalStageName: "Root",
+            children: (jsonData.children || []).map(child => processNode(child, "Root"))
+        };
+    }
+
+    const treeData = transformData(initialJsonData);
+
+    // Auto-populated phaseColors: every depth-1 child of the root gets
+    // a stable colour from a bigger palette so all top-level dirs are
+    // distinguishable.
+    const PALETTE = [
+      ["#3498DB","#2980B9","#AED6F1"], ["#2ECC71","#27AE60","#A9DFBF"],
+      ["#E74C3C","#C0392B","#F5B7B1"], ["#9B59B6","#8E44AD","#D7BDE2"],
+      ["#F39C12","#D68910","#FAD7A0"], ["#1ABC9C","#117864","#A2D9CE"],
+      ["#34495E","#1B2631","#ABB2B9"], ["#E67E22","#BA4A00","#F5CBA7"],
+      ["#16A085","#0E6655","#A2D9CE"], ["#D35400","#A04000","#EDBB99"],
+      ["#7F8C8D","#566573","#D5DBDB"], ["#C0392B","#7B241C","#F5B7B1"],
+      ["#2E86C1","#1B4F72","#A9CCE3"], ["#28B463","#196F3D","#A9DFBF"],
+      ["#AF7AC5","#6C3483","#D2B4DE"],
+    ];
+    const phaseColors = { "Root": { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+                          "Default": { fill: "#BDC3C7", stroke: "#95A5A6", collapsedFill: "#ECF0F1" } };
+    (initialJsonData.children || []).forEach((c, i) => {
+      const pal = PALETTE[i % PALETTE.length];
+      phaseColors[c.name] = { fill: pal[0], stroke: pal[1], collapsedFill: pal[2] };
+    });
+
+    const levelSpecificPalettes = {
+      0: { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+      2: { fill: "#6ab04c", stroke: "#508a38", collapsedFill: "#a3d391" },
+      3: { fill: "#f0932b", stroke: "#d0730f", collapsedFill: "#f6c07e" },
+      4: { fill: "#be2edd", stroke: "#a01cb3", collapsedFill: "#e08bf2" },
+      5: { fill: "#00a8ff", stroke: "#007ac1", collapsedFill: "#74d2ff" },
+      6: { fill: "#e55039", stroke: "#c23620", collapsedFill: "#f09a8d" },
+      default: { fill: "#747d8c", stroke: "#57606f", collapsedFill: "#a4b0be" }
+    };
+
+    const svgElement = d3.select("#tree-svg");
+    const initialSvgWidth = +svgElement.attr("width");
+    const initialSvgHeight = +svgElement.attr("height");
+    const margin = { top: 40, right: 120, bottom: 80, left: 450 };
+    let width = initialSvgWidth - margin.left - margin.right;
+    let height = initialSvgHeight - margin.top - margin.bottom;
+    const duration = 500;
+    let nodeCounter = 0;
+    const g = svgElement.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const treemap = d3.tree().nodeSize([40, 0]);
+    let rootNode = d3.hierarchy(treeData, d => d.children);
+    rootNode.x0 = 0;
+    rootNode.y0 = 0;
+
+    if (rootNode.children) {
+      rootNode.children.forEach(d_child => {
+        if (d_child.children) { collapseBranch(d_child); }
+      });
+    }
+    updateTree(rootNode);
+
+    function collapseBranch(d) { if (d.children) { d._children = d.children; d._children.forEach(collapseBranch); d.children = null; } }
+    function expandBranch(d) { if (d._children) { d.children = d._children; d._children = null; } if (d.children) { d.children.forEach(expandBranch); } }
+    window.expandAll = () => { expandBranch(rootNode); updateTree(rootNode); };
+    window.collapseAll = () => { if (rootNode.children) { rootNode.children.forEach(collapseBranch); } updateTree(rootNode); };
+    window.resetView = () => { if (rootNode.children) { rootNode.children.forEach(d_child => { if (d_child.children || d_child._children) { collapseBranch(d_child); } }); } if (rootNode._children && !rootNode.children) { rootNode.children = rootNode._children; rootNode._children = null; } updateTree(rootNode); };
+
+    function updateTree(source) {
+      const treeLayoutData = treemap(rootNode);
+      let nodes = treeLayoutData.descendants();
+      let links = treeLayoutData.descendants().slice(1);
+
+      let minX = 0;
+      let maxX = 0;
+      if (nodes.length > 0) {
+        minX = d3.min(nodes, d => d.x);
+        maxX = d3.max(nodes, d => d.x);
+      }
+
+      let neededHeight = Math.max(initialSvgHeight, maxX - minX + margin.top + margin.bottom + 100);
+      svgElement.transition().duration(duration / 2).attr("height", neededHeight);
+      g.transition().duration(duration / 2).attr("transform", `translate(${margin.left},${margin.top - minX + 40})`);
+
+      nodes.forEach(d => { d.y = d.depth * 400; }); // Adjust horizontal separation if needed
+
+      const node = g.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeCounter));
+      const nodeEnter = node.enter().append('g')
+        .attr('class', d => "node" + (d.children || d._children ? " node--internal" : " node--leaf") + (d._children ? " _children" : ""))
+        .attr('transform', d => `translate(${source.y0},${source.x0})`)
+        .on('click', (event, d) => { if (d.children) { d._children = d.children; d.children = null; } else if (d._children) { d.children = d._children; d._children = null; } updateTree(d); })
+        .style('cursor', d => (d.children || d._children) ? 'pointer' : 'default');
+
+      nodeEnter.append('circle').attr('r', 1e-6);
+
+      nodeEnter.append('text')
+        .attr('dy', '.35em')
+        .attr('x', d => d.children || d._children ? -14 : 14)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+        .style("fill-opacity", 1e-6)
+        .call(wrapText, 380);
+
+      const nodeUpdate = nodeEnter.merge(node);
+      nodeUpdate.transition().duration(duration)
+        .attr('transform', d => `translate(${d.y},${d.x})`)
+        .attr('class', d => "node" + (d.children ? " node--internal" : " node--leaf") + (d._children ? " node--internal _children" : ""));
+
+      nodeUpdate.select('circle').attr('r', 8.5)
+        .style('fill', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            if (d._children) return palette.collapsedFill;
+            if (d.children) return palette.fill;
+            return "#fff";
+        })
+        .style('stroke', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            return palette.stroke;
+        });
+      nodeUpdate.select('text').style("fill-opacity", 1).call(wrapText, 380);
+
+      const nodeExit = node.exit().transition().duration(duration).attr('transform', d => `translate(${source.y},${source.x})`).remove();
+      nodeExit.select('circle').attr('r', 1e-6);
+      nodeExit.select('text').style('fill-opacity', 1e-6);
+
+      const link = g.selectAll('path.link').data(links, d => d.id);
+      const linkEnter = link.enter().insert('path', "g").attr('class', 'link').attr('d', d => { const o = { x: source.x0, y: source.y0 }; return diagonal(o, o); });
+
+      linkEnter.merge(link).transition().duration(duration).attr('d', d => diagonal(d, d.parent))
+        .style('stroke', d => {
+            const sourceNode = d.parent;
+            if (!sourceNode) return phaseColors.Default.stroke;
+            const l1AncestorName = sourceNode.data.originalStageName;
+            const colorPalette = phaseColors[l1AncestorName] || phaseColors.Default;
+            return colorPalette.stroke;
+        });
+      link.exit().transition().duration(duration).attr('d', d => { const o = { x: source.x, y: source.y }; return diagonal(o, o); }).remove();
+      nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+    }
+
+    function diagonal(s, d) { return `M ${s.y} ${s.x} C ${(s.y + d.y) / 2} ${s.x}, ${(s.y + d.y) / 2} ${d.x}, ${d.y} ${d.x}`; }
+
+    function wrapText(textElements, maxWidth) {
+        const textPartColors = {
+            name: '#343a40',
+            count: '#0056b3'
+        };
+        const countRegex = /(\s\(Total Count: \d+\))$/;
+
+        textElements.each(function () {
+            const textD3 = d3.select(this);
+            const originalNodeText = textD3.datum().data.name;
+            const x = parseFloat(textD3.attr("x") || 0);
+            const initialDy = textD3.attr("dy");
+            const textAnchor = textD3.attr("text-anchor");
+            const lineHeight = 1.1;
+
+            textD3.text(null);
+
+            let namePart = originalNodeText;
+            let countPartText = "";
+
+            const countMatch = originalNodeText.match(countRegex);
+            if (countMatch && originalNodeText.endsWith(countMatch[0])) {
+                namePart = originalNodeText.substring(0, originalNodeText.length - countMatch[0].length).trim();
+                countPartText = countMatch[0].trim();
+            }
+
+            const tokens = [];
+            namePart.split(/\s+/).filter(Boolean).forEach(word => {
+                tokens.push({ text: word, type: 'name' });
+            });
+            if (countPartText) {
+                tokens.push({ text: countPartText, type: 'count' });
+            }
+
+            if (tokens.length === 0 && originalNodeText) {
+                tokens.push({ text: originalNodeText, type: 'name' });
+            }
+
+            let currentTspan = textD3.append("tspan").attr("x", x).attr("dy", initialDy);
+            if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+
+            let lineTokens = [];
+
+            for (let i = 0; i < tokens.length; i++) {
+                const tokenObj = tokens[i];
+
+                lineTokens.push(tokenObj);
+                currentTspan.text(lineTokens.map(t => t.text).join(" "));
+
+                if (currentTspan.node().getComputedTextLength() > maxWidth && lineTokens.length > 1) {
+                    lineTokens.pop();
+
+                    currentTspan.text(null);
+                    lineTokens.forEach((prevToken, idx) => {
+                        currentTspan.append("tspan")
+                            .text((idx > 0 ? " " : "") + prevToken.text)
+                            .style("fill", textPartColors[prevToken.type] || textPartColors.name)
+                            .style("font-weight", prevToken.type === 'count' ? "bold" : "normal");
+                    });
+
+                    lineTokens = [tokenObj];
+                    currentTspan = textD3.append("tspan").attr("x", x).attr("dy", lineHeight + "em");
+                    if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+                }
+            }
+
+            currentTspan.text(null);
+            lineTokens.forEach((token, idx) => {
+                currentTspan.append("tspan")
+                    .text((idx > 0 ? " " : "") + token.text)
+                    .style("fill", textPartColors[token.type] || textPartColors.name)
+                    .style("font-weight", token.type === 'count' ? "bold" : "normal");
+            });
+
+            if (textD3.selectAll("tspan > tspan").empty() && textD3.select("tspan").text().length === 0 && originalNodeText) {
+                let t = textD3.select("tspan");
+                let displayText = originalNodeText;
+                t.text(displayText).style("fill", textPartColors.name);
+                if (t.node() && t.node().getComputedTextLength() > maxWidth && displayText.length > 20) {
+                    let estimatedChars = Math.floor(maxWidth / (t.node().getComputedTextLength()/displayText.length) );
+                    displayText = displayText.substring(0, Math.max(0, estimatedChars - 3)) + "...";
+                    t.text(displayText);
+                }
+            }
+        });
+    }
+  </script>
+</body>
+</html>

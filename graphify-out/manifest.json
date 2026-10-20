@@ -1,0 +1,320 @@
+{
+  "electron-main.cjs": {
+    "mtime": 1792418886.8772693,
+    "seen": 1792501964.6822,
+    "ast_hash": "806c6bd0c2a9226e14d8c7127a68b95c",
+    "semantic_hash": "806c6bd0c2a9226e14d8c7127a68b95c"
+  },
+  "package.json": {
+    "mtime": 1792421823.515433,
+    "seen": 1792501964.6822,
+    "ast_hash": "054714e8fc087681ad951ecd1d7cd6d5",
+    "semantic_hash": "054714e8fc087681ad951ecd1d7cd6d5"
+  },
+  "src-tauri/Cargo.toml": {
+    "mtime": 1792315005.880829,
+    "seen": 1792501964.6822,
+    "ast_hash": "580ac9fab54f9355701c93db40085da2",
+    "semantic_hash": "580ac9fab54f9355701c93db40085da2"
+  },
+  "src-tauri/build.rs": {
+    "mtime": 1792314958.7886386,
+    "seen": 1792501964.6822,
+    "ast_hash": "8e6c89bd412b755ef41bd9bb191f2e31",
+    "semantic_hash": "8e6c89bd412b755ef41bd9bb191f2e31"
+  },
+  "src-tauri/capabilities/default.json": {
+    "mtime": 1792314958.7906518,
+    "seen": 1792501964.6822,
+    "ast_hash": "dcc896286d4c8d8fe9df24827d50d027",
+    "semantic_hash": "dcc896286d4c8d8fe9df24827d50d027"
+  },
+  "src-tauri/src/lib.rs": {
+    "mtime": 1792314958.7971728,
+    "seen": 1792501964.6822,
+    "ast_hash": "02353b4521a91b48868b6ed725de7416",
+    "semantic_hash": "02353b4521a91b48868b6ed725de7416"
+  },
+  "src-tauri/src/main.rs": {
+    "mtime": 1792314958.7971728,
+    "seen": 1792501964.6822,
+    "ast_hash": "a8e64e9b6bd150703cbc12bc0d188f24",
+    "semantic_hash": "a8e64e9b6bd150703cbc12bc0d188f24"
+  },
+  "src-tauri/tauri.conf.json": {
+    "mtime": 1792315012.3290296,
+    "seen": 1792501964.6822,
+    "ast_hash": "db6dfd79e3118f99568c6c190b0ae86b",
+    "semantic_hash": "db6dfd79e3118f99568c6c190b0ae86b"
+  },
+  "src/main.js": {
+    "mtime": 1792509937.9150932,
+    "seen": 1792509988.2121537,
+    "ast_hash": "06c1e786b3da1c9e6ecbdfec75cec720",
+    "semantic_hash": ""
+  },
+  "vite.config.js": {
+    "mtime": 1792315187.3578098,
+    "seen": 1792501964.6822,
+    "ast_hash": "b5adb035c3dce9319e5490e7de41c736",
+    "semantic_hash": "b5adb035c3dce9319e5490e7de41c736"
+  },
+  "public/sounds/MMM2.mp3": {
+    "mtime": 1792324321.1511407,
+    "seen": 1792501964.6822,
+    "ast_hash": "1d0ba7b68c044c65e8ef26043c741188",
+    "semantic_hash": "1d0ba7b68c044c65e8ef26043c741188"
+  },
+  "public/sounds/block_drop.wav": {
+    "mtime": 1792402514.334751,
+    "seen": 1792501964.6822,
+    "ast_hash": "686eeda76028c365579a721f638efb80",
+    "semantic_hash": "686eeda76028c365579a721f638efb80"
+  },
+  "public/sounds/block_hit.wav": {
+    "mtime": 1792402471.6469529,
+    "seen": 1792501964.6822,
+    "ast_hash": "c6b94f28fa954897802c2d432c9e0502",
+    "semantic_hash": "c6b94f28fa954897802c2d432c9e0502"
+  },
+  "public/sounds/button_click.wav": {
+    "mtime": 1792402691.264849,
+    "seen": 1792501964.6822,
+    "ast_hash": "9ebee7a299088eb8800a0c7328284fd9",
+    "semantic_hash": "9ebee7a299088eb8800a0c7328284fd9"
+  },
+  "public/sounds/empty_click.wav": {
+    "mtime": 1792316792.5505993,
+    "seen": 1792501964.6822,
+    "ast_hash": "fb3c1b2fd1a1d0c345e21f47f3b95f21",
+    "semantic_hash": "fb3c1b2fd1a1d0c345e21f47f3b95f21"
+  },
+  "public/sounds/menu_music.mp3": {
+    "mtime": 1792324334.4351141,
+    "seen": 1792501964.6822,
+    "ast_hash": "c90c8109e3abd3b37e3ee2565d3e578f",
+    "semantic_hash": "c90c8109e3abd3b37e3ee2565d3e578f"
+  },
+  "public/sounds/nuke_explosion.mp3": {
+    "mtime": 1792332876.493727,
+    "seen": 1792501964.6822,
+    "ast_hash": "6f6aaf33da20e3016d7712bbd8a78413",
+    "semantic_hash": "6f6aaf33da20e3016d7712bbd8a78413"
+  },
+  "public/sounds/nuke_siren.mp3": {
+    "mtime": 1792332845.710095,
+    "seen": 1792501964.6822,
+    "ast_hash": "530c8ac7719de1c1a6f7f35c5ebd869d",
+    "semantic_hash": "530c8ac7719de1c1a6f7f35c5ebd869d"
+  },
+  "public/sounds/pistol_reload.wav": {
+    "mtime": 1792316499.1100368,
+    "seen": 1792501964.6822,
+    "ast_hash": "e7accbf5136d3644833d9a3ea5b96b3b",
+    "semantic_hash": "e7accbf5136d3644833d9a3ea5b96b3b"
+  },
+  "public/sounds/pistol_shoot.wav": {
+    "mtime": 1792316477.8658767,
+    "seen": 1792501964.6822,
+    "ast_hash": "c8a24ef3cc447a073f480a22b657b709",
+    "semantic_hash": "c8a24ef3cc447a073f480a22b657b709"
+  },
+  "public/sounds/secret_cube_fall.wav": {
+    "mtime": 1792317559.6188424,
+    "seen": 1792501964.6822,
+    "ast_hash": "40a4da75d310c39aa7e59e2a628af13b",
+    "semantic_hash": "40a4da75d310c39aa7e59e2a628af13b"
+  },
+  "public/sounds/spawn.wav": {
+    "mtime": 1792316763.4027472,
+    "seen": 1792501964.6822,
+    "ast_hash": "87e2c95120c4757538d0b71b7e76badf",
+    "semantic_hash": "87e2c95120c4757538d0b71b7e76badf"
+  },
+  "public/sounds/throw_object.wav": {
+    "mtime": 1792402696.9479814,
+    "seen": 1792501964.6822,
+    "ast_hash": "5d6dbd9087e884751ffcf52ef3e7c564",
+    "semantic_hash": "5d6dbd9087e884751ffcf52ef3e7c564"
+  },
+  "public/sounds/thunder.wav": {
+    "mtime": 1792332956.310419,
+    "seen": 1792501964.6822,
+    "ast_hash": "5cd8c0787e10475398aebf3eb58a6f19",
+    "semantic_hash": "5cd8c0787e10475398aebf3eb58a6f19"
+  },
+  "public/sounds/toolgun_remove.wav": {
+    "mtime": 1792415795.3256326,
+    "seen": 1792501964.6822,
+    "ast_hash": "3033cb6f9349d27767413c05e82b91ab",
+    "semantic_hash": "3033cb6f9349d27767413c05e82b91ab"
+  },
+  "public/sounds/toolgun_weld.wav": {
+    "mtime": 1792415820.78609,
+    "seen": 1792501964.6822,
+    "ast_hash": "84f8bc80bfcbdccdd5b87113ab2690e4",
+    "semantic_hash": "84f8bc80bfcbdccdd5b87113ab2690e4"
+  },
+  "public/sounds/weapon_deploy.wav": {
+    "mtime": 1792316490.3310523,
+    "seen": 1792501964.6822,
+    "ast_hash": "3ffbbf60bcd28ccc1cc39c20a8d4a550",
+    "semantic_hash": "3ffbbf60bcd28ccc1cc39c20a8d4a550"
+  },
+  "public/sounds/weapon_switch.wav": {
+    "mtime": 1792396765.0881824,
+    "seen": 1792501964.6822,
+    "ast_hash": "84a06d129ec0a5080e5ebe0c2129f717",
+    "semantic_hash": "84a06d129ec0a5080e5ebe0c2129f717"
+  },
+  "public/sounds/win_error.wav": {
+    "mtime": 1792333792.2148917,
+    "seen": 1792501964.6822,
+    "ast_hash": "f3da16101876634bc5072dfbd338b463",
+    "semantic_hash": "f3da16101876634bc5072dfbd338b463"
+  },
+  "public/sounds/win_error2.wav": {
+    "mtime": 1792333750.7964668,
+    "seen": 1792501964.6822,
+    "ast_hash": "80d4887dd05ea2f546669a6a4da8274c",
+    "semantic_hash": "80d4887dd05ea2f546669a6a4da8274c"
+  },
+  "version.json": {
+    "mtime": 1792508736.507797,
+    "seen": 1792509988.2121537,
+    "ast_hash": "4f74a3ed25b1b68e82668476e9791deb",
+    "semantic_hash": ""
+  },
+  "TASKS_TODO.md": {
+    "mtime": 1792503817.322135,
+    "seen": 1792509988.2121537,
+    "ast_hash": "c121471aebb989b214a4090c4b2e1441",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1792508807.970248,
+    "seen": 1792509988.2121537,
+    "ast_hash": "c3cd3ec269ff83468bf61e91a6f6fced",
+    "semantic_hash": ""
+  },
+  "icon.png": {
+    "mtime": 1792315173.3099728,
+    "seen": 1792509988.2121537,
+    "ast_hash": "c5f37f09177f03e37425452ef57c9d78",
+    "semantic_hash": ""
+  },
+  "public/app-icon.png": {
+    "mtime": 1792315173.3099728,
+    "seen": 1792509988.2121537,
+    "ast_hash": "c5f37f09177f03e37425452ef57c9d78",
+    "semantic_hash": ""
+  },
+  "public/cursor-pointer.png": {
+    "mtime": 1792303840.7919264,
+    "seen": 1792509988.2121537,
+    "ast_hash": "30200de6c5049d979be6628add438d2d",
+    "semantic_hash": ""
+  },
+  "public/logo.png": {
+    "mtime": 1792330994.423216,
+    "seen": 1792509988.2121537,
+    "ast_hash": "b5860ed64ef92e158408d176eb106a40",
+    "semantic_hash": ""
+  },
+  "public/maps/baseplate.png": {
+    "mtime": 1792421365.8284063,
+    "seen": 1792509988.2121537,
+    "ast_hash": "1d9e651c0866e1a6cc0028910c6910ef",
+    "semantic_hash": ""
+  },
+  "public/secret-cube-texture.png": {
+    "mtime": 1791117407.9732988,
+    "seen": 1792509988.2121537,
+    "ast_hash": "def6997af9d5cada0501355e995010b4",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/128x128.png": {
+    "mtime": 1792314958.7916605,
+    "seen": 1792509988.2121537,
+    "ast_hash": "3a0071e4ad670fad0329d3a5e83d0bf9",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/128x128@2x.png": {
+    "mtime": 1792314958.7916605,
+    "seen": 1792509988.2121537,
+    "ast_hash": "eab2be12c5f8aeaf104a4695dd9171df",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/32x32.png": {
+    "mtime": 1792314958.7916605,
+    "seen": 1792509988.2121537,
+    "ast_hash": "faf8ee6541b945b98db35239b8a75715",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square107x107Logo.png": {
+    "mtime": 1792314958.7916605,
+    "seen": 1792509988.2121537,
+    "ast_hash": "d4bc38359e2c01daa08354c55fa4df7c",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square142x142Logo.png": {
+    "mtime": 1792314958.792661,
+    "seen": 1792509988.2121537,
+    "ast_hash": "1e9c0358705085439e5c989fcbd6e988",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square150x150Logo.png": {
+    "mtime": 1792314958.792661,
+    "seen": 1792509988.2121537,
+    "ast_hash": "084d20bce8096367fc694dfdf72c8ac5",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square284x284Logo.png": {
+    "mtime": 1792314958.792661,
+    "seen": 1792509988.2121537,
+    "ast_hash": "6a936fe84398f24b7a63a36bddfd58d7",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square30x30Logo.png": {
+    "mtime": 1792314958.792661,
+    "seen": 1792509988.2121537,
+    "ast_hash": "011e9cb456309157a9fc78c978248e00",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square310x310Logo.png": {
+    "mtime": 1792314958.7936594,
+    "seen": 1792509988.2121537,
+    "ast_hash": "832231852e8e683e6aa2b690d194bdd2",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square44x44Logo.png": {
+    "mtime": 1792314958.7936594,
+    "seen": 1792509988.2121537,
+    "ast_hash": "a06297a35014e770cc33756fafa3b3a8",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square71x71Logo.png": {
+    "mtime": 1792314958.7936594,
+    "seen": 1792509988.2121537,
+    "ast_hash": "a3c80a0af688359094aa685881570eed",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/Square89x89Logo.png": {
+    "mtime": 1792314958.7936594,
+    "seen": 1792509988.2121537,
+    "ast_hash": "9f91ee8e1c1232ebde61c64d7923038f",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/StoreLogo.png": {
+    "mtime": 1792314958.7946591,
+    "seen": 1792509988.2121537,
+    "ast_hash": "387b412d411bbd532dd3302d3948bf0e",
+    "semantic_hash": ""
+  },
+  "src-tauri/icons/icon.png": {
+    "mtime": 1792314958.7956626,
+    "seen": 1792509988.2121537,
+    "ast_hash": "9fdc4367276aafdd2c05ac214e9553c7",
+    "semantic_hash": ""
+  }
+}

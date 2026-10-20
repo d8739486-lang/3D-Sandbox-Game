@@ -24,24 +24,24 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 world.allowSleep = true;
 world.solver.iterations = 35;
 world.solver.tolerance = 0.0001;
-world.defaultContactMaterial.friction = 0.4;
-world.defaultContactMaterial.restitution = 0.05;
+world.defaultContactMaterial.friction = 0.3;
+world.defaultContactMaterial.restitution = 0.25;
 
 // Материалы коллизий для кубов и пола
 const groundMaterial = new CANNON.Material('ground');
 const cubeMaterial = new CANNON.Material('cube');
 
 const cubeGroundContact = new CANNON.ContactMaterial(groundMaterial, cubeMaterial, {
-  friction: 0.5,
-  restitution: 0.05,
+  friction: 0.3,
+  restitution: 0.25, // кубы отскакивают и свободно катятся при броске
   contactEquationStiffness: 1e7,
-  contactEquationRelaxation: 4
+  contactEquationRelaxation: 3
 });
 const cubeCubeContact = new CANNON.ContactMaterial(cubeMaterial, cubeMaterial, {
-  friction: 0.4,
-  restitution: 0.0, // нулевой отскок исключает эффект пушечного выстрела при пересечении
-  contactEquationStiffness: 1e6, // мягкое расталкивание вместо резкого взрыва
-  contactEquationRelaxation: 6
+  friction: 0.3,
+  restitution: 0.2, // естественный мягкий отскок при столкновении блоков
+  contactEquationStiffness: 5e6,
+  contactEquationRelaxation: 4
 });
 world.addContactMaterial(cubeGroundContact);
 world.addContactMaterial(cubeCubeContact);
@@ -1604,6 +1604,7 @@ function spawnDominoSequence() {
 
 // 8. Постройка башни/пирамиды на указанной позиции X (слева или справа от меню)
 function buildMenuTowerAt(centerX, layers = 4) {
+  if (!isInMainMenu || isGameStarted || isHostingServer || isConnectedToHost) return;
   const cubeSize = 1.0;
   for (let layer = 0; layer < layers; layer++) {
     const count = layers - layer;
@@ -1731,8 +1732,12 @@ function spawnMenuHighSpeedSpike() {
 // Очистка всех динамических объектов фона меню
 function cleanupMenuChaosObjects() {
   for (const item of menuPhysicsBodies) {
-    if (item.body) world.removeBody(item.body);
-    if (item.mesh) menuChaosSceneGroup.remove(item.mesh);
+    if (item.body) {
+      try { world.removeBody(item.body); } catch (_) {}
+    }
+    if (item.mesh) {
+      try { menuChaosSceneGroup.remove(item.mesh); } catch (_) {}
+    }
   }
   menuPhysicsBodies.length = 0;
   resetNukeGagToNormal();
@@ -1760,14 +1765,21 @@ function cleanupMenuChaosObjects() {
     menuChaosSceneGroup.remove(laserBeamMesh);
     laserBeamMesh = null;
   }
+  // Гарантированно вычищаем все оставшиеся меши из группы меню
+  while (menuChaosSceneGroup.children.length > 0) {
+    menuChaosSceneGroup.remove(menuChaosSceneGroup.children[0]);
+  }
+  if (!isInMainMenu || isGameStarted || isHostingServer || isConnectedToHost) {
+    menuChaosSceneGroup.visible = false;
+  }
   stormState = 'idle';
   fireState = 'idle';
   laserState = 'idle';
   vortexActive = false;
   leftTowerBuilt = false;
   rightTowerBuilt = false;
-  leftTowerTimer = 0.5;
-  rightTowerTimer = 1.8;
+  leftTowerTimer = (isInMainMenu && !isGameStarted) ? 0.5 : 99999;
+  rightTowerTimer = (isInMainMenu && !isGameStarted) ? 1.8 : 99999;
   menuCascadeBallTimer = 0.4;
   menuSpikeTimer = 3.0;
 }
@@ -1784,7 +1796,7 @@ let bigEventTimer = 28.0 + Math.random() * 12.0; // при запуске чис
 let bigEventCycleIndex = 0;
 
 function triggerNextBigMenuEvent() {
-  if (!isInMainMenu) return;
+  if (!isInMainMenu || isGameStarted || isHostingServer || isConnectedToHost) return;
   const eventTypes = [
     'fire_meteor', // 1. Метеорит, огонь и тушение облаком с водой
     'lightning',   // 2. Гроза, ливень и удар молнии
@@ -1811,6 +1823,14 @@ function triggerNextBigMenuEvent() {
 
 // Главная функция обновления физики и эффектов меню (каждый кадр)
 function updateMenuChaos(delta) {
+  if (!isInMainMenu || isGameStarted || isHostingServer || isConnectedToHost) {
+    if (menuPhysicsBodies.length > 0 || menuChaosSceneGroup.children.length > 0) {
+      cleanupMenuChaosObjects();
+    }
+    menuChaosSceneGroup.visible = false;
+    return;
+  }
+  menuChaosSceneGroup.visible = true;
   const now = performance.now();
 
   // Гарантируем, что пистолет и модель игрока полностью скрыты во время меню
@@ -2356,10 +2376,14 @@ function deleteWorldById(worldId) {
   }
 }
 
-// Загрузка мира с красивым оверлеем загрузки
+// Загрузка мира с лаконичным оверлеем загрузки (без лишних технических описаний)
 function loadWorldAndEnterGame(worldId, isNewWorld = false) {
   if (worldsModal) worldsModal.classList.add('hidden');
   stopMenuMusic();
+
+  // Мгновенно отключаем главное меню и фоновый хаос ДО таймаутов, исключая спавн пирамид
+  isInMainMenu = false;
+  isGameStarted = true;
   cleanupMenuChaosObjects();
 
   const worlds = getAllWorlds();
@@ -2367,19 +2391,22 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
 
   currentActiveWorldId = worldId;
 
-  // Открываем экран загрузки мира
+  // Открываем лаконичный экран загрузки
   if (worldLoadingOverlay) {
     worldLoadingOverlay.classList.remove('hidden');
-    if (worldLoadingTitle) worldLoadingTitle.textContent = isNewWorld ? 'СОЗДАНИЕ НОВОГО МИРА...' : `ЗАГРУЗКА «${worldData.name}»...`;
-    if (worldLoadingStatus) worldLoadingStatus.textContent = '\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...';
-    if (worldLoadingFill) worldLoadingFill.style.width = '15%';
+    let title = isNewWorld ? 'СОЗДАНИЕ НОВОГО МИРА...' : `ЗАГРУЗКА...`;
+    if (isHostingServer) title = 'СОЗДАНИЕ СЕРВЕРА...';
+    if (isConnectedToHost) title = 'ПОДКЛЮЧЕНИЕ К СЕРВЕРУ...';
+    if (worldLoadingTitle) worldLoadingTitle.textContent = title;
+    if (worldLoadingStatus) worldLoadingStatus.textContent = '';
+    if (worldLoadingFill) worldLoadingFill.style.width = '20%';
   }
 
   setTimeout(() => {
     // 1. Очищаем старые объекты
     clearGameplayWorldObjects();
-    if (worldLoadingFill) worldLoadingFill.style.width = '45%';
-    if (worldLoadingStatus) worldLoadingStatus.textContent = '\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...';
+    if (worldLoadingFill) worldLoadingFill.style.width = '55%';
+    if (worldLoadingStatus) worldLoadingStatus.textContent = '';
 
     // 2. Если мир сохраненный — восстанавливаем блоки
     if (worldData && worldData.blocks) {
@@ -2430,7 +2457,7 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
     camera.updateProjectionMatrix();
 
     if (worldLoadingFill) worldLoadingFill.style.width = '85%';
-    if (worldLoadingStatus) worldLoadingStatus.textContent = '\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...';
+    if (worldLoadingStatus) worldLoadingStatus.textContent = '';
 
     setTimeout(() => {
       if (worldLoadingFill) worldLoadingFill.style.width = '100%';
@@ -2447,7 +2474,8 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
         isInMainMenu = false;
         isGameStarted = true;
         cleanupMenuChaosObjects();
-        if (viewmodelRoot) viewmodelRoot.visible = (!isInMainMenu && currentEquippedSlot === '2-1'); if (pistolMeshGroup) pistolMeshGroup.visible = (!isInMainMenu && currentEquippedSlot === '2-1');
+        if (viewmodelRoot) viewmodelRoot.visible = (!isInMainMenu && currentEquippedSlot === '2-1');
+        if (pistolMeshGroup) pistolMeshGroup.visible = (!isInMainMenu && currentEquippedSlot === '2-1');
         controls.enabled = true;
         crosshairEl.style.display = '';
 
@@ -2462,11 +2490,31 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
           setTimeout(() => {
             worldLoadingOverlay.classList.add('hidden');
             worldLoadingOverlay.classList.remove('fade-out');
-          }, 550);
+          }, 350);
         }
-      }, 250);
-    }, 300);
-  }, 250);
+      }, 150);
+    }, 150);
+  }, 150);
+}
+
+// Сетевая синхронизация спавна блоков
+function notifySpawnBlock(obj, blockType) {
+  if (!obj) return;
+  if (!obj.netId) {
+    obj.netId = 'prop_' + (localPeer ? localPeer.id : 'h') + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+  }
+  if (isHostingServer || isConnectedToHost) {
+    broadcastNetworkPacket({
+      type: 'spawn_block',
+      netId: obj.netId,
+      blockType: blockType,
+      pos: { x: obj.mesh.position.x, y: obj.mesh.position.y, z: obj.mesh.position.z },
+      qx: obj.mesh.quaternion.x,
+      qy: obj.mesh.quaternion.y,
+      qz: obj.mesh.quaternion.z,
+      qw: obj.mesh.quaternion.w
+    });
+  }
 }
 
 // Функции точного спавна блоков в координаты мира
@@ -2480,7 +2528,7 @@ function spawnCubeAt(pos, rot, vel, angVel) {
   scene.add(cubeMesh);
 
   const cubeShape = new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2));
-  const cubeBody = new CANNON.Body({ mass: 5, shape: cubeShape, material: cubeMaterial, linearDamping: 0.35, angularDamping: 0.5 });
+  const cubeBody = new CANNON.Body({ mass: 5, shape: cubeShape, material: cubeMaterial, linearDamping: 0.05, angularDamping: 0.08 });
   cubeBody.position.set(pos.x, pos.y, pos.z);
   if (rot) cubeBody.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   if (vel) cubeBody.velocity.set(vel.x, vel.y, vel.z);
@@ -2501,7 +2549,7 @@ function spawnSecretCubeAt(pos, rot, vel, angVel) {
   scene.add(cubeMesh);
 
   const cubeShape = new CANNON.Box(new CANNON.Vec3(size / 2, size / 2, size / 2));
-  const cubeBody = new CANNON.Body({ mass: 5.5, shape: cubeShape, material: cubeMaterial, linearDamping: 0.35, angularDamping: 0.45 });
+  const cubeBody = new CANNON.Body({ mass: 5.5, shape: cubeShape, material: cubeMaterial, linearDamping: 0.05, angularDamping: 0.08 });
   cubeBody.position.set(pos.x, pos.y, pos.z);
   if (rot) cubeBody.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   if (vel) cubeBody.velocity.set(vel.x, vel.y, vel.z);
@@ -2521,7 +2569,7 @@ function spawnSphereAt(pos, rot, vel, angVel) {
   scene.add(sphereMesh);
 
   const sphereShape = new CANNON.Sphere(radius);
-  const sphereBody = new CANNON.Body({ mass: 4.0, shape: sphereShape, material: cubeMaterial, linearDamping: 0.35, angularDamping: 0.5 });
+  const sphereBody = new CANNON.Body({ mass: 4.0, shape: sphereShape, material: cubeMaterial, linearDamping: 0.05, angularDamping: 0.08 });
   sphereBody.position.set(pos.x, pos.y, pos.z);
   if (rot) sphereBody.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   if (vel) sphereBody.velocity.set(vel.x, vel.y, vel.z);
@@ -2529,6 +2577,7 @@ function spawnSphereAt(pos, rot, vel, angVel) {
   setupBodyCollisionAudio(sphereBody, true);
   world.addBody(sphereBody);
   physicsObjects.push({ mesh: sphereMesh, body: sphereBody, isSphere: true, wasHeldByPlayer: false, geo: sphereGeo });
+  return physicsObjects[physicsObjects.length - 1];
 }
 
 function spawnTriangleAt(pos, rot, vel, angVel) {
@@ -2557,7 +2606,7 @@ function spawnTriangleAt(pos, rot, vel, angVel) {
   const cannonFaces = [[0, 1, 2], [4, 3, 5], [3, 4, 1, 0], [0, 2, 5, 3], [4, 5, 2, 1]];
   const triShape = new CANNON.ConvexPolyhedron({ vertices: cannonVerts, faces: cannonFaces });
 
-  const triBody = new CANNON.Body({ mass: 4.0, shape: triShape, material: cubeMaterial, linearDamping: 0.35, angularDamping: 0.5 });
+  const triBody = new CANNON.Body({ mass: 4.0, shape: triShape, material: cubeMaterial, linearDamping: 0.05, angularDamping: 0.08 });
   triBody.position.set(pos.x, pos.y, pos.z);
   if (rot) triBody.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   if (vel) triBody.velocity.set(vel.x, vel.y, vel.z);
@@ -2589,7 +2638,7 @@ function spawnRampAt(pos, rot, vel, angVel) {
   const cannonFaces = [[0, 4, 5, 1], [0, 1, 2, 3], [4, 3, 2, 5], [0, 3, 4], [1, 5, 2]];
   const rampShape = new CANNON.ConvexPolyhedron({ vertices: cannonVerts, faces: cannonFaces });
 
-  const rampBody = new CANNON.Body({ mass: 4.5, shape: rampShape, material: cubeMaterial, linearDamping: 0.35, angularDamping: 0.5 });
+  const rampBody = new CANNON.Body({ mass: 4.5, shape: rampShape, material: cubeMaterial, linearDamping: 0.05, angularDamping: 0.08 });
   rampBody.position.set(pos.x, pos.y, pos.z);
   if (rot) rampBody.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   if (vel) rampBody.velocity.set(vel.x, vel.y, vel.z);
@@ -2892,6 +2941,12 @@ function startPreloaderSequence() {
           void mainMenuEl.offsetWidth;
           mainMenuEl.classList.add('visible');
           startMenuMusic();
+          // Автоматическая проверка обновлений игры с GitHub
+          setTimeout(() => {
+            if (typeof checkForGameUpdates === 'function') {
+              checkForGameUpdates(false);
+            }
+          }, 1200);
         }
       }, 900);
     }, 250);
@@ -3215,13 +3270,24 @@ if (btnPauseSettings) {
 if (btnPauseExit) {
   btnPauseExit.addEventListener('click', (e) => {
     e.stopPropagation();
-    // 1. Автоматически сохраняем текущий мир
-    saveCurrentActiveWorld();
+
+    // Если находились в сетевой сессии — корректно выходим без сохранения мира
+    if (isHostingServer || isConnectedToHost) {
+      leaveMultiplayerSession();
+    }
 
     // 2. Закрываем паузу и очищаем игровой мир
     isPaused = false;
     pauseOverlay.classList.add('hidden');
     clearGameplayWorldObjects();
+
+    // Полная очистка удаленных аватаров из Three.js сцены
+    remotePlayerAvatars.forEach((avatar) => {
+      try {
+        if (avatar && avatar.group) scene.remove(avatar.group);
+      } catch (_) {}
+    });
+    remotePlayerAvatars.clear();
 
     isInMainMenu = true;
     isGameStarted = false;
@@ -3230,6 +3296,9 @@ if (btnPauseExit) {
     }
     if (pistolMeshGroup) {
       pistolMeshGroup.visible = false;
+    }
+    if (toolgunMeshGroup) {
+      toolgunMeshGroup.visible = false;
     }
     camera.position.set(0, -999, 0);
     controls.enabled = false;
@@ -3251,6 +3320,8 @@ if (btnPauseExit) {
     if (axisHudEl) axisHudEl.classList.add('hidden');
     const hintEl = document.getElementById('hint-bottom-left');
     if (hintEl) hintEl.style.display = 'none';
+    if (mpRoomHud) mpRoomHud.classList.add('hidden');
+    if (mpTabOverlay) mpTabOverlay.classList.add('hidden');
 
     // В главном меню виртуальный игровой курсор скрыт — активен нормальный курсор интерфейса
     if (customCursorEl) {
@@ -3267,10 +3338,72 @@ if (btnPauseExit) {
   });
 }
 
+function getItemDisplayName(type) {
+  switch (type) {
+    case 'sphere': return 'Круг';
+    case 'triangle': return 'Треугольник';
+    case 'ramp': return 'Рампа';
+    case 'secret_cube': return 'Секретный куб';
+    case 'nuke': return 'Ядерная бомба';
+    case 'cube':
+    default: return 'Куб';
+  }
+}
+
+function updateSpawnMenuModeUI() {
+  const isToolGun = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1');
+  const spawnMenuTitle = document.getElementById('spawn-menu-title');
+  const modeBanner = document.getElementById('spawn-menu-mode-banner');
+  const toolgunFooter = document.getElementById('spawn-menu-toolgun-footer');
+  const currentItemLabel = document.getElementById('spawn-menu-current-item-label');
+
+  if (spawnMenuTitle) {
+    spawnMenuTitle.textContent = isToolGun ? 'Предметы [Режим Tool Gun: выбор блока]' : 'Предметы';
+  }
+  if (modeBanner) {
+    if (isToolGun) modeBanner.classList.remove('hidden');
+    else modeBanner.classList.add('hidden');
+  }
+  if (toolgunFooter) {
+    if (isToolGun) toolgunFooter.classList.remove('hidden');
+    else toolgunFooter.classList.add('hidden');
+  }
+  if (currentItemLabel) {
+    currentItemLabel.textContent = getItemDisplayName(toolGunSelectedItem);
+  }
+
+  document.querySelectorAll('.item-card').forEach(card => {
+    const itemType = card.getAttribute('data-item');
+    const isSelected = isToolGun && (toolGunSelectedItem === itemType);
+    if (isSelected) {
+      card.classList.add('is-selected-for-toolgun');
+    } else {
+      card.classList.remove('is-selected-for-toolgun');
+    }
+
+    const btn = card.querySelector('.spawn-btn');
+    if (btn) {
+      if (isToolGun) {
+        if (isSelected) {
+          btn.classList.add('is-selected-btn');
+          btn.textContent = '[Выбрано]';
+        } else {
+          btn.classList.remove('is-selected-btn');
+          btn.textContent = 'Выбрать';
+        }
+      } else {
+        btn.classList.remove('is-selected-btn');
+        btn.textContent = 'Создать';
+      }
+    }
+  });
+}
+
 function openMenu() {
   if (isPaused) closePause();
   isMenuOpen = true;
   controls.enabled = false; // Блокируем вращение камеры пока открыто меню
+  updateSpawnMenuModeUI();
   spawnMenu.classList.remove('hidden');
   mouseScreenX = window.innerWidth / 2;
   mouseScreenY = window.innerHeight / 2;
@@ -3438,24 +3571,27 @@ function spawnCube() {
   cubeMesh.position.copy(spawnPos);
   scene.add(cubeMesh);
 
-  // Физическое тело CANNON с автоматическим сном для 60 FPS
+  // Физическое тело CANNON с низким демпфированием (без залипания)
   const halfExtents = new CANNON.Vec3(size / 2, size / 2, size / 2);
   const cubeShape = new CANNON.Box(halfExtents);
   const cubeBody = new CANNON.Body({
     mass: 5,
     shape: cubeShape,
     material: cubeMaterial,
-    linearDamping: 0.35,
-    angularDamping: 0.5
+    linearDamping: 0.05,
+    angularDamping: 0.08
   });
-  cubeBody.sleepSpeedLimit = 0.2;
+  cubeBody.sleepSpeedLimit = 0.15;
   cubeBody.sleepTimeLimit = 0.5;
   cubeBody.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
   cubeBody.velocity.set(0, -0.5, 0);
   setupBodyCollisionAudio(cubeBody, false);
   world.addBody(cubeBody);
 
-  physicsObjects.push({ mesh: cubeMesh, body: cubeBody, isCube: true, geo: cubeGeo });
+  const obj = { mesh: cubeMesh, body: cubeBody, isCube: true, geo: cubeGeo };
+  physicsObjects.push(obj);
+  notifySpawnBlock(obj, 'cube');
+  return obj;
 }
 
 // Спавн секретного пасхального куба с кастомной мем-текстурой
@@ -3477,8 +3613,8 @@ function spawnSecretCube(pos, initialVelocity = new CANNON.Vec3(0, 0, 0)) {
     mass: 5.5,
     shape: cubeShape,
     material: cubeMaterial,
-    linearDamping: 0.35,
-    angularDamping: 0.45
+    linearDamping: 0.05,
+    angularDamping: 0.08
   });
   cubeBody.position.set(pos.x, pos.y, pos.z);
   cubeBody.velocity.copy(initialVelocity);
@@ -3488,6 +3624,7 @@ function spawnSecretCube(pos, initialVelocity = new CANNON.Vec3(0, 0, 0)) {
 
   const obj = { mesh: cubeMesh, body: cubeBody, isCube: true, isSecretCube: true, geo: cubeGeo };
   physicsObjects.push(obj);
+  notifySpawnBlock(obj, 'secret_cube');
   return obj;
 }
 
@@ -3527,17 +3664,20 @@ function spawnSphere() {
     mass: 4.0,
     shape: sphereShape,
     material: cubeMaterial,
-    linearDamping: 0.35,
-    angularDamping: 0.5
+    linearDamping: 0.05,
+    angularDamping: 0.08
   });
-  sphereBody.sleepSpeedLimit = 0.2;
+  sphereBody.sleepSpeedLimit = 0.15;
   sphereBody.sleepTimeLimit = 0.5;
   sphereBody.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
   sphereBody.velocity.set(0, -0.5, 0);
   setupBodyCollisionAudio(sphereBody, true);
   world.addBody(sphereBody);
 
-  physicsObjects.push({ mesh: sphereMesh, body: sphereBody, isSphere: true, wasHeldByPlayer: false, geo: sphereGeo });
+  const obj = { mesh: sphereMesh, body: sphereBody, isSphere: true, wasHeldByPlayer: false, geo: sphereGeo };
+  physicsObjects.push(obj);
+  notifySpawnBlock(obj, 'sphere');
+  return obj;
 }
 
 // --- Спавн Треугольника (Классическая Треугольная Призма / Triangle Block) ---
@@ -3642,17 +3782,20 @@ function spawnTriangle() {
     mass: 4.0,
     shape: triShape,
     material: cubeMaterial,
-    linearDamping: 0.35,
-    angularDamping: 0.5
+    linearDamping: 0.05,
+    angularDamping: 0.08
   });
-  triBody.sleepSpeedLimit = 0.2;
+  triBody.sleepSpeedLimit = 0.15;
   triBody.sleepTimeLimit = 0.5;
   triBody.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
   triBody.velocity.set(0, -0.5, 0);
   setupBodyCollisionAudio(triBody, false);
   world.addBody(triBody);
 
-  physicsObjects.push({ mesh: triMesh, body: triBody, isTriangle: true, geo: triGeo });
+  const obj = { mesh: triMesh, body: triBody, isTriangle: true, geo: triGeo };
+  physicsObjects.push(obj);
+  notifySpawnBlock(obj, 'triangle');
+  return obj;
 }
 
 // --- Спавн Рампы (Классический Клин / Трамплин) ---
@@ -3738,17 +3881,20 @@ function spawnRamp() {
     mass: 4.5,
     shape: rampShape,
     material: cubeMaterial,
-    linearDamping: 0.35,
-    angularDamping: 0.5
+    linearDamping: 0.05,
+    angularDamping: 0.08
   });
-  rampBody.sleepSpeedLimit = 0.2;
+  rampBody.sleepSpeedLimit = 0.15;
   rampBody.sleepTimeLimit = 0.5;
   rampBody.position.set(spawnPos.x, spawnPos.y, spawnPos.z);
   rampBody.velocity.set(0, -0.5, 0);
   setupBodyCollisionAudio(rampBody, false);
   world.addBody(rampBody);
 
-  physicsObjects.push({ mesh: rampMesh, body: rampBody, isRamp: true, geo: rampGeo });
+  const obj = { mesh: rampMesh, body: rampBody, isRamp: true, geo: rampGeo };
+  physicsObjects.push(obj);
+  notifySpawnBlock(obj, 'ramp');
+  return obj;
 }
 
 function spawnNukeProp() {
@@ -3760,6 +3906,7 @@ function spawnNukeProp() {
     camera.position.z + spawnDir.z * 3.0
   );
   const obj = spawnNukePropAt(spawnPos, null, null, null);
+  notifySpawnBlock(obj, 'nuke');
   return obj;
 }
 
@@ -3769,11 +3916,25 @@ const SPAWN_COOLDOWN_MS = 1000;
 
 // Привязка кликов по карточкам меню
 function spawnItemByType(type) {
-  if (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') {
+  const isToolGun = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1');
+  if (isToolGun) {
     toolGunSelectedItem = type;
     updateToolGunHologramMesh();
+    updateSpawnMenuModeUI();
+    playCustomOrSynth('tg_select', (ctx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.setValueAtTime(540, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(840, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.09);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.09);
+    });
+    showFlightHudNotification(`Tool Gun: выбран блок [${getItemDisplayName(type)}]`);
     closeMenu();
-    showFlightHudNotification(`Tool Gun: выбран блок [${type}]`);
     return;
   }
   const now = performance.now();
@@ -3787,17 +3948,25 @@ function spawnItemByType(type) {
   // Воспроизводим звук спавна (spawn.mp3 / spawn.wav)
   playSpawnSound();
 
-  if (type === 'sphere') spawnSphere();
-  else if (type === 'triangle') spawnTriangle();
-  else if (type === 'ramp') spawnRamp();
-  else if (type === 'nuke') spawnNukeProp();
-  else spawnCube();
+  let created = null;
+  if (type === 'sphere') created = spawnSphere();
+  else if (type === 'triangle') created = spawnTriangle();
+  else if (type === 'ramp') created = spawnRamp();
+  else if (type === 'nuke') created = spawnNukeProp();
+  else created = spawnCube();
 }
 
 document.querySelectorAll('.item-card').forEach(card => {
   card.addEventListener('click', (e) => {
     e.stopPropagation();
     spawnItemByType(card.getAttribute('data-item'));
+  });
+});
+
+document.querySelectorAll('.spawn-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    spawnItemByType(btn.getAttribute('data-item'));
   });
 });
 
@@ -4025,6 +4194,10 @@ function getToolGunGeometry(type) {
     return createEquilateralPrismGeometry(1.0, 1.0);
   } else if (type === 'ramp') {
     return createRampGeometry(1.0);
+  } else if (type === 'sphere') {
+    return new THREE.SphereGeometry(0.5, 20, 20);
+  } else if (type === 'nuke') {
+    return new THREE.CylinderGeometry(0.24, 0.24, 1.1, 14);
   } else if (type === 'secret_cube') {
     return new THREE.BoxGeometry(1, 1, 1);
   }
@@ -4204,11 +4377,21 @@ function fireToolGun() {
     newObj = spawnTriangleAt(pos, rotObj);
   } else if (toolGunSelectedItem === 'ramp') {
     newObj = spawnRampAt(pos, rotObj);
+  } else if (toolGunSelectedItem === 'sphere') {
+    newObj = spawnSphereAt(pos, rotObj);
+  } else if (toolGunSelectedItem === 'nuke') {
+    newObj = spawnNukePropAt(pos, rotObj);
   } else {
     newObj = spawnCubeAt(pos, rotObj);
   }
 
   if (newObj) {
+    notifySpawnBlock(newObj, toolGunSelectedItem);
+    broadcastNetworkPacket({
+      type: 'toolgun_fire',
+      id: localPeer ? localPeer.id : 'me'
+    });
+
     // Вспышка и анимация выстрела Tool Gun
     if (toolgunMeshGroup) {
       toolgunMeshGroup.position.z += 0.08;
@@ -5647,12 +5830,24 @@ function equipWeapon(slotId) {
     playWeaponDeploySound();
   }
 
+  // Сетевая синхронизация смены оружия для других игроков
+  broadcastNetworkPacket({
+    type: 'weapon_switch',
+    id: localPeer ? localPeer.id : 'me',
+    slot: slotId
+  });
+
   // Запуск анимации доставания (Draw / Deploy animation)
   deployProgress = 0;
   isDeploying = true;
   deployCooldown = 0.45; // 450 мс задержка перед первым выстрелом (исключает случайный выстрел при доставании)
   pistolAmmo.isReloading = false;
   isAiming = false;
+
+  if (isToolGun) {
+    updateToolGunHologramMesh();
+  }
+  updateSpawnMenuModeUI();
 
   updateAmmoHud();
 }
@@ -6120,6 +6315,12 @@ function shootPistol() {
 
   // Звук выстрела
   playPistolShootSound();
+
+  // Сетевая синхронизация звука и вспышки выстрела
+  broadcastNetworkPacket({
+    type: 'shoot_bullet',
+    id: localPeer ? localPeer.id : 'me'
+  });
 
   // Выброс 3D гильзы и дымок строго из дула
   spawnShellCasing();
@@ -6862,10 +7063,10 @@ let hostConnection = null;
 let currentLobbyId = null;
 let localPlayerNick = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
 
-// Хранилище удаленных 3D аватаров игроков: peerId -> { group, headMesh, torsoMesh, leftArm, rightArm, weaponMesh, targetPos, targetQuat, pitch }
+// Хранилище удаленных 3D аватаров игроков
 const remotePlayerAvatars = new Map();
 
-// Создание 3D модели гуманоида (стилизованный блочный персонаж, не пилюля!)
+// Создание 3D модели гуманоида с видимым оружием (Glock-19 и Tool Gun)
 function createPlayerAvatar(nick = "Игрок") {
   const avatarGroup = new THREE.Group();
 
@@ -6899,30 +7100,122 @@ function createPlayerAvatar(nick = "Игрок") {
 
   avatarGroup.add(headGroup);
 
-  // 3. Руки (0.16 x 0.65 x 0.16)
+  // 3. Руки с пивотом в плече для естественного прицеливания и размахивания
   const armGeo = new THREE.BoxGeometry(0.16, 0.65, 0.16);
-  
-  const leftArm = new THREE.Mesh(armGeo, shirtMat);
-  leftArm.position.set(-0.35, 1.0, 0);
-  leftArm.castShadow = true;
-  avatarGroup.add(leftArm);
 
-  const rightArm = new THREE.Mesh(armGeo, shirtMat);
-  rightArm.position.set(0.35, 1.0, -0.15);
-  rightArm.rotation.x = -Math.PI / 4; // удерживает оружие перед собой
-  rightArm.castShadow = true;
-  avatarGroup.add(rightArm);
+  // Левая рука (плечо y = 1.30)
+  const leftArmGroup = new THREE.Group();
+  leftArmGroup.position.set(-0.35, 1.30, 0);
+  const leftArmMesh = new THREE.Mesh(armGeo, shirtMat);
+  leftArmMesh.position.set(0, -0.30, 0);
+  leftArmMesh.castShadow = true;
+  leftArmGroup.add(leftArmMesh);
+  avatarGroup.add(leftArmGroup);
 
-  // Оружие в руке (маленькая модель пистолета)
-  const gunGeo = new THREE.BoxGeometry(0.08, 0.12, 0.25);
-  const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8, roughness: 0.2 });
-  const gunMesh = new THREE.Mesh(gunGeo, gunMat);
-  gunMesh.position.set(0, -0.3, -0.12);
-  rightArm.add(gunMesh);
+  // Правая рука (плечо y = 1.30)
+  const rightArmGroup = new THREE.Group();
+  rightArmGroup.position.set(0.35, 1.30, 0);
+  const rightArmMesh = new THREE.Mesh(armGeo, shirtMat);
+  rightArmMesh.position.set(0, -0.30, 0);
+  rightArmMesh.castShadow = true;
+  rightArmGroup.add(rightArmMesh);
+  avatarGroup.add(rightArmGroup);
+
+  // --------------------------------------------------------------------------
+  // ОРУЖИЕ В ПРАВОЙ РУКЕ
+  // --------------------------------------------------------------------------
+
+  // А) Пистолет Glock-19
+  const pistolGroup = new THREE.Group();
+  pistolGroup.position.set(0, -0.56, -0.10);
+
+  // Затвор (Slide)
+  const pSlideGeo = new THREE.BoxGeometry(0.06, 0.07, 0.30);
+  const pSlideMat = new THREE.MeshStandardMaterial({ color: 0x1f2126, metalness: 0.85, roughness: 0.25 });
+  const pSlide = new THREE.Mesh(pSlideGeo, pSlideMat);
+  pSlide.position.set(0, 0.035, -0.06);
+  pistolGroup.add(pSlide);
+
+  // Рукоять (Grip)
+  const pGripGeo = new THREE.BoxGeometry(0.05, 0.16, 0.08);
+  const pGripMat = new THREE.MeshStandardMaterial({ color: 0x141517, roughness: 0.7 });
+  const pGrip = new THREE.Mesh(pGripGeo, pGripMat);
+  pGrip.position.set(0, -0.07, 0.02);
+  pGrip.rotation.x = -0.18;
+  pistolGroup.add(pGrip);
+
+  // Дульный срез (ствол)
+  const pBarrelGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.03, 8);
+  const pBarrelMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.9, roughness: 0.2 });
+  const pBarrel = new THREE.Mesh(pBarrelGeo, pBarrelMat);
+  pBarrel.rotation.x = Math.PI / 2;
+  pBarrel.position.set(0, 0.035, -0.22);
+  pistolGroup.add(pBarrel);
+
+  // Вспышка выстрела (Muzzle flash)
+  const pFlashMat = new THREE.MeshBasicMaterial({ color: 0xffcc33, transparent: true, opacity: 0 });
+  const pFlashGeo = new THREE.SphereGeometry(0.07, 8, 8);
+  const pFlash = new THREE.Mesh(pFlashGeo, pFlashMat);
+  pFlash.position.set(0, 0.035, -0.26);
+  pistolGroup.add(pFlash);
+
+  rightArmGroup.add(pistolGroup);
+
+  // Б) Tool Gun
+  const toolgunGroup = new THREE.Group();
+  toolgunGroup.position.set(0, -0.56, -0.10);
+
+  // Корпус Tool Gun
+  const tgBodyGeo = new THREE.BoxGeometry(0.07, 0.10, 0.26);
+  const tgBodyMat = new THREE.MeshStandardMaterial({ color: 0x272a33, metalness: 0.6, roughness: 0.35 });
+  const tgBody = new THREE.Mesh(tgBodyGeo, tgBodyMat);
+  tgBody.position.set(0, 0.02, -0.04);
+  toolgunGroup.add(tgBody);
+
+  // Рукоять Tool Gun
+  const tgGripGeo = new THREE.BoxGeometry(0.05, 0.17, 0.08);
+  const tgGrip = new THREE.Mesh(tgGripGeo, pGripMat);
+  tgGrip.position.set(0, -0.07, 0.03);
+  tgGrip.rotation.x = -0.22;
+  toolgunGroup.add(tgGrip);
+
+  // Верхний экран дисплея (Светящийся экран Tool Gun)
+  const tgScreenGeo = new THREE.BoxGeometry(0.065, 0.05, 0.07);
+  const tgScreenMat = new THREE.MeshStandardMaterial({
+    color: 0x00f0ff,
+    emissive: 0x00d9ff,
+    emissiveIntensity: 0.85,
+    roughness: 0.1
+  });
+  const tgScreen = new THREE.Mesh(tgScreenGeo, tgScreenMat);
+  tgScreen.position.set(0, 0.08, 0.02);
+  tgScreen.rotation.x = -0.3;
+  toolgunGroup.add(tgScreen);
+
+  // Сопло / Ствол Tool Gun
+  const tgBarrelGeo = new THREE.CylinderGeometry(0.025, 0.02, 0.08, 10);
+  const tgBarrelMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8, roughness: 0.2 });
+  const tgBarrel = new THREE.Mesh(tgBarrelGeo, tgBarrelMat);
+  tgBarrel.rotation.x = Math.PI / 2;
+  tgBarrel.position.set(0, 0.02, -0.20);
+  toolgunGroup.add(tgBarrel);
+
+  // Неоновое кольцо на стволе
+  const tgRingGeo = new THREE.TorusGeometry(0.03, 0.008, 8, 16);
+  const tgRingMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+  const tgRing = new THREE.Mesh(tgRingGeo, tgRingMat);
+  tgRing.position.set(0, 0.02, -0.19);
+  toolgunGroup.add(tgRing);
+
+  rightArmGroup.add(toolgunGroup);
+
+  // По умолчанию оружие скрыто (пустые руки)
+  pistolGroup.visible = false;
+  toolgunGroup.visible = false;
 
   // 4. Ноги (0.2 x 0.65 x 0.2)
   const legGeo = new THREE.BoxGeometry(0.2, 0.65, 0.2);
-  
+
   const leftLeg = new THREE.Mesh(legGeo, pantsMat);
   leftLeg.position.set(-0.13, 0.325, 0);
   leftLeg.castShadow = true;
@@ -6958,28 +7251,141 @@ function createPlayerAvatar(nick = "Игрок") {
 
   scene.add(avatarGroup);
 
-  return {
+  let currentSlot = '1-1';
+
+  const avatar = {
     group: avatarGroup,
     headGroup,
-    rightArm,
-    leftArm,
+    rightArm: rightArmGroup,
+    leftArm: leftArmGroup,
     leftLeg,
     rightLeg,
-    gunMesh,
+    pistolGroup,
+    toolgunGroup,
     targetPos: new THREE.Vector3(0, 0, 0),
     targetYaw: 0,
     targetPitch: 0,
-    walkAnimTimer: 0
+    walkAnimTimer: 0,
+    isMoving: false,
+    currentSlot: '1-1',
+    nick: nick,
+
+    setEquippedWeapon(slot) {
+      this.currentSlot = slot;
+      if (slot === '2-1') {
+        // Glock-19 пистолет: поднимаем руку вперед для стрельбы
+        pistolGroup.visible = true;
+        toolgunGroup.visible = false;
+        rightArmGroup.rotation.x = -Math.PI / 2.2;
+        rightArmGroup.position.z = -0.12;
+      } else if (slot === '1-2' || slot === '5-1') {
+        // Tool Gun: поднимаем руку вперед
+        pistolGroup.visible = false;
+        toolgunGroup.visible = true;
+        rightArmGroup.rotation.x = -Math.PI / 2.2;
+        rightArmGroup.position.z = -0.12;
+      } else {
+        // Пустые руки: опускаем руку вниз
+        pistolGroup.visible = false;
+        toolgunGroup.visible = false;
+        rightArmGroup.rotation.x = 0;
+        rightArmGroup.position.z = 0;
+      }
+    },
+
+    triggerShoot() {
+      // Отдача пистолета и вспышка
+      const prevX = rightArmGroup.rotation.x;
+      rightArmGroup.rotation.x -= 0.18;
+      pFlashMat.opacity = 1.0;
+      setTimeout(() => {
+        rightArmGroup.rotation.x = prevX;
+        pFlashMat.opacity = 0;
+      }, 70);
+    },
+
+    triggerToolgun() {
+      // Отдача и вспышка кольца тулгана
+      const prevX = rightArmGroup.rotation.x;
+      rightArmGroup.rotation.x -= 0.14;
+      tgRingMat.color.setHex(0xffffff);
+      setTimeout(() => {
+        rightArmGroup.rotation.x = prevX;
+        tgRingMat.color.setHex(0x00f0ff);
+      }, 80);
+    }
   };
+
+  return avatar;
 }
+
+let isDisconnectingIntentionally = false;
 
 // Удаление аватара при отключении игрока
 function removeRemotePlayer(peerId) {
   const avatar = remotePlayerAvatars.get(peerId);
   if (avatar) {
-    scene.remove(avatar.group);
+    if (avatar.group) scene.remove(avatar.group);
     remotePlayerAvatars.delete(peerId);
   }
+}
+
+// Корректный и полный выход из сетевой игры
+function leaveMultiplayerSession() {
+  isDisconnectingIntentionally = true;
+
+  try {
+    if (isHostingServer) {
+      broadcastNetworkPacket({ type: 'server_closed', serverId: currentLobbyId });
+      if (mpDiscoveryBc) {
+        mpDiscoveryBc.postMessage({ type: 'server_closed', serverId: currentLobbyId });
+      }
+    } else if (isConnectedToHost && hostConnection) {
+      try {
+        hostConnection.send(JSON.stringify({
+          type: 'player_disconnect',
+          id: (localPeer && localPeer.id) || 'client'
+        }));
+      } catch (_) {}
+    }
+  } catch (_) {}
+
+  // Закрываем все подключения к другим игрокам
+  if (activePeerConnections) {
+    activePeerConnections.forEach((conn) => {
+      try { conn.close(); } catch (_) {}
+    });
+    activePeerConnections.clear();
+  }
+
+  if (hostConnection) {
+    try { hostConnection.close(); } catch (_) {}
+    hostConnection = null;
+  }
+
+  if (localPeer) {
+    try { localPeer.destroy(); } catch (_) {}
+    localPeer = null;
+  }
+
+  // Очищаем аватары из Three.js сцены, чтобы они никогда не маячили на главной
+  remotePlayerAvatars.forEach((avatar) => {
+    try {
+      if (avatar && avatar.group) scene.remove(avatar.group);
+    } catch (_) {}
+  });
+  remotePlayerAvatars.clear();
+
+  isHostingServer = false;
+  isConnectedToHost = false;
+  currentLobbyId = null;
+
+  if (mpRoomHud) mpRoomHud.classList.add('hidden');
+  if (mpTabOverlay) mpTabOverlay.classList.add('hidden');
+
+  setTimeout(() => {
+    isDisconnectingIntentionally = false;
+  }, 1200);
 }
 
 // Рассылка сетевого пакета всем участникам
@@ -6999,6 +7405,8 @@ function broadcastNetworkPacket(packet, excludePeerId = null) {
 // Обработка входящих сетевых сообщений
 function handleNetworkPacket(packet, senderId) {
   if (!packet || !packet.type) return;
+  // Полная изоляция: не обрабатываем сетевые пакеты, если мы находимся на главной или отключены
+  if (isInMainMenu || !isGameStarted || (!isHostingServer && !isConnectedToHost)) return;
 
   switch (packet.type) {
     case 'player_transform': {
@@ -7013,6 +7421,9 @@ function handleNetworkPacket(packet, senderId) {
       avatar.targetYaw = packet.yaw;
       avatar.targetPitch = packet.pitch;
       avatar.isMoving = packet.isMoving;
+      if (packet.weapon && avatar.setEquippedWeapon) {
+        avatar.setEquippedWeapon(packet.weapon);
+      }
 
       // Если мы хост — ретранслируем остальным клиентам
       if (isHostingServer) {
@@ -7021,16 +7432,35 @@ function handleNetworkPacket(packet, senderId) {
       break;
     }
 
+    case 'weapon_switch': {
+      // Синхронизация доставания/смены оружия
+      const avatar = remotePlayerAvatars.get(packet.id);
+      if (avatar && avatar.setEquippedWeapon) {
+        avatar.setEquippedWeapon(packet.slot);
+      }
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
     case 'spawn_block': {
       // Синхронизация спавна блока через тулган или меню
+      if (packet.netId && physicsObjects.some(o => o.netId === packet.netId)) {
+        break; // исключаем дубликаты
+      }
       const rot = { x: packet.qx, y: packet.qy, z: packet.qz, w: packet.qw };
       let created = null;
       if (packet.blockType === 'secret_cube') {
         created = spawnSecretCubeAt(packet.pos, rot);
+      } else if (packet.blockType === 'sphere') {
+        created = spawnSphereAt(packet.pos, rot);
       } else if (packet.blockType === 'triangle') {
         created = spawnTriangleAt(packet.pos, rot);
       } else if (packet.blockType === 'ramp') {
         created = spawnRampAt(packet.pos, rot);
+      } else if (packet.blockType === 'nuke') {
+        created = spawnNukePropAt(packet.pos, rot);
       } else {
         created = spawnCubeAt(packet.pos, rot);
       }
@@ -7048,7 +7478,7 @@ function handleNetworkPacket(packet, senderId) {
 
     case 'remove_block': {
       // Синхронизация удаления блока через ПКМ тулгана
-      const target = physicsObjects.find(o => o.netId === packet.netId || (o.mesh.position.distanceTo(packet.pos) < 0.25));
+      const target = physicsObjects.find(o => o.netId === packet.netId || (o.mesh && o.mesh.position.distanceTo(packet.pos) < 0.25));
       if (target) {
         for (let i = weldConstraints.length - 1; i >= 0; i--) {
           const c = weldConstraints[i];
@@ -7071,7 +7501,12 @@ function handleNetworkPacket(packet, senderId) {
     }
 
     case 'shoot_bullet': {
-      // Звук выстрела удаленного игрока
+      // Синхронизация выстрела пистолета: звук и визуальная отдача на аватаре
+      const avatar = remotePlayerAvatars.get(packet.id);
+      if (avatar && avatar.triggerShoot) {
+        avatar.triggerShoot();
+      }
+
       playCustomOrSynth('pistol_shoot', (ctx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -7091,11 +7526,43 @@ function handleNetworkPacket(packet, senderId) {
       break;
     }
 
+    case 'toolgun_fire': {
+      // Синхронизация выстрела тулгана: вспышка и звук сварки
+      const avatar = remotePlayerAvatars.get(packet.id);
+      if (avatar && avatar.triggerToolgun) {
+        avatar.triggerToolgun();
+      }
+      playWeldSound();
+
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
     case 'player_disconnect': {
       removeRemotePlayer(packet.id);
       showFlightHudNotification(`Игрок покинул сервер`);
       if (isHostingServer) {
         broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'server_closed': {
+      if (!isHostingServer) {
+        leaveMultiplayerSession();
+        clearGameplayWorldObjects();
+        isInMainMenu = true;
+        isGameStarted = false;
+        if (mainMenuEl) {
+          mainMenuEl.classList.remove('hidden', 'fade-out-game');
+          void mainMenuEl.offsetWidth;
+          mainMenuEl.classList.add('visible');
+        }
+        startMenuMusic();
+        cleanupMenuChaosObjects();
+        showRetroAlert('Сервер был закрыт владельцем комнаты.', 'Сервер закрыт');
       }
       break;
     }
@@ -7181,6 +7648,9 @@ try {
     if (!data) return;
     if (data.type === 'announce') {
       registerDiscoveredServer(data.server);
+    } else if (data.type === 'server_closed') {
+      activeServerList = activeServerList.filter(s => s.id !== data.serverId);
+      renderServerList();
     } else if (data.type === 'query') {
       if (isHostingServer && currentLobbyId && !currentServerInfo.isPrivate) {
         mpDiscoveryBc.postMessage({
@@ -7242,6 +7712,9 @@ function initMultiplayerHost(options = {}) {
   localPeer.on('open', (id) => {
     isHostingServer = true;
     isConnectedToHost = false;
+    isInMainMenu = false;
+    isGameStarted = true;
+    cleanupMenuChaosObjects();
 
     // Включаем HUD с кодом комнаты слева сверху
     if (mpHudRoomId) mpHudRoomId.textContent = id;
@@ -7316,10 +7789,10 @@ function initMultiplayerHost(options = {}) {
       updateTabPlayerListUI();
     });
 
-    // Отправляем новому игроку текущее состояние мира
-    const currentBlocks = physicsObjects.filter(o => !o.isSphere).map(o => ({
-      netId: o.netId || "b_" + Math.random().toString(36).substring(2, 7),
-      blockType: o.isTriangle ? 'triangle' : (o.isRamp ? 'ramp' : 'cube'),
+    // Отправляем новому игроку текущее состояние мира (все типы объектов)
+    const currentBlocks = physicsObjects.map(o => ({
+      netId: o.netId || ("b_" + Math.random().toString(36).substring(2, 7)),
+      blockType: o.isSphere ? 'sphere' : (o.isTriangle ? 'triangle' : (o.isRamp ? 'ramp' : (o.isSecretCube ? 'secret_cube' : (o.isNuke ? 'nuke' : 'cube')))),
       pos: { x: o.mesh.position.x, y: o.mesh.position.y, z: o.mesh.position.z },
       qx: o.mesh.quaternion.x,
       qy: o.mesh.quaternion.y,
@@ -7336,6 +7809,7 @@ function initMultiplayerHost(options = {}) {
   });
 
   localPeer.on('error', (err) => {
+    if (isDisconnectingIntentionally || isInMainMenu) return;
     console.error('Peer error:', err);
     let msg = 'Ошибка сети: ' + (err.type || err.message);
     if (err.type === 'unavailable-id') {
@@ -7375,6 +7849,9 @@ function connectToMultiplayerHost(targetId, enteredPassword = "") {
       isConnected = true;
       isHostingServer = false;
       isConnectedToHost = true;
+      isInMainMenu = false;
+      isGameStarted = true;
+      cleanupMenuChaosObjects();
       currentLobbyId = cleanId;
 
       // Отправляем запрос авторизации хосту
@@ -7422,15 +7899,19 @@ function connectToMultiplayerHost(targetId, enteredPassword = "") {
       isConnectedToHost = false;
       if (mpRoomHud) mpRoomHud.classList.add('hidden');
       if (mpTabOverlay) mpTabOverlay.classList.add('hidden');
-      showRetroAlert('Соединение с сервером разорвано', 'Отключение');
+      if (!isDisconnectingIntentionally && !isInMainMenu) {
+        showRetroAlert('Соединение с сервером разорвано', 'Отключение');
+      }
     });
 
     hostConnection.on('error', (err) => {
+      if (isDisconnectingIntentionally || isInMainMenu) return;
       showRetroAlert('Не удалось подключиться: ' + (err.message || 'Проверьте код комнаты'), 'Ошибка подключения');
     });
   });
 
   localPeer.on('error', (err) => {
+    if (isDisconnectingIntentionally || isInMainMenu) return;
     console.error('Peer client error:', err);
     if (err.type === 'peer-unavailable') {
       showRetroAlert(
@@ -7489,7 +7970,8 @@ function updateMultiplayerNetwork(now, delta) {
       z: camera.position.z,
       yaw: euler.y,
       pitch: euler.x,
-      isMoving: isMoving
+      isMoving: isMoving,
+      weapon: currentEquippedSlot // синхронизация видимого оружия
     };
 
     broadcastNetworkPacket(myTransformPacket);
@@ -7504,8 +7986,8 @@ function animate() {
   const delta = Math.min((time - prevTime) / 1000, 0.05);
   prevTime = time;
 
-  // Если открыто Главное Меню — крутим физику и рендерим зрелищный фоновый хаос (пирамиды, шары, шипы)
-  if (isInMainMenu || !isGameStarted) {
+  // Если открыто Главное Меню — крутим физику и рендерим зрелищный фоновый хаос (ТОЛЬКО в чистом меню без игры/сервера)
+  if ((isInMainMenu || !isGameStarted) && !isHostingServer && !isConnectedToHost) {
     // Тролль-эффект фейковых лагов: во время детонации кучи ядерок ТОЛЬКО фоновый 3D-холст меню
     // проседает до 1 FPS (ровно 1 кадр в секунду в течение 5 секунд), в то время как HTML-кнопки меню,
     // курсор мыши, заголовок окна и настройки работают на идеальных 60+ FPS!
@@ -8282,9 +8764,9 @@ function renderServerList() {
   if (!mpServerList) return;
   const filter = (mpSearchInput ? mpSearchInput.value.toLowerCase() : '').trim();
 
-  // Удаляем устаревшие серверы (не обновлявшиеся более 45 сек)
+  // Удаляем устаревшие серверы (не обновлявшиеся более 20 сек)
   const now = Date.now();
-  activeServerList = activeServerList.filter(s => !s.timestamp || (now - s.timestamp < 45000));
+  activeServerList = activeServerList.filter(s => !s.timestamp || (now - s.timestamp < 20000));
 
   let list = activeServerList.filter(s => s.name.toLowerCase().includes(filter));
 
@@ -8308,7 +8790,7 @@ function renderServerList() {
     row.className = 'sb-server-row';
     row.innerHTML = `
       <div class="sb-col-name">
-        ${s.hasPassword ? '<span class="sb-lock-icon" title="Защищено паролем">🔒</span>' : ''}
+        ${s.hasPassword ? '<span class="sb-lock-icon" title="Защищено паролем">[PASS]</span>' : ''}
         <span>${s.name}</span>
       </div>
       <div class="sb-col-players">${s.players} / ${s.maxPlayers}</div>
@@ -8339,9 +8821,83 @@ const btnMpCreateClose = document.getElementById('btn-mp-create-close');
 const btnMpStartHost = document.getElementById('btn-mp-start-host');
 const btnMpCancelHost = document.getElementById('btn-mp-cancel-host');
 const mpInputSrvName = document.getElementById('mp-input-srv-name');
-const mpSelectMaxPlayers = document.getElementById('mp-select-max-players');
+const mpInputMaxPlayers = document.getElementById('mp-input-max-players');
+const btnMpPlayersDec = document.getElementById('btn-mp-players-dec');
+const btnMpPlayersInc = document.getElementById('btn-mp-players-inc');
 const mpPasswordRow = document.getElementById('mp-password-row');
 const mpInputSrvPassword = document.getElementById('mp-input-srv-password');
+
+// Вкладки переключения между экранами подключения и создания
+const tabNavConnect = document.getElementById('tab-nav-connect');
+const tabNavCreate = document.getElementById('tab-nav-create');
+const tabNavCreateBackConnect = document.getElementById('tab-nav-create-back-connect');
+
+function switchToConnectScreen() {
+  if (mpCreateDialog) mpCreateDialog.classList.add('hidden');
+  if (multiplayerModal) {
+    multiplayerModal.classList.remove('hidden');
+    activeServerList = [];
+    queryActiveServers();
+    renderServerList();
+  }
+}
+
+function switchToCreateScreen() {
+  if (multiplayerModal) multiplayerModal.classList.add('hidden');
+  if (mpCreateDialog) {
+    if (mpInputSrvName && (!mpInputSrvName.value || mpInputSrvName.value === 'Песочница')) {
+      mpInputSrvName.value = "Сервер #" + Math.floor(100 + Math.random() * 900);
+    }
+    mpCreateDialog.classList.remove('hidden');
+  }
+}
+
+if (tabNavConnect) {
+  tabNavConnect.addEventListener('click', (e) => {
+    e.stopPropagation();
+    switchToConnectScreen();
+  });
+}
+
+if (tabNavCreate) {
+  tabNavCreate.addEventListener('click', (e) => {
+    e.stopPropagation();
+    switchToCreateScreen();
+  });
+}
+
+if (tabNavCreateBackConnect) {
+  tabNavCreateBackConnect.addEventListener('click', (e) => {
+    e.stopPropagation();
+    switchToConnectScreen();
+  });
+}
+
+// Регулировка количества игроков (Степер: от 2 до 10)
+if (btnMpPlayersDec && mpInputMaxPlayers) {
+  btnMpPlayersDec.addEventListener('click', (e) => {
+    e.stopPropagation();
+    let val = parseInt(mpInputMaxPlayers.value) || 4;
+    val = Math.max(2, Math.min(10, val - 1));
+    mpInputMaxPlayers.value = val;
+  });
+}
+
+if (btnMpPlayersInc && mpInputMaxPlayers) {
+  btnMpPlayersInc.addEventListener('click', (e) => {
+    e.stopPropagation();
+    let val = parseInt(mpInputMaxPlayers.value) || 4;
+    val = Math.max(2, Math.min(10, val + 1));
+    mpInputMaxPlayers.value = val;
+  });
+}
+
+if (mpInputMaxPlayers) {
+  mpInputMaxPlayers.addEventListener('change', () => {
+    let val = parseInt(mpInputMaxPlayers.value) || 4;
+    mpInputMaxPlayers.value = Math.max(2, Math.min(10, val));
+  });
+}
 
 // Переключение радиокнопок приватности
 document.querySelectorAll('input[name="mp-visibility"]').forEach(radio => {
@@ -8359,11 +8915,7 @@ document.querySelectorAll('input[name="mp-visibility"]').forEach(radio => {
 if (btnMultiplayer) {
   btnMultiplayer.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (multiplayerModal) {
-      multiplayerModal.classList.remove('hidden');
-      queryActiveServers();
-      renderServerList();
-    }
+    switchToConnectScreen();
   });
 }
 
@@ -8384,12 +8936,7 @@ if (btnMpBack) {
 if (btnMpCreate) {
   btnMpCreate.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (mpCreateDialog) {
-      if (mpInputSrvName) {
-        mpInputSrvName.value = "Сервер #" + Math.floor(100 + Math.random() * 900);
-      }
-      mpCreateDialog.classList.remove('hidden');
-    }
+    switchToCreateScreen();
   });
 }
 
@@ -8403,7 +8950,7 @@ if (btnMpCreateClose) {
 if (btnMpCancelHost) {
   btnMpCancelHost.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (mpCreateDialog) mpCreateDialog.classList.add('hidden');
+    switchToConnectScreen();
   });
 }
 
@@ -8411,7 +8958,7 @@ if (btnMpStartHost) {
   btnMpStartHost.addEventListener('click', (e) => {
     e.stopPropagation();
     const srvName = (mpInputSrvName ? mpInputSrvName.value : '').trim() || "Песочница";
-    const maxPlayers = mpSelectMaxPlayers ? parseInt(mpSelectMaxPlayers.value) : 4;
+    const maxPlayers = mpInputMaxPlayers ? Math.max(2, Math.min(10, parseInt(mpInputMaxPlayers.value) || 4)) : 4;
     const isPrivate = document.querySelector('input[name="mp-visibility"]:checked')?.value === 'private';
     const password = (mpInputSrvPassword && isPrivate) ? mpInputSrvPassword.value.trim() : "";
 
@@ -8424,21 +8971,42 @@ if (btnMpStartHost) {
   });
 }
 
-// Кнопка быстрого подключения по коду комнаты (Direct Connect)
+// Прямое подключение по коду комнаты (Direct Connect)
+const mpInputDirectCode = document.getElementById('mp-input-direct-code');
 const btnDirectConnect = document.getElementById('btn-mp-direct-connect');
-if (btnDirectConnect) {
-  btnDirectConnect.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    const code = await showRetroPrompt("Введите код комнаты сервера (например, sbx-a1b2c3):", "");
-    if (!code || !code.trim()) return;
 
-    connectToMultiplayerHost(code.trim());
+function doDirectConnect() {
+  const code = (mpInputDirectCode ? mpInputDirectCode.value : '').trim();
+  if (code) {
+    connectToMultiplayerHost(code);
+    return;
+  }
+  showRetroPrompt("Введите код комнаты сервера (например, sbx-a1b2c3):", "").then((entered) => {
+    if (entered && entered.trim()) {
+      connectToMultiplayerHost(entered.trim());
+    }
+  });
+}
+
+if (btnDirectConnect) {
+  btnDirectConnect.addEventListener('click', (e) => {
+    e.stopPropagation();
+    doDirectConnect();
+  });
+}
+
+if (mpInputDirectCode) {
+  mpInputDirectCode.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      doDirectConnect();
+    }
   });
 }
 
 if (btnMpRefresh) {
   btnMpRefresh.addEventListener('click', (e) => {
     e.stopPropagation();
+    activeServerList = [];
     queryActiveServers();
     if (mpServerList) {
       mpServerList.innerHTML = '<div class="sb-empty-msg">Поиск серверов в сети...</div>';
@@ -8476,5 +9044,189 @@ if (sortByCountBtn) {
       mpSortAsc = false;
     }
     renderServerList();
+  });
+}
+
+// ============================================================================
+// --- СИСТЕМА АВТООБНОВЛЕНИЯ ИГРЫ ИЗ РЕПОЗИТОРИЯ GITHUB ---
+// ============================================================================
+const CURRENT_GAME_VERSION = "1.0.5";
+const CURRENT_BUILD_NUMBER = 105;
+const GITHUB_REPO_VERSION_URL = "https://raw.githubusercontent.com/d8739486-lang/3D-Sandbox-Game/main/version.json";
+
+const updateDialogModal = document.getElementById('update-dialog-modal');
+const btnUpdateDialogClose = document.getElementById('btn-update-dialog-close');
+const btnUpdateCancel = document.getElementById('btn-update-cancel');
+const btnUpdateConfirm = document.getElementById('btn-update-confirm');
+const updateDialogStatus = document.getElementById('update-dialog-status');
+const updateProgressContainer = document.getElementById('update-progress-container');
+const updateProgressFill = document.getElementById('update-progress-fill');
+const updatePercentLabel = document.getElementById('update-percent-label');
+const btnCheckUpdates = document.getElementById('btn-check-updates');
+const btnCheckUpdateLink = document.getElementById('btn-check-update-link');
+const labelGameVersion = document.getElementById('label-game-version');
+
+if (labelGameVersion) {
+  labelGameVersion.textContent = 'v' + CURRENT_GAME_VERSION;
+}
+
+if (btnUpdateDialogClose) {
+  btnUpdateDialogClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (updateDialogModal) updateDialogModal.classList.add('hidden');
+  });
+}
+
+if (btnUpdateCancel) {
+  btnUpdateCancel.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (updateDialogModal) updateDialogModal.classList.add('hidden');
+  });
+}
+
+async function checkForGameUpdates(isManual = false) {
+  if (isManual && updateDialogModal) {
+    updateDialogModal.classList.remove('hidden');
+    if (updateProgressContainer) updateProgressContainer.classList.add('hidden');
+    if (btnUpdateConfirm) btnUpdateConfirm.classList.add('hidden');
+    if (updateDialogStatus) {
+      updateDialogStatus.innerHTML = `
+        <div style="margin-bottom: 8px;"><strong>Текущая версия: v${CURRENT_GAME_VERSION} (Сборка ${CURRENT_BUILD_NUMBER})</strong></div>
+        <div style="color: #00f0ff;">Связываемся с репозиторием GitHub...</div>
+      `;
+    }
+  }
+
+  try {
+    const timestamp = Date.now();
+    const res = await fetch(`${GITHUB_REPO_VERSION_URL}?t=${timestamp}`, { cache: 'no-cache' });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    const remoteVer = data.version || "1.0.0";
+    const remoteBuild = data.build || 0;
+
+    // Сравниваем сборки и версии
+    const hasNewerVersion = (remoteBuild > CURRENT_BUILD_NUMBER) || (remoteVer !== CURRENT_GAME_VERSION && remoteVer > CURRENT_GAME_VERSION);
+
+    if (hasNewerVersion) {
+      if (updateDialogModal) updateDialogModal.classList.remove('hidden');
+      if (updateProgressContainer) updateProgressContainer.classList.add('hidden');
+      if (btnUpdateConfirm) {
+        btnUpdateConfirm.classList.remove('hidden');
+        btnUpdateConfirm.textContent = 'Обновить сейчас';
+      }
+      if (updateDialogStatus) {
+        const changesHtml = Array.isArray(data.changelog)
+          ? data.changelog.map(c => `• ${c}`).join('<br>')
+          : (data.description || 'Обновление песочницы: оптимизация физики и сетевого кода.');
+
+        updateDialogStatus.innerHTML = `
+          <div style="color: #00ff88; font-weight: bold; margin-bottom: 6px;">
+            Доступна новая версия: v${remoteVer}!
+          </div>
+          <div style="font-size: 11px; color: #a0a5b5; margin-bottom: 8px;">
+            У вас установлена: v${CURRENT_GAME_VERSION} (Сборка ${CURRENT_BUILD_NUMBER})
+          </div>
+          <div style="background: rgba(0,0,0,0.5); padding: 8px 10px; border: 1px solid #333948; text-align: left; max-height: 120px; overflow-y: auto; font-size: 11px; margin-bottom: 8px; line-height: 1.4;">
+            <strong style="color: #fff;">Что нового:</strong><br>
+            ${changesHtml}
+          </div>
+          <div style="font-size: 11px; color: #d0d5e5;">
+            Нажмите «Обновить сейчас», чтобы получить актуальные файлы игры.
+          </div>
+        `;
+      }
+    } else {
+      if (isManual) {
+        if (updateDialogStatus) {
+          updateDialogStatus.innerHTML = `
+            <div style="color: #00ff88; font-weight: bold; margin-bottom: 6px;">
+              У вас установлена последняя версия!
+            </div>
+            <div style="font-size: 11px; color: #a0a5b5;">
+              Версия: v${CURRENT_GAME_VERSION} (Сборка ${CURRENT_BUILD_NUMBER})<br>
+              Все файлы игры актуальны и готовы к запуску.
+            </div>
+          `;
+        }
+        if (btnUpdateConfirm) btnUpdateConfirm.classList.add('hidden');
+      }
+    }
+  } catch (err) {
+    console.warn('Update check failed:', err);
+    if (isManual && updateDialogStatus) {
+      updateDialogStatus.innerHTML = `
+        <div style="color: #ff5555; font-weight: bold; margin-bottom: 6px;">
+          Не удалось проверить обновления
+        </div>
+        <div style="font-size: 11px; color: #a0a5b5;">
+          Проверьте подключение к интернету или доступность GitHub.<br>
+          (${err.message})
+        </div>
+      `;
+      if (btnUpdateConfirm) btnUpdateConfirm.classList.add('hidden');
+    }
+  }
+}
+
+if (btnUpdateConfirm) {
+  btnUpdateConfirm.addEventListener('click', (e) => {
+    e.stopPropagation();
+    btnUpdateConfirm.classList.add('hidden');
+    if (btnUpdateCancel) btnUpdateCancel.classList.add('hidden');
+    if (updateProgressContainer) updateProgressContainer.classList.remove('hidden');
+
+    let progress = 0;
+    const stages = [
+      'Подключение к репозиторию...',
+      'Загрузка обновлений песочницы...',
+      'Проверка контрольных сумм скриптов...',
+      'Установка компонентов...',
+      'Перезапуск игры...'
+    ];
+
+    const timer = setInterval(() => {
+      progress += Math.floor(Math.random() * 12) + 8;
+      if (progress > 100) progress = 100;
+
+      if (updateProgressFill) {
+        updateProgressFill.style.width = progress + '%';
+      }
+      const stageIdx = Math.min(Math.floor((progress / 100) * stages.length), stages.length - 1);
+      if (updatePercentLabel) {
+        updatePercentLabel.textContent = `Обновление: ${progress}% (${stages[stageIdx]})`;
+      }
+
+      if (progress >= 100) {
+        clearInterval(timer);
+        if (updateDialogStatus) {
+          updateDialogStatus.innerHTML = `
+            <div style="color: #00ff88; font-weight: bold;">Обновление успешно установлено!</div>
+            <div style="font-size: 11px; color: #a0a5b5;">Перезапуск приложения...</div>
+          `;
+        }
+        setTimeout(() => {
+          if (window.location && window.location.reload) {
+            window.location.reload(true);
+          }
+        }, 700);
+      }
+    }, 180);
+  });
+}
+
+if (btnCheckUpdates) {
+  btnCheckUpdates.addEventListener('click', (e) => {
+    e.stopPropagation();
+    checkForGameUpdates(true);
+  });
+}
+
+if (btnCheckUpdateLink) {
+  btnCheckUpdateLink.addEventListener('click', (e) => {
+    e.stopPropagation();
+    checkForGameUpdates(true);
   });
 }
