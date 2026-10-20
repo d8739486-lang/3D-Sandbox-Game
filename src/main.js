@@ -2499,7 +2499,7 @@ function loadWorldAndEnterGame(worldId, isNewWorld = false) {
 
 // Сетевая синхронизация спавна блоков
 function notifySpawnBlock(obj, blockType) {
-  if (!obj) return;
+  if (!obj || !obj.mesh) return;
   if (!obj.netId) {
     obj.netId = 'prop_' + (localPeer ? localPeer.id : 'h') + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
   }
@@ -7066,8 +7066,14 @@ let localPlayerNick = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
 // Хранилище удаленных 3D аватаров игроков
 const remotePlayerAvatars = new Map();
 
+// Гарантированное отключение от комнаты при закрытии вкладки или перезагрузке
+window.addEventListener('beforeunload', () => {
+  leaveMultiplayerSession();
+});
+
 // Создание 3D модели гуманоида с видимым оружием (Glock-19 и Tool Gun)
 function createPlayerAvatar(nick = "Игрок") {
+  if (isInMainMenu || !isGameStarted) return null;
   const avatarGroup = new THREE.Group();
 
   // Материалы (стильный матовый темный комбинезон с неоновыми синими акцентами)
@@ -7414,6 +7420,7 @@ function handleNetworkPacket(packet, senderId) {
       let avatar = remotePlayerAvatars.get(packet.id);
       if (!avatar) {
         avatar = createPlayerAvatar(packet.nick || "Игрок");
+        if (!avatar) break;
         remotePlayerAvatars.set(packet.id, avatar);
         showFlightHudNotification(`Игрок ${packet.nick || packet.id} вошел на сервер!`);
       }
@@ -7787,18 +7794,25 @@ function initMultiplayerHost(options = {}) {
       activePeerConnections.delete(conn.peer);
       removeRemotePlayer(conn.peer);
       updateTabPlayerListUI();
+      // Оповещаем остальных клиентов об отключении игрока
+      broadcastNetworkPacket({
+        type: 'player_disconnect',
+        id: conn.peer
+      });
     });
 
     // Отправляем новому игроку текущее состояние мира (все типы объектов)
-    const currentBlocks = physicsObjects.map(o => ({
-      netId: o.netId || ("b_" + Math.random().toString(36).substring(2, 7)),
-      blockType: o.isSphere ? 'sphere' : (o.isTriangle ? 'triangle' : (o.isRamp ? 'ramp' : (o.isSecretCube ? 'secret_cube' : (o.isNuke ? 'nuke' : 'cube')))),
-      pos: { x: o.mesh.position.x, y: o.mesh.position.y, z: o.mesh.position.z },
-      qx: o.mesh.quaternion.x,
-      qy: o.mesh.quaternion.y,
-      qz: o.mesh.quaternion.z,
-      qw: o.mesh.quaternion.w
-    }));
+    const currentBlocks = physicsObjects
+      .filter(o => o && o.mesh && o.body)
+      .map(o => ({
+        netId: o.netId || ("b_" + Math.random().toString(36).substring(2, 7)),
+        blockType: o.isSphere ? 'sphere' : (o.isTriangle ? 'triangle' : (o.isRamp ? 'ramp' : (o.isSecretCube ? 'secret_cube' : (o.isNuke ? 'nuke' : 'cube')))),
+        pos: { x: o.mesh.position.x, y: o.mesh.position.y, z: o.mesh.position.z },
+        qx: o.mesh.quaternion.x,
+        qy: o.mesh.quaternion.y,
+        qz: o.mesh.quaternion.z,
+        qw: o.mesh.quaternion.w
+      }));
 
     setTimeout(() => {
       currentBlocks.forEach(b => {

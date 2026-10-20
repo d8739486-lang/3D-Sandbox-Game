@@ -64,7 +64,7 @@
       "file_type": "code",
       "norm_label": "getelectronipc()",
       "source_file": "src/main.js",
-      "source_location": "L8683"
+      "source_location": "L8697"
     },
     {
       "id": "src_main_gettargetobjectforrotation",
@@ -100,7 +100,7 @@
       "file_type": "code",
       "norm_label": "resizewindcanvas()",
       "source_file": "src/main.js",
-      "source_location": "L8609"
+      "source_location": "L8623"
     },
     {
       "id": "src_main_switchtocreatescreen",
@@ -112,7 +112,7 @@
       "file_type": "code",
       "norm_label": "switchtocreatescreen()",
       "source_file": "src/main.js",
-      "source_location": "L8845"
+      "source_location": "L8859"
     },
     {
       "id": "src_main_updateflightspeedui",
@@ -712,7 +712,7 @@
       "file_type": "code",
       "norm_label": "checkforgameupdates()",
       "source_file": "src/main.js",
-      "source_location": "L9087"
+      "source_location": "L9101"
     },
     {
       "id": "src_main_loadessentialassets",
@@ -844,7 +844,7 @@
       "file_type": "code",
       "norm_label": "dodirectconnect()",
       "source_file": "src/main.js",
-      "source_location": "L8978"
+      "source_location": "L8992"
     },
     {
       "id": "src_main_queryactiveservers",
@@ -856,7 +856,7 @@
       "file_type": "code",
       "norm_label": "queryactiveservers()",
       "source_file": "src/main.js",
-      "source_location": "L7685"
+      "source_location": "L7692"
     },
     {
       "id": "src_main_registerdiscoveredserver",
@@ -868,7 +868,7 @@
       "file_type": "code",
       "norm_label": "registerdiscoveredserver()",
       "source_file": "src/main.js",
-      "source_location": "L7674"
+      "source_location": "L7681"
     },
     {
       "id": "src_main_renderserverlist",
@@ -880,7 +880,7 @@
       "file_type": "code",
       "norm_label": "renderserverlist()",
       "source_file": "src/main.js",
-      "source_location": "L8763"
+      "source_location": "L8777"
     },
     {
       "id": "src_main_showretroprompt",
@@ -904,7 +904,7 @@
       "file_type": "code",
       "norm_label": "switchtoconnectscreen()",
       "source_file": "src/main.js",
-      "source_location": "L8835"
+      "source_location": "L8849"
     },
     {
       "id": "src_main_createrobloxstudtexture",
@@ -952,7 +952,7 @@
       "file_type": "code",
       "norm_label": "broadcastnetworkpacket()",
       "source_file": "src/main.js",
-      "source_location": "L7392"
+      "source_location": "L7398"
     },
     {
       "id": "src_main_cleanupmenuchaosobjects",
@@ -1000,7 +1000,7 @@
       "file_type": "code",
       "norm_label": "connecttomultiplayerhost()",
       "source_file": "src/main.js",
-      "source_location": "L7823"
+      "source_location": "L7837"
     },
     {
       "id": "src_main_createequilateralprismgeometry",
@@ -1024,7 +1024,7 @@
       "file_type": "code",
       "norm_label": "createplayeravatar()",
       "source_file": "src/main.js",
-      "source_location": "L7070"
+      "source_location": "L7075"
     },
     {
       "id": "src_main_createrampgeometry",
@@ -1108,7 +1108,7 @@
       "file_type": "code",
       "norm_label": "handlenetworkpacket()",
       "source_file": "src/main.js",
-      "source_location": "L7406"
+      "source_location": "L7412"
     },
     {
       "id": "src_main_initmultiplayerhost",
@@ -1120,7 +1120,7 @@
       "file_type": "code",
       "norm_label": "initmultiplayerhost()",
       "source_file": "src/main.js",
-      "source_location": "L7692"
+      "source_location": "L7699"
     },
     {
       "id": "src_main_leavemultiplayersession",
@@ -1132,7 +1132,7 @@
       "file_type": "code",
       "norm_label": "leavemultiplayersession()",
       "source_file": "src/main.js",
-      "source_location": "L7334"
+      "source_location": "L7340"
     },
     {
       "id": "src_main_loadworldandentergame",
@@ -1288,7 +1288,7 @@
       "file_type": "code",
       "norm_label": "removeremoteplayer()",
       "source_file": "src/main.js",
-      "source_location": "L7325"
+      "source_location": "L7331"
     },
     {
       "id": "src_main_removetoolguntarget",
@@ -1507,18 +1507,6 @@
       "source_location": "L4519"
     },
     {
-      "id": "src_main_updatemultiplayernetwork",
-      "label": "updateMultiplayerNetwork()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "handleNetworkPacket",
-      "file_type": "code",
-      "norm_label": "updatemultiplayernetwork()",
-      "source_file": "src/main.js",
-      "source_location": "L7929"
-    },
-    {
       "id": "src_main_updatespawnmenumodeui",
       "label": "updateSpawnMenuModeUI()",
       "_callable": true,
@@ -1540,7 +1528,7 @@
       "file_type": "code",
       "norm_label": "updatetabplayerlistui()",
       "source_file": "src/main.js",
-      "source_location": "L7615"
+      "source_location": "L7622"
     },
     {
       "id": "src_main_updatetoolgunhologrammesh",
@@ -1588,7 +1576,7 @@
       "file_type": "code",
       "norm_label": "animate()",
       "source_file": "src/main.js",
-      "source_location": "L7982"
+      "source_location": "L7996"
     },
     {
       "id": "src_main_checkeastereggformation",
@@ -1840,7 +1828,19 @@
       "file_type": "code",
       "norm_label": "updatefallwindeffect()",
       "source_file": "src/main.js",
-      "source_location": "L8615"
+      "source_location": "L8629"
+    },
+    {
+      "id": "src_main_updatemultiplayernetwork",
+      "label": "updateMultiplayerNetwork()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "animate",
+      "file_type": "code",
+      "norm_label": "updatemultiplayernetwork()",
+      "source_file": "src/main.js",
+      "source_location": "L7943"
     },
     {
       "id": "src_main_updatepreview3d",
@@ -1864,7 +1864,7 @@
       "file_type": "code",
       "norm_label": "updateshellcasings()",
       "source_file": "src/main.js",
-      "source_location": "L8372"
+      "source_location": "L8386"
     },
     {
       "id": "src_main_updatesmokepuffs",
@@ -1876,7 +1876,7 @@
       "file_type": "code",
       "norm_label": "updatesmokepuffs()",
       "source_file": "src/main.js",
-      "source_location": "L8410"
+      "source_location": "L8424"
     },
     {
       "id": "src_main_updatethrowpowerui",
@@ -1900,7 +1900,7 @@
       "file_type": "code",
       "norm_label": "updateweaponviewmodel()",
       "source_file": "src/main.js",
-      "source_location": "L8428"
+      "source_location": "L8442"
     },
     {
       "id": "src_main_wakeweldcluster",
@@ -2231,7 +2231,7 @@
       "file_type": "code",
       "norm_label": "activeserverlist",
       "source_file": "src/main.js",
-      "source_location": "L8758"
+      "source_location": "L8772"
     },
     {
       "id": "src_main_activeshellcasings",
@@ -2396,7 +2396,7 @@
       "file_type": "code",
       "norm_label": "btncheckupdatelink",
       "source_file": "src/main.js",
-      "source_location": "L9066"
+      "source_location": "L9080"
     },
     {
       "id": "src_main_btncheckupdates",
@@ -2407,7 +2407,7 @@
       "file_type": "code",
       "norm_label": "btncheckupdates",
       "source_file": "src/main.js",
-      "source_location": "L9065"
+      "source_location": "L9079"
     },
     {
       "id": "src_main_btnclosemultiplayer",
@@ -2418,7 +2418,7 @@
       "file_type": "code",
       "norm_label": "btnclosemultiplayer",
       "source_file": "src/main.js",
-      "source_location": "L8748"
+      "source_location": "L8762"
     },
     {
       "id": "src_main_btnclosesettings",
@@ -2462,7 +2462,7 @@
       "file_type": "code",
       "norm_label": "btndirectconnect",
       "source_file": "src/main.js",
-      "source_location": "L8976"
+      "source_location": "L8990"
     },
     {
       "id": "src_main_btnexit",
@@ -2495,7 +2495,7 @@
       "file_type": "code",
       "norm_label": "btnmpback",
       "source_file": "src/main.js",
-      "source_location": "L8749"
+      "source_location": "L8763"
     },
     {
       "id": "src_main_btnmpcancelhost",
@@ -2506,7 +2506,7 @@
       "file_type": "code",
       "norm_label": "btnmpcancelhost",
       "source_file": "src/main.js",
-      "source_location": "L8822"
+      "source_location": "L8836"
     },
     {
       "id": "src_main_btnmpcopycode",
@@ -2517,7 +2517,7 @@
       "file_type": "code",
       "norm_label": "btnmpcopycode",
       "source_file": "src/main.js",
-      "source_location": "L7595"
+      "source_location": "L7602"
     },
     {
       "id": "src_main_btnmpcreate",
@@ -2528,7 +2528,7 @@
       "file_type": "code",
       "norm_label": "btnmpcreate",
       "source_file": "src/main.js",
-      "source_location": "L8750"
+      "source_location": "L8764"
     },
     {
       "id": "src_main_btnmpcreateclose",
@@ -2539,7 +2539,7 @@
       "file_type": "code",
       "norm_label": "btnmpcreateclose",
       "source_file": "src/main.js",
-      "source_location": "L8820"
+      "source_location": "L8834"
     },
     {
       "id": "src_main_btnmpplayersdec",
@@ -2550,7 +2550,7 @@
       "file_type": "code",
       "norm_label": "btnmpplayersdec",
       "source_file": "src/main.js",
-      "source_location": "L8825"
+      "source_location": "L8839"
     },
     {
       "id": "src_main_btnmpplayersinc",
@@ -2561,7 +2561,7 @@
       "file_type": "code",
       "norm_label": "btnmpplayersinc",
       "source_file": "src/main.js",
-      "source_location": "L8826"
+      "source_location": "L8840"
     },
     {
       "id": "src_main_btnmprefresh",
@@ -2572,7 +2572,7 @@
       "file_type": "code",
       "norm_label": "btnmprefresh",
       "source_file": "src/main.js",
-      "source_location": "L8751"
+      "source_location": "L8765"
     },
     {
       "id": "src_main_btnmpstarthost",
@@ -2583,7 +2583,7 @@
       "file_type": "code",
       "norm_label": "btnmpstarthost",
       "source_file": "src/main.js",
-      "source_location": "L8821"
+      "source_location": "L8835"
     },
     {
       "id": "src_main_btnmultiplayer",
@@ -2594,7 +2594,7 @@
       "file_type": "code",
       "norm_label": "btnmultiplayer",
       "source_file": "src/main.js",
-      "source_location": "L8747"
+      "source_location": "L8761"
     },
     {
       "id": "src_main_btnpauseexit",
@@ -2693,7 +2693,7 @@
       "file_type": "code",
       "norm_label": "btnupdatecancel",
       "source_file": "src/main.js",
-      "source_location": "L9059"
+      "source_location": "L9073"
     },
     {
       "id": "src_main_btnupdateconfirm",
@@ -2704,7 +2704,7 @@
       "file_type": "code",
       "norm_label": "btnupdateconfirm",
       "source_file": "src/main.js",
-      "source_location": "L9060"
+      "source_location": "L9074"
     },
     {
       "id": "src_main_btnupdatedialogclose",
@@ -2715,7 +2715,7 @@
       "file_type": "code",
       "norm_label": "btnupdatedialogclose",
       "source_file": "src/main.js",
-      "source_location": "L9058"
+      "source_location": "L9072"
     },
     {
       "id": "src_main_btnworldcreatecancel",
@@ -2891,7 +2891,7 @@
       "file_type": "code",
       "norm_label": "currentserverinfo",
       "source_file": "src/main.js",
-      "source_location": "L7585"
+      "source_location": "L7592"
     },
     {
       "id": "src_main_customcursorel",
@@ -2924,7 +2924,7 @@
       "file_type": "code",
       "norm_label": "fallstreakdata",
       "source_file": "src/main.js",
-      "source_location": "L8567"
+      "source_location": "L8581"
     },
     {
       "id": "src_main_fallstreakgeo",
@@ -2935,7 +2935,7 @@
       "file_type": "code",
       "norm_label": "fallstreakgeo",
       "source_file": "src/main.js",
-      "source_location": "L8565"
+      "source_location": "L8579"
     },
     {
       "id": "src_main_fallstreakmat",
@@ -2946,7 +2946,7 @@
       "file_type": "code",
       "norm_label": "fallstreakmat",
       "source_file": "src/main.js",
-      "source_location": "L8595"
+      "source_location": "L8609"
     },
     {
       "id": "src_main_fallstreakmesh",
@@ -2957,7 +2957,7 @@
       "file_type": "code",
       "norm_label": "fallstreakmesh",
       "source_file": "src/main.js",
-      "source_location": "L8602"
+      "source_location": "L8616"
     },
     {
       "id": "src_main_fallstreakpositions",
@@ -2968,7 +2968,7 @@
       "file_type": "code",
       "norm_label": "fallstreakpositions",
       "source_file": "src/main.js",
-      "source_location": "L8566"
+      "source_location": "L8580"
     },
     {
       "id": "src_main_firepos",
@@ -3111,7 +3111,7 @@
       "file_type": "code",
       "norm_label": "ice_config",
       "source_file": "src/main.js",
-      "source_location": "L7573"
+      "source_location": "L7580"
     },
     {
       "id": "src_main_initialslidepos",
@@ -3155,7 +3155,7 @@
       "file_type": "code",
       "norm_label": "labelgameversion",
       "source_file": "src/main.js",
-      "source_location": "L9067"
+      "source_location": "L9081"
     },
     {
       "id": "src_main_lasertargetpos",
@@ -3320,7 +3320,7 @@
       "file_type": "code",
       "norm_label": "mpcreatedialog",
       "source_file": "src/main.js",
-      "source_location": "L8819"
+      "source_location": "L8833"
     },
     {
       "id": "src_main_mphudroomid",
@@ -3331,7 +3331,7 @@
       "file_type": "code",
       "norm_label": "mphudroomid",
       "source_file": "src/main.js",
-      "source_location": "L7594"
+      "source_location": "L7601"
     },
     {
       "id": "src_main_mpinputdirectcode",
@@ -3342,7 +3342,7 @@
       "file_type": "code",
       "norm_label": "mpinputdirectcode",
       "source_file": "src/main.js",
-      "source_location": "L8975"
+      "source_location": "L8989"
     },
     {
       "id": "src_main_mpinputmaxplayers",
@@ -3353,7 +3353,7 @@
       "file_type": "code",
       "norm_label": "mpinputmaxplayers",
       "source_file": "src/main.js",
-      "source_location": "L8824"
+      "source_location": "L8838"
     },
     {
       "id": "src_main_mpinputsrvname",
@@ -3364,7 +3364,7 @@
       "file_type": "code",
       "norm_label": "mpinputsrvname",
       "source_file": "src/main.js",
-      "source_location": "L8823"
+      "source_location": "L8837"
     },
     {
       "id": "src_main_mpinputsrvpassword",
@@ -3375,7 +3375,7 @@
       "file_type": "code",
       "norm_label": "mpinputsrvpassword",
       "source_file": "src/main.js",
-      "source_location": "L8828"
+      "source_location": "L8842"
     },
     {
       "id": "src_main_mppasswordrow",
@@ -3386,7 +3386,7 @@
       "file_type": "code",
       "norm_label": "mppasswordrow",
       "source_file": "src/main.js",
-      "source_location": "L8827"
+      "source_location": "L8841"
     },
     {
       "id": "src_main_mproomhud",
@@ -3397,7 +3397,7 @@
       "file_type": "code",
       "norm_label": "mproomhud",
       "source_file": "src/main.js",
-      "source_location": "L7593"
+      "source_location": "L7600"
     },
     {
       "id": "src_main_mpsearchinput",
@@ -3408,7 +3408,7 @@
       "file_type": "code",
       "norm_label": "mpsearchinput",
       "source_file": "src/main.js",
-      "source_location": "L8752"
+      "source_location": "L8766"
     },
     {
       "id": "src_main_mpserverlist",
@@ -3419,7 +3419,7 @@
       "file_type": "code",
       "norm_label": "mpserverlist",
       "source_file": "src/main.js",
-      "source_location": "L8753"
+      "source_location": "L8767"
     },
     {
       "id": "src_main_mptabcountlabel",
@@ -3430,7 +3430,7 @@
       "file_type": "code",
       "norm_label": "mptabcountlabel",
       "source_file": "src/main.js",
-      "source_location": "L7599"
+      "source_location": "L7606"
     },
     {
       "id": "src_main_mptaboverlay",
@@ -3441,7 +3441,7 @@
       "file_type": "code",
       "norm_label": "mptaboverlay",
       "source_file": "src/main.js",
-      "source_location": "L7597"
+      "source_location": "L7604"
     },
     {
       "id": "src_main_mptabplayerslist",
@@ -3452,7 +3452,7 @@
       "file_type": "code",
       "norm_label": "mptabplayerslist",
       "source_file": "src/main.js",
-      "source_location": "L7600"
+      "source_location": "L7607"
     },
     {
       "id": "src_main_mptabsrvtitle",
@@ -3463,7 +3463,7 @@
       "file_type": "code",
       "norm_label": "mptabsrvtitle",
       "source_file": "src/main.js",
-      "source_location": "L7598"
+      "source_location": "L7605"
     },
     {
       "id": "src_main_multiplayermodal",
@@ -3474,7 +3474,7 @@
       "file_type": "code",
       "norm_label": "multiplayermodal",
       "source_file": "src/main.js",
-      "source_location": "L8746"
+      "source_location": "L8760"
     },
     {
       "id": "src_main_nukefallinglist",
@@ -3958,7 +3958,7 @@
       "file_type": "code",
       "norm_label": "sortbycountbtn",
       "source_file": "src/main.js",
-      "source_location": "L8755"
+      "source_location": "L8769"
     },
     {
       "id": "src_main_sortbynamebtn",
@@ -3969,7 +3969,7 @@
       "file_type": "code",
       "norm_label": "sortbynamebtn",
       "source_file": "src/main.js",
-      "source_location": "L8754"
+      "source_location": "L8768"
     },
     {
       "id": "src_main_spawnmenu",
@@ -4002,7 +4002,7 @@
       "file_type": "code",
       "norm_label": "tabnavconnect",
       "source_file": "src/main.js",
-      "source_location": "L8831"
+      "source_location": "L8845"
     },
     {
       "id": "src_main_tabnavcreate",
@@ -4013,7 +4013,7 @@
       "file_type": "code",
       "norm_label": "tabnavcreate",
       "source_file": "src/main.js",
-      "source_location": "L8832"
+      "source_location": "L8846"
     },
     {
       "id": "src_main_tabnavcreatebackconnect",
@@ -4024,7 +4024,7 @@
       "file_type": "code",
       "norm_label": "tabnavcreatebackconnect",
       "source_file": "src/main.js",
-      "source_location": "L8833"
+      "source_location": "L8847"
     },
     {
       "id": "src_main_textureloader",
@@ -4134,7 +4134,7 @@
       "file_type": "code",
       "norm_label": "updatedialogmodal",
       "source_file": "src/main.js",
-      "source_location": "L9057"
+      "source_location": "L9071"
     },
     {
       "id": "src_main_updatedialogstatus",
@@ -4145,7 +4145,7 @@
       "file_type": "code",
       "norm_label": "updatedialogstatus",
       "source_file": "src/main.js",
-      "source_location": "L9061"
+      "source_location": "L9075"
     },
     {
       "id": "src_main_updatepercentlabel",
@@ -4156,7 +4156,7 @@
       "file_type": "code",
       "norm_label": "updatepercentlabel",
       "source_file": "src/main.js",
-      "source_location": "L9064"
+      "source_location": "L9078"
     },
     {
       "id": "src_main_updateprogresscontainer",
@@ -4167,7 +4167,7 @@
       "file_type": "code",
       "norm_label": "updateprogresscontainer",
       "source_file": "src/main.js",
-      "source_location": "L9062"
+      "source_location": "L9076"
     },
     {
       "id": "src_main_updateprogressfill",
@@ -4178,7 +4178,7 @@
       "file_type": "code",
       "norm_label": "updateprogressfill",
       "source_file": "src/main.js",
-      "source_location": "L9063"
+      "source_location": "L9077"
     },
     {
       "id": "src_main_valfov",
@@ -4299,7 +4299,7 @@
       "file_type": "code",
       "norm_label": "winclosebtn",
       "source_file": "src/main.js",
-      "source_location": "L8681"
+      "source_location": "L8695"
     },
     {
       "id": "src_main_windcanvas",
@@ -4310,7 +4310,7 @@
       "file_type": "code",
       "norm_label": "windcanvas",
       "source_file": "src/main.js",
-      "source_location": "L8605"
+      "source_location": "L8619"
     },
     {
       "id": "src_main_windctx",
@@ -4321,7 +4321,7 @@
       "file_type": "code",
       "norm_label": "windctx",
       "source_file": "src/main.js",
-      "source_location": "L8606"
+      "source_location": "L8620"
     },
     {
       "id": "src_main_winmaxbtn",
@@ -4332,7 +4332,7 @@
       "file_type": "code",
       "norm_label": "winmaxbtn",
       "source_file": "src/main.js",
-      "source_location": "L8680"
+      "source_location": "L8694"
     },
     {
       "id": "src_main_winminbtn",
@@ -4343,7 +4343,7 @@
       "file_type": "code",
       "norm_label": "winminbtn",
       "source_file": "src/main.js",
-      "source_location": "L8679"
+      "source_location": "L8693"
     },
     {
       "id": "src_main_world",
@@ -5575,7 +5575,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7996",
+      "source_location": "L8010",
       "weight": 1.0
     },
     {
@@ -5587,7 +5587,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8004",
+      "source_location": "L8018",
       "weight": 1.0
     },
     {
@@ -5599,7 +5599,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8012",
+      "source_location": "L8026",
       "weight": 1.0
     },
     {
@@ -5611,7 +5611,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8064",
+      "source_location": "L8078",
       "weight": 1.0
     },
     {
@@ -5623,7 +5623,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8187",
+      "source_location": "L8201",
       "weight": 1.0
     },
     {
@@ -5635,7 +5635,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8193",
+      "source_location": "L8207",
       "weight": 1.0
     },
     {
@@ -5647,7 +5647,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8205",
+      "source_location": "L8219",
       "weight": 1.0
     },
     {
@@ -5659,7 +5659,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8242",
+      "source_location": "L8256",
       "weight": 1.0
     },
     {
@@ -5671,7 +5671,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8296",
+      "source_location": "L8310",
       "weight": 1.0
     },
     {
@@ -5683,7 +5683,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8355",
+      "source_location": "L8369",
       "weight": 1.0
     },
     {
@@ -5695,7 +5695,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8358",
+      "source_location": "L8372",
       "weight": 1.0
     },
     {
@@ -5707,7 +5707,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8359",
+      "source_location": "L8373",
       "weight": 1.0
     },
     {
@@ -5719,7 +5719,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8362",
+      "source_location": "L8376",
       "weight": 1.0
     },
     {
@@ -5731,7 +5731,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8363",
+      "source_location": "L8377",
       "weight": 1.0
     },
     {
@@ -5863,7 +5863,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7854",
+      "source_location": "L7868",
       "weight": 1.0
     },
     {
@@ -5875,7 +5875,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7868",
+      "source_location": "L7882",
       "weight": 1.0
     },
     {
@@ -5887,7 +5887,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7870",
+      "source_location": "L7884",
       "weight": 1.0
     },
     {
@@ -5899,7 +5899,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7871",
+      "source_location": "L7885",
       "weight": 1.0
     },
     {
@@ -5911,7 +5911,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7878",
+      "source_location": "L7892",
       "weight": 1.0
     },
     {
@@ -5923,7 +5923,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7892",
+      "source_location": "L7906",
       "weight": 1.0
     },
     {
@@ -6043,7 +6043,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8981",
+      "source_location": "L8995",
       "weight": 1.0
     },
     {
@@ -6055,7 +6055,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8984",
+      "source_location": "L8998",
       "weight": 1.0
     },
     {
@@ -6331,7 +6331,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7416",
+      "source_location": "L7422",
       "weight": 1.0
     },
     {
@@ -6343,7 +6343,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7418",
+      "source_location": "L7425",
       "weight": 1.0
     },
     {
@@ -6355,7 +6355,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7430",
+      "source_location": "L7437",
       "weight": 1.0
     },
     {
@@ -6367,7 +6367,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7455",
+      "source_location": "L7462",
       "weight": 1.0
     },
     {
@@ -6379,7 +6379,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7457",
+      "source_location": "L7464",
       "weight": 1.0
     },
     {
@@ -6391,7 +6391,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7459",
+      "source_location": "L7466",
       "weight": 1.0
     },
     {
@@ -6403,7 +6403,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7461",
+      "source_location": "L7468",
       "weight": 1.0
     },
     {
@@ -6415,7 +6415,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7463",
+      "source_location": "L7470",
       "weight": 1.0
     },
     {
@@ -6427,7 +6427,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7465",
+      "source_location": "L7472",
       "weight": 1.0
     },
     {
@@ -6439,7 +6439,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7470",
+      "source_location": "L7477",
       "weight": 1.0
     },
     {
@@ -6451,7 +6451,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7494",
+      "source_location": "L7501",
       "weight": 1.0
     },
     {
@@ -6463,7 +6463,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7510",
+      "source_location": "L7517",
       "weight": 1.0
     },
     {
@@ -6475,7 +6475,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7544",
+      "source_location": "L7551",
       "weight": 1.0
     },
     {
@@ -6487,7 +6487,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7554",
+      "source_location": "L7561",
       "weight": 1.0
     },
     {
@@ -6499,7 +6499,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7555",
+      "source_location": "L7562",
       "weight": 1.0
     },
     {
@@ -6511,7 +6511,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7563",
+      "source_location": "L7570",
       "weight": 1.0
     },
     {
@@ -6523,7 +6523,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7564",
+      "source_location": "L7571",
       "weight": 1.0
     },
     {
@@ -6535,7 +6535,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7565",
+      "source_location": "L7572",
       "weight": 1.0
     },
     {
@@ -6595,7 +6595,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7717",
+      "source_location": "L7724",
       "weight": 1.0
     },
     {
@@ -6607,7 +6607,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7723",
+      "source_location": "L7730",
       "weight": 1.0
     },
     {
@@ -6619,7 +6619,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7729",
+      "source_location": "L7736",
       "weight": 1.0
     },
     {
@@ -6631,7 +6631,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7731",
+      "source_location": "L7738",
       "weight": 1.0
     },
     {
@@ -6643,7 +6643,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7780",
+      "source_location": "L7787",
       "weight": 1.0
     },
     {
@@ -6655,7 +6655,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7788",
+      "source_location": "L7795",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_initmultiplayerhost",
+      "target": "src_main_broadcastnetworkpacket",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L7798",
       "weight": 1.0
     },
     {
@@ -6667,7 +6679,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7818",
+      "source_location": "L7832",
       "weight": 1.0
     },
     {
@@ -6679,7 +6691,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7339",
+      "source_location": "L7345",
       "weight": 1.0
     },
     {
@@ -7231,7 +7243,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7682",
+      "source_location": "L7689",
       "weight": 1.0
     },
     {
@@ -7327,7 +7339,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8807",
+      "source_location": "L8821",
       "weight": 1.0
     },
     {
@@ -7339,7 +7351,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8811",
+      "source_location": "L8825",
       "weight": 1.0
     },
     {
@@ -8239,7 +8251,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8840",
+      "source_location": "L8854",
       "weight": 1.0
     },
     {
@@ -8251,7 +8263,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8841",
+      "source_location": "L8855",
       "weight": 1.0
     },
     {
@@ -8767,7 +8779,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7977",
+      "source_location": "L7991",
       "weight": 1.0
     },
     {
@@ -8947,7 +8959,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8434",
+      "source_location": "L8448",
       "weight": 1.0
     },
     {
@@ -8959,7 +8971,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8435",
+      "source_location": "L8449",
       "weight": 1.0
     },
     {
@@ -8971,7 +8983,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8436",
+      "source_location": "L8450",
       "weight": 1.0
     },
     {
@@ -8983,7 +8995,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8472",
+      "source_location": "L8486",
       "weight": 1.0
     },
     {
@@ -9499,7 +9511,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7334",
+      "source_location": "L7340",
       "weight": 1.0
     },
     {
@@ -9511,7 +9523,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7615",
+      "source_location": "L7622",
       "weight": 1.0
     },
     {
@@ -9523,7 +9535,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7685",
+      "source_location": "L7692",
       "weight": 1.0
     },
     {
@@ -9535,7 +9547,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L7692",
+      "source_location": "L7699",
       "weight": 1.0
     },
     {
@@ -9547,7 +9559,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8609",
+      "source_location": "L8623",
       "weight": 1.0
     },
     {
@@ -9559,7 +9571,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8683",
+      "source_location": "L8697",
       "weight": 1.0
     },
     {
@@ -9571,7 +9583,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8763",
+      "source_location": "L8777",
       "weight": 1.0
     },
     {
@@ -9583,7 +9595,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8835",
+      "source_location": "L8849",
       "weight": 1.0
     },
     {
@@ -9595,7 +9607,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8845",
+      "source_location": "L8859",
       "weight": 1.0
     },
     {
@@ -9607,7 +9619,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L8978",
+      "source_location": "L8992",
       "weight": 1.0
     },
     {
@@ -9619,7 +9631,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L9087",
+      "source_location": "L9101",
       "weight": 1.0
     },
     {
@@ -13100,7 +13112,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7070",
+      "source_location": "L7075",
       "weight": 1.0
     },
     {
@@ -13122,7 +13134,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7325",
+      "source_location": "L7331",
       "weight": 1.0
     },
     {
@@ -13133,7 +13145,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7392",
+      "source_location": "L7398",
       "weight": 1.0
     },
     {
@@ -13144,7 +13156,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7406",
+      "source_location": "L7412",
       "weight": 1.0
     },
     {
@@ -13155,7 +13167,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7573",
+      "source_location": "L7580",
       "weight": 1.0
     },
     {
@@ -13166,7 +13178,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7585",
+      "source_location": "L7592",
       "weight": 1.0
     },
     {
@@ -13177,7 +13189,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7593",
+      "source_location": "L7600",
       "weight": 1.0
     },
     {
@@ -13188,7 +13200,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7594",
+      "source_location": "L7601",
       "weight": 1.0
     },
     {
@@ -13199,7 +13211,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7595",
+      "source_location": "L7602",
       "weight": 1.0
     },
     {
@@ -13210,7 +13222,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7597",
+      "source_location": "L7604",
       "weight": 1.0
     },
     {
@@ -13221,7 +13233,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7598",
+      "source_location": "L7605",
       "weight": 1.0
     },
     {
@@ -13232,7 +13244,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7599",
+      "source_location": "L7606",
       "weight": 1.0
     },
     {
@@ -13243,7 +13255,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7600",
+      "source_location": "L7607",
       "weight": 1.0
     },
     {
@@ -13254,7 +13266,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7674",
+      "source_location": "L7681",
       "weight": 1.0
     },
     {
@@ -13287,7 +13299,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7823",
+      "source_location": "L7837",
       "weight": 1.0
     },
     {
@@ -13320,7 +13332,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7929",
+      "source_location": "L7943",
       "weight": 1.0
     },
     {
@@ -13331,7 +13343,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L7982",
+      "source_location": "L7996",
       "weight": 1.0
     },
     {
@@ -13364,7 +13376,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8372",
+      "source_location": "L8386",
       "weight": 1.0
     },
     {
@@ -13375,7 +13387,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8410",
+      "source_location": "L8424",
       "weight": 1.0
     },
     {
@@ -13386,7 +13398,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8428",
+      "source_location": "L8442",
       "weight": 1.0
     },
     {
@@ -13408,7 +13420,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8565",
+      "source_location": "L8579",
       "weight": 1.0
     },
     {
@@ -13419,7 +13431,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8566",
+      "source_location": "L8580",
       "weight": 1.0
     },
     {
@@ -13430,7 +13442,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8567",
+      "source_location": "L8581",
       "weight": 1.0
     },
     {
@@ -13441,7 +13453,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8595",
+      "source_location": "L8609",
       "weight": 1.0
     },
     {
@@ -13452,7 +13464,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8602",
+      "source_location": "L8616",
       "weight": 1.0
     },
     {
@@ -13463,7 +13475,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8605",
+      "source_location": "L8619",
       "weight": 1.0
     },
     {
@@ -13474,7 +13486,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8606",
+      "source_location": "L8620",
       "weight": 1.0
     },
     {
@@ -13485,7 +13497,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8615",
+      "source_location": "L8629",
       "weight": 1.0
     },
     {
@@ -13496,7 +13508,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8679",
+      "source_location": "L8693",
       "weight": 1.0
     },
     {
@@ -13507,7 +13519,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8680",
+      "source_location": "L8694",
       "weight": 1.0
     },
     {
@@ -13518,7 +13530,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8681",
+      "source_location": "L8695",
       "weight": 1.0
     },
     {
@@ -13529,7 +13541,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8746",
+      "source_location": "L8760",
       "weight": 1.0
     },
     {
@@ -13540,7 +13552,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8747",
+      "source_location": "L8761",
       "weight": 1.0
     },
     {
@@ -13551,7 +13563,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8748",
+      "source_location": "L8762",
       "weight": 1.0
     },
     {
@@ -13562,7 +13574,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8749",
+      "source_location": "L8763",
       "weight": 1.0
     },
     {
@@ -13573,7 +13585,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8750",
+      "source_location": "L8764",
       "weight": 1.0
     },
     {
@@ -13584,7 +13596,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8751",
+      "source_location": "L8765",
       "weight": 1.0
     },
     {
@@ -13595,7 +13607,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8752",
+      "source_location": "L8766",
       "weight": 1.0
     },
     {
@@ -13606,7 +13618,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8753",
+      "source_location": "L8767",
       "weight": 1.0
     },
     {
@@ -13617,7 +13629,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8754",
+      "source_location": "L8768",
       "weight": 1.0
     },
     {
@@ -13628,7 +13640,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8755",
+      "source_location": "L8769",
       "weight": 1.0
     },
     {
@@ -13639,7 +13651,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8758",
+      "source_location": "L8772",
       "weight": 1.0
     },
     {
@@ -13650,7 +13662,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8819",
+      "source_location": "L8833",
       "weight": 1.0
     },
     {
@@ -13661,7 +13673,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8820",
+      "source_location": "L8834",
       "weight": 1.0
     },
     {
@@ -13672,7 +13684,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8821",
+      "source_location": "L8835",
       "weight": 1.0
     },
     {
@@ -13683,7 +13695,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8822",
+      "source_location": "L8836",
       "weight": 1.0
     },
     {
@@ -13694,7 +13706,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8823",
+      "source_location": "L8837",
       "weight": 1.0
     },
     {
@@ -13705,7 +13717,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8824",
+      "source_location": "L8838",
       "weight": 1.0
     },
     {
@@ -13716,73 +13728,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8825",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_btnmpplayersinc",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L8826",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_mppasswordrow",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L8827",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_mpinputsrvpassword",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L8828",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_tabnavconnect",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L8831",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_tabnavcreate",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L8832",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_tabnavcreatebackconnect",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L8833",
+      "source_location": "L8839",
       "weight": 1.0
     },
     {
@@ -13798,13 +13744,79 @@
     },
     {
       "source": "src_main",
+      "target": "src_main_btnmpplayersinc",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L8840",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_mppasswordrow",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L8841",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_mpinputsrvpassword",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L8842",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_tabnavconnect",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L8845",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_tabnavcreate",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L8846",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_tabnavcreatebackconnect",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L8847",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
       "target": "src_main_mpinputdirectcode",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8975",
+      "source_location": "L8989",
       "weight": 1.0
     },
     {
@@ -13815,7 +13827,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L8976",
+      "source_location": "L8990",
       "weight": 1.0
     },
     {
@@ -13826,7 +13838,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9057",
+      "source_location": "L9071",
       "weight": 1.0
     },
     {
@@ -13837,7 +13849,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9058",
+      "source_location": "L9072",
       "weight": 1.0
     },
     {
@@ -13848,7 +13860,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9059",
+      "source_location": "L9073",
       "weight": 1.0
     },
     {
@@ -13859,7 +13871,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9060",
+      "source_location": "L9074",
       "weight": 1.0
     },
     {
@@ -13870,7 +13882,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9061",
+      "source_location": "L9075",
       "weight": 1.0
     },
     {
@@ -13881,7 +13893,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9062",
+      "source_location": "L9076",
       "weight": 1.0
     },
     {
@@ -13892,7 +13904,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9063",
+      "source_location": "L9077",
       "weight": 1.0
     },
     {
@@ -13903,7 +13915,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9064",
+      "source_location": "L9078",
       "weight": 1.0
     },
     {
@@ -13914,7 +13926,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9065",
+      "source_location": "L9079",
       "weight": 1.0
     },
     {
@@ -13925,7 +13937,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9066",
+      "source_location": "L9080",
       "weight": 1.0
     },
     {
@@ -13936,7 +13948,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L9067",
+      "source_location": "L9081",
       "weight": 1.0
     },
     {
@@ -14431,5 +14443,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "88782702b1244f44245c615929b83e8a04765820"
+  "built_at_commit": "c9768d91e684150e8cf0bcfd584f7f6b36ff89b4"
 }

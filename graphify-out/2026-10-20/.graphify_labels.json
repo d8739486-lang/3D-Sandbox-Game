@@ -1,0 +1,21 @@
+{
+  "0": "main.js",
+  "1": "getAudioContext",
+  "2": "handleNetworkPacket",
+  "3": "package.json",
+  "4": "nsis",
+  "5": "tauri.conf.json",
+  "6": "animate",
+  "7": "shootPistol",
+  "8": "renderWorldsListUI",
+  "9": "ПЛАН РАБОТ (3D SANDBOX)",
+  "10": "startPreloaderSequence",
+  "11": "default.json",
+  "12": "playSlotSwitchSound",
+  "13": "renderServerList",
+  "14": "createRobloxStudTexture",
+  "15": "build.rs",
+  "16": "lib.rs",
+  "17": "main.rs",
+  "18": "app"
+}
