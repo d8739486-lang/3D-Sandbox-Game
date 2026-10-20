@@ -115,18 +115,113 @@ const renderer = new THREE.WebGLRenderer({
   antialias: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight - 26);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 // 3D-сцена и рендерер активны для отображения динамического фона меню и игры
 renderer.domElement.style.display = 'block';
 document.body.appendChild(renderer.domElement);
 
 // --- Освещение для объема и видимости поверхности ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
 scene.add(ambientLight);
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
-dirLight.position.set(30, 60, 20);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.95);
+dirLight.position.set(40, 80, 30);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.width = 2048;
+dirLight.shadow.mapSize.height = 2048;
+dirLight.shadow.camera.near = 1;
+dirLight.shadow.camera.far = 250;
+dirLight.shadow.camera.left = -120;
+dirLight.shadow.camera.right = 120;
+dirLight.shadow.camera.top = 120;
+dirLight.shadow.camera.bottom = -120;
+dirLight.shadow.bias = -0.0005;
 scene.add(dirLight);
+
+// Состояние графических настроек
+let gfxSettings = {
+  scale: localStorage.getItem('sbx_gfx_scale') || '1.0',
+  shadows: localStorage.getItem('sbx_gfx_shadows') || 'on',
+  fog: localStorage.getItem('sbx_gfx_fog') || 'far',
+  wind: localStorage.getItem('sbx_gfx_wind') || 'on'
+};
+let isWindEffectEnabled = gfxSettings.wind === 'on';
+
+function applyGraphicsSettings() {
+  const scale = parseFloat(gfxSettings.scale) || 1.0;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio * scale, 3.0));
+
+  const shadowsOn = gfxSettings.shadows === 'on';
+  renderer.shadowMap.enabled = shadowsOn;
+  if (dirLight) dirLight.castShadow = shadowsOn;
+
+  if (gfxSettings.fog === 'near') {
+    scene.fog = new THREE.Fog(0xd8dbe0, 30, 75);
+  } else if (gfxSettings.fog === 'medium') {
+    scene.fog = new THREE.Fog(0xd8dbe0, 60, 140);
+  } else if (gfxSettings.fog === 'far') {
+    scene.fog = new THREE.Fog(0xd8dbe0, 120, 240);
+  } else {
+    scene.fog = null;
+  }
+
+  isWindEffectEnabled = gfxSettings.wind === 'on';
+}
+applyGraphicsSettings();
+
+// Никнейм игрока и глобальные утилиты
+let localPlayerNick = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
+try {
+  const savedNick = localStorage.getItem('sbx_player_nick');
+  if (savedNick && savedNick.trim()) {
+    localPlayerNick = savedNick.trim().substring(0, 20);
+  }
+} catch (_) {}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function setLocalPlayerNick(newNick) {
+  if (!newNick || !newNick.trim()) return;
+  const clean = newNick.trim().substring(0, 20);
+  localPlayerNick = clean;
+  try {
+    localStorage.setItem('sbx_player_nick', clean);
+  } catch (_) {}
+
+  document.querySelectorAll('.setting-player-nick-input').forEach((inp) => {
+    if (inp !== document.activeElement) {
+      inp.value = clean;
+    }
+  });
+
+  const valPlayerNick = document.getElementById('val-player-nick');
+  if (valPlayerNick) valPlayerNick.textContent = clean;
+
+  const mpNickBadge = document.getElementById('mp-nick-badge');
+  if (mpNickBadge) mpNickBadge.textContent = `Профиль [${clean}]`;
+
+  if (typeof broadcastNetworkPacket === 'function') {
+    broadcastNetworkPacket({
+      type: 'nick_change',
+      id: (typeof localPeer !== 'undefined' && localPeer) ? localPeer.id : 'me',
+      nick: clean
+    });
+  }
+
+  if (typeof updateTabPlayerListUI === 'function') {
+    updateTabPlayerListUI();
+  }
+}
 
 // --- Процедурная текстура современных стадов Roblox (закругленные квадраты) ---
 function createRobloxStudTexture() {
@@ -213,6 +308,7 @@ const baseplateMat = new THREE.MeshStandardMaterial({
 });
 const baseplate = new THREE.Mesh(baseplateGeo, baseplateMat);
 baseplate.position.y = -1; // верхняя грань на y = 0
+baseplate.receiveShadow = true;
 scene.add(baseplate);
 
 // --- Управление от 1 лица (PointerLockControls) ---
@@ -2523,6 +2619,8 @@ function spawnCubeAt(pos, rot, vel, angVel) {
   const cubeGeo = new THREE.BoxGeometry(size, size, size);
   const cubeMat = new THREE.MeshStandardMaterial({ color: 0xb8bac0, roughness: 0.35, metalness: 0.1 });
   const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
+  cubeMesh.castShadow = true;
+  cubeMesh.receiveShadow = true;
   cubeMesh.position.set(pos.x, pos.y, pos.z);
   if (rot) cubeMesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   scene.add(cubeMesh);
@@ -2544,6 +2642,8 @@ function spawnSecretCubeAt(pos, rot, vel, angVel) {
   const cubeGeo = new THREE.BoxGeometry(size, size, size);
   const cubeMat = new THREE.MeshStandardMaterial({ map: secretCubeTexture, roughness: 0.3, metalness: 0.1 });
   const cubeMesh = new THREE.Mesh(cubeGeo, cubeMat);
+  cubeMesh.castShadow = true;
+  cubeMesh.receiveShadow = true;
   cubeMesh.position.set(pos.x, pos.y, pos.z);
   if (rot) cubeMesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   scene.add(cubeMesh);
@@ -2565,6 +2665,8 @@ function spawnSphereAt(pos, rot, vel, angVel) {
   const sphereGeo = new THREE.SphereGeometry(radius, 24, 24);
   const sphereMat = new THREE.MeshStandardMaterial({ color: 0xb8bac0, roughness: 0.3, metalness: 0.1 });
   const sphereMesh = new THREE.Mesh(sphereGeo, sphereMat);
+  sphereMesh.castShadow = true;
+  sphereMesh.receiveShadow = true;
   sphereMesh.position.set(pos.x, pos.y, pos.z);
   scene.add(sphereMesh);
 
@@ -2585,6 +2687,8 @@ function spawnTriangleAt(pos, rot, vel, angVel) {
   const triGeo = createEquilateralPrismGeometry(size, size);
   const triMat = new THREE.MeshStandardMaterial({ color: 0xb8bac0, roughness: 0.35, metalness: 0.1 });
   const triMesh = new THREE.Mesh(triGeo, triMat);
+  triMesh.castShadow = true;
+  triMesh.receiveShadow = true;
   triMesh.position.set(pos.x, pos.y, pos.z);
   if (rot) triMesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   scene.add(triMesh);
@@ -2622,6 +2726,8 @@ function spawnRampAt(pos, rot, vel, angVel) {
   const rampGeo = createRampGeometry(size);
   const rampMat = new THREE.MeshStandardMaterial({ color: 0xb8bac0, roughness: 0.35, metalness: 0.1 });
   const rampMesh = new THREE.Mesh(rampGeo, rampMat);
+  rampMesh.castShadow = true;
+  rampMesh.receiveShadow = true;
   rampMesh.position.set(pos.x, pos.y, pos.z);
   if (rot) rampMesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   scene.add(rampMesh);
@@ -3121,6 +3227,111 @@ if (settingSens) {
     if (valSens) valSens.textContent = val;
     if (controls) {
       controls.pointerSpeed = mouseSensMultiplier;
+    }
+  });
+}
+
+// --- Инициализация и слушатели ввода никнейма игрока ---
+const settingPlayerNickInput = document.getElementById('setting-player-nick');
+const mpQuickNickInput = document.getElementById('mp-quick-nick-input');
+const valPlayerNick = document.getElementById('val-player-nick');
+const mpNickBadge = document.getElementById('mp-nick-badge');
+
+if (settingPlayerNickInput) {
+  settingPlayerNickInput.value = localPlayerNick;
+  settingPlayerNickInput.addEventListener('input', (e) => {
+    setLocalPlayerNick(e.target.value);
+  });
+}
+
+if (mpQuickNickInput) {
+  mpQuickNickInput.value = localPlayerNick;
+  mpQuickNickInput.addEventListener('input', (e) => {
+    setLocalPlayerNick(e.target.value);
+  });
+}
+
+if (valPlayerNick) valPlayerNick.textContent = localPlayerNick;
+if (mpNickBadge) mpNickBadge.textContent = `Профиль [${localPlayerNick}]`;
+
+// --- Инициализация и слушатели настроек графики ---
+const settingGfxScale = document.getElementById('setting-gfx-scale');
+const settingGfxShadows = document.getElementById('setting-gfx-shadows');
+const settingGfxFog = document.getElementById('setting-gfx-fog');
+const settingGfxWind = document.getElementById('setting-gfx-wind');
+const valGfxScale = document.getElementById('val-gfx-scale');
+const valGfxShadows = document.getElementById('val-gfx-shadows');
+const valGfxFog = document.getElementById('val-gfx-fog');
+const valGfxWind = document.getElementById('val-gfx-wind');
+
+if (settingGfxScale) {
+  settingGfxScale.value = gfxSettings.scale;
+  settingGfxScale.addEventListener('change', (e) => {
+    gfxSettings.scale = e.target.value;
+    try { localStorage.setItem('sbx_gfx_scale', gfxSettings.scale); } catch (_) {}
+    if (valGfxScale) valGfxScale.textContent = `${e.target.value}x`;
+    applyGraphicsSettings();
+  });
+}
+
+if (settingGfxShadows) {
+  settingGfxShadows.value = gfxSettings.shadows;
+  settingGfxShadows.addEventListener('change', (e) => {
+    gfxSettings.shadows = e.target.value;
+    try { localStorage.setItem('sbx_gfx_shadows', gfxSettings.shadows); } catch (_) {}
+    if (valGfxShadows) valGfxShadows.textContent = e.target.value === 'on' ? 'Включены' : 'Выключены';
+    applyGraphicsSettings();
+  });
+}
+
+if (settingGfxFog) {
+  settingGfxFog.value = gfxSettings.fog;
+  settingGfxFog.addEventListener('change', (e) => {
+    gfxSettings.fog = e.target.value;
+    try { localStorage.setItem('sbx_gfx_fog', gfxSettings.fog); } catch (_) {}
+    if (valGfxFog) {
+      valGfxFog.textContent = e.target.value === 'off' ? 'Максимум' : (e.target.value === 'near' ? '60м' : (e.target.value === 'medium' ? '120м' : '180м'));
+    }
+    applyGraphicsSettings();
+  });
+}
+
+if (settingGfxWind) {
+  settingGfxWind.value = gfxSettings.wind;
+  settingGfxWind.addEventListener('change', (e) => {
+    gfxSettings.wind = e.target.value;
+    try { localStorage.setItem('sbx_gfx_wind', gfxSettings.wind); } catch (_) {}
+    if (valGfxWind) valGfxWind.textContent = e.target.value === 'on' ? 'Вкл' : 'Выкл';
+    applyGraphicsSettings();
+  });
+}
+
+// --- Слушатели ключей Supabase ---
+const settingSupabaseUrl = document.getElementById('setting-supabase-url');
+const settingSupabaseKey = document.getElementById('setting-supabase-key');
+const btnSaveSupabase = document.getElementById('btn-save-supabase');
+const valAccountStatus = document.getElementById('val-account-status');
+
+if (settingSupabaseUrl) settingSupabaseUrl.value = localStorage.getItem('sbx_supabase_url') || '';
+if (settingSupabaseKey) settingSupabaseKey.value = localStorage.getItem('sbx_supabase_anon_key') || '';
+if (valAccountStatus && localStorage.getItem('sbx_supabase_url')) {
+  valAccountStatus.textContent = 'Подключено к Supabase';
+}
+
+if (btnSaveSupabase) {
+  btnSaveSupabase.addEventListener('click', () => {
+    const url = settingSupabaseUrl ? settingSupabaseUrl.value.trim() : '';
+    const key = settingSupabaseKey ? settingSupabaseKey.value.trim() : '';
+    try {
+      localStorage.setItem('sbx_supabase_url', url);
+      localStorage.setItem('sbx_supabase_anon_key', key);
+    } catch (_) {}
+    if (url && key) {
+      if (valAccountStatus) valAccountStatus.textContent = 'Подключено к Supabase';
+      showSourceNotification('Ключи Supabase сохранены!', 'join', 'SUPABASE');
+    } else {
+      if (valAccountStatus) valAccountStatus.textContent = 'Локальный (Гость)';
+      showSourceNotification('Работа в локальном режиме', 'info', 'ПРОФИЛЬ');
     }
   });
 }
@@ -6803,6 +7014,21 @@ window.addEventListener('wheel', (e) => {
 }, { passive: false });
 
 window.addEventListener('keydown', (e) => {
+  // Если открыт игровой чат — обрабатываем Escape и Enter
+  if (isChatOpen) {
+    if (e.code === 'Escape') {
+      e.preventDefault();
+      closeGameChat(true);
+      return;
+    }
+    if (e.code === 'Enter') {
+      e.preventDefault();
+      submitGameChat();
+      return;
+    }
+    return;
+  }
+
   // Если фокус находится в поле ввода (диалог, поиск сервера, пароль и т.д.) — НЕ перехватывать буквы (B, W, A, S, D, пробел и др.)!
   const targetTag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
   const isInputFocused = targetTag === 'INPUT' || targetTag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
@@ -6860,6 +7086,22 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
+  // Открытие игрового чата на Enter или KeyM (буква Ь в русской раскладке)
+  const isToolGunEquipped = currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1';
+  const isHoldingOrRotating = !!grabbedBody || isRotateMenuOpen || isRotateKeyHeld;
+
+  if (e.code === 'Enter' && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
+    e.preventDefault();
+    openGameChat();
+    return;
+  }
+
+  if (e.code === 'KeyM' && !isHoldingOrRotating && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
+    e.preventDefault();
+    openGameChat();
+    return;
+  }
+
   switch (e.code) {
     case 'KeyW':
       keys.forward = true;
@@ -6913,10 +7155,14 @@ window.addEventListener('keydown', (e) => {
       }
       break;
     case 'KeyT':
-      if (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1') {
+      if (isToolGunEquipped) {
         toolGunRotY += Math.PI / 2;
         showFlightHudNotification('Tool Gun: поворот Y на 90°');
         break;
+      }
+      if (!isHoldingOrRotating && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
+        e.preventDefault();
+        openGameChat();
       }
       break;
     case 'KeyR':
@@ -7061,7 +7307,428 @@ let isHostingServer = false;
 let isConnectedToHost = false;
 let hostConnection = null;
 let currentLobbyId = null;
-let localPlayerNick = "Игрок_" + Math.floor(1000 + Math.random() * 9000);
+
+// Обновление спрайта никнейма над головой 3D-аватара
+function updateAvatarNick(avatar, newNick) {
+  if (!avatar || !avatar.nameCanvas || !avatar.nameTexture) return;
+  avatar.nick = newNick;
+  const ctx = avatar.nameCanvas.getContext('2d');
+  ctx.clearRect(0, 0, 256, 64);
+  ctx.fillStyle = 'rgba(10, 14, 20, 0.75)';
+  ctx.roundRect ? ctx.roundRect(10, 10, 236, 44, 8) : ctx.fillRect(10, 10, 236, 44);
+  ctx.fill();
+  ctx.strokeStyle = '#00f0ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.font = 'bold 24px Tahoma, sans-serif';
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.fillText(newNick, 128, 40);
+  avatar.nameTexture.needsUpdate = true;
+}
+
+// ============================================================================
+// --- SOURCE / HALF-LIFE УВЕДОМЛЕНИЯ В ПРАВОМ ВЕРХНЕМ УГЛУ ---
+// ============================================================================
+const sourceNotificationStack = document.getElementById('source-notification-stack');
+
+function playSourceNotificationSound(type = 'join') {
+  playCustomOrSynth('notify_' + type, (ctx) => {
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const vol = Math.max(0, Math.min(1, masterVolume * sfxVolume));
+
+      if (type === 'join') {
+        // Двухтоновый восходящий звук (Source engine friend connect)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, now); // D5
+        osc.frequency.setValueAtTime(880, now + 0.08); // A5
+        gain.gain.setValueAtTime(0.25 * vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      } else if (type === 'leave') {
+        // Двухтоновый нисходящий звук (Source engine friend disconnect)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(740, now);
+        osc.frequency.setValueAtTime(440, now + 0.09);
+        gain.gain.setValueAtTime(0.22 * vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      } else if (type === 'security') {
+        // Тревожный сигнал безопасности / блокировки DDoS
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(360, now);
+        osc.frequency.setValueAtTime(200, now + 0.09);
+        gain.gain.setValueAtTime(0.32 * vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.24);
+      } else {
+        // Мягкий звуковой отклик чата
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(760, now);
+        osc.frequency.exponentialRampToValueAtTime(380, now + 0.06);
+        gain.gain.setValueAtTime(0.18 * vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      }
+    } catch (_) {}
+  });
+}
+
+function showSourceNotification(text, type = 'info', title = null) {
+  if (!sourceNotificationStack) return;
+
+  const toast = document.createElement('div');
+  toast.className = `source-toast toast-${type}`;
+
+  let badge = '[*]';
+  let defaultTitle = 'СИСТЕМА';
+  if (type === 'join') {
+    badge = '[+]';
+    defaultTitle = 'ПОДКЛЮЧЕНИЕ';
+  } else if (type === 'leave') {
+    badge = '[-]';
+    defaultTitle = 'ОТКЛЮЧЕНИЕ';
+  } else if (type === 'security') {
+    badge = '[!]';
+    defaultTitle = 'ЗАЩИТА';
+  }
+
+  toast.innerHTML = `
+    <div class="source-toast-badge">${badge}</div>
+    <div class="source-toast-body">
+      <div class="source-toast-title">${title || defaultTitle}</div>
+      <div class="source-toast-text">${text}</div>
+    </div>
+  `;
+
+  sourceNotificationStack.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  playSourceNotificationSound(type);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    setTimeout(() => {
+      if (toast.parentElement) toast.parentElement.removeChild(toast);
+    }, 320);
+  }, 4500);
+}
+
+// ============================================================================
+// --- СИСТЕМА ИГРОВОГО ЧАТА (MINECRAFT / SOURCE СТИЛЬ) ---
+// ============================================================================
+let isChatOpen = false;
+let chatFadeTimer = null;
+const gameChatContainer = document.getElementById('game-chat-container');
+const gameChatMessages = document.getElementById('game-chat-messages');
+const gameChatInputBar = document.getElementById('game-chat-input-bar');
+const gameChatInput = document.getElementById('game-chat-input');
+const gameChatSendBtn = document.getElementById('game-chat-send-btn');
+
+function appendChatMessageToUI({ nick, text, isHost = false, isMe = false, isSystem = false, isSecurity = false, time = Date.now() }) {
+  if (!gameChatMessages) return;
+
+  const row = document.createElement('div');
+  let rowClass = 'chat-msg-row';
+  if (isSystem) rowClass += ' is-system';
+  if (isSecurity) rowClass += ' is-security';
+  row.className = rowClass;
+
+  const d = new Date(time);
+  const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+  if (isSystem || isSecurity) {
+    row.innerHTML = `
+      <span class="chat-msg-time">[${timeStr}]</span>
+      <span class="chat-msg-text">${text}</span>
+    `;
+  } else {
+    let nickClass = 'chat-msg-nick';
+    if (isHost) nickClass += ' is-host';
+    if (isMe) nickClass += ' is-me';
+
+    row.innerHTML = `
+      <span class="chat-msg-time">[${timeStr}]</span>
+      <span class="${nickClass}">&lt;${nick}&gt;:</span>
+      <span class="chat-msg-text">${text}</span>
+    `;
+  }
+
+  gameChatMessages.appendChild(row);
+
+  while (gameChatMessages.children.length > 60) {
+    gameChatMessages.removeChild(gameChatMessages.firstChild);
+  }
+
+  gameChatMessages.scrollTop = gameChatMessages.scrollHeight;
+
+  if (!isChatOpen) {
+    row.classList.remove('faded');
+    clearTimeout(chatFadeTimer);
+    chatFadeTimer = setTimeout(() => {
+      if (!isChatOpen) {
+        document.querySelectorAll('.chat-msg-row').forEach(r => r.classList.add('faded'));
+      }
+    }, 8000);
+  }
+}
+
+function openGameChat() {
+  if (isChatOpen || isInMainMenu || !isGameStarted) return;
+  isChatOpen = true;
+
+  if (gameChatContainer) {
+    gameChatContainer.classList.remove('chat-inactive');
+    gameChatContainer.classList.add('chat-active');
+  }
+  if (gameChatInputBar) {
+    gameChatInputBar.classList.remove('hidden');
+  }
+
+  document.querySelectorAll('.chat-msg-row').forEach(r => r.classList.remove('faded'));
+
+  controls.unlock();
+  setTimeout(() => {
+    if (gameChatInput) {
+      gameChatInput.focus();
+    }
+  }, 40);
+}
+
+function closeGameChat(relockPointer = true) {
+  if (!isChatOpen) return;
+  isChatOpen = false;
+
+  if (gameChatInput) {
+    gameChatInput.blur();
+    gameChatInput.value = '';
+  }
+  if (gameChatInputBar) {
+    gameChatInputBar.classList.add('hidden');
+  }
+  if (gameChatContainer) {
+    gameChatContainer.classList.remove('chat-active');
+    gameChatContainer.classList.add('chat-inactive');
+  }
+
+  clearTimeout(chatFadeTimer);
+  chatFadeTimer = setTimeout(() => {
+    if (!isChatOpen) {
+      document.querySelectorAll('.chat-msg-row').forEach(r => r.classList.add('faded'));
+    }
+  }, 6000);
+
+  if (relockPointer && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
+    requestPointerLockSafely();
+  }
+}
+
+function handleChatCommand(cmd) {
+  const parts = cmd.slice(1).split(' ');
+  const command = parts[0].toLowerCase();
+  const arg = parts.slice(1).join(' ');
+
+  if (command === 'nick') {
+    if (arg && arg.trim()) {
+      setLocalPlayerNick(arg.trim());
+      appendChatMessageToUI({
+        text: `[Система] Ваш никнейм изменен на «${localPlayerNick}»!`,
+        isSystem: true
+      });
+    } else {
+      appendChatMessageToUI({
+        text: `[Система] Использование: /nick <новое_имя>`,
+        isSystem: true
+      });
+    }
+  } else if (command === 'clear') {
+    if (gameChatMessages) gameChatMessages.innerHTML = '';
+  } else if (command === 'sim_ddos') {
+    appendChatMessageToUI({
+      text: `[Защита] Тест DDoS-атаки запущен! Система защиты отражает ботов...`,
+      isSecurity: true
+    });
+    simulateBotDdosAttack();
+  } else if (command === 'help') {
+    appendChatMessageToUI({
+      text: `[Помощь] Команды: /nick <имя>, /clear, /sim_ddos`,
+      isSystem: true
+    });
+  } else {
+    appendChatMessageToUI({
+      text: `[Система] Неизвестная команда: /${command}. Введите /help`,
+      isSystem: true
+    });
+  }
+}
+
+function submitGameChat() {
+  if (!gameChatInput) return;
+  const rawText = gameChatInput.value.trim();
+
+  if (rawText.length > 0) {
+    if (!networkSecurityShield.checkLocalChatRate()) {
+      appendChatMessageToUI({
+        text: '[Защита] Слишком быстрая отправка! Подождите пару секунд.',
+        isSecurity: true
+      });
+      playSourceNotificationSound('security');
+      return;
+    }
+
+    if (rawText.startsWith('/')) {
+      handleChatCommand(rawText);
+      gameChatInput.value = '';
+      closeGameChat(true);
+      return;
+    }
+
+    const cleanText = escapeHtml(rawText.substring(0, 128));
+
+    appendChatMessageToUI({
+      nick: localPlayerNick,
+      text: cleanText,
+      isHost: isHostingServer,
+      isMe: true,
+      time: Date.now()
+    });
+
+    playSourceNotificationSound('chat');
+
+    broadcastNetworkPacket({
+      type: 'chat_message',
+      id: localPeer ? localPeer.id : 'me',
+      nick: localPlayerNick,
+      text: cleanText,
+      isHost: isHostingServer,
+      time: Date.now()
+    });
+  }
+
+  gameChatInput.value = '';
+  closeGameChat(true);
+}
+
+if (gameChatSendBtn) {
+  gameChatSendBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    submitGameChat();
+  });
+}
+
+// ============================================================================
+// --- СИСТЕМА ЗАЩИТЫ ОТ БОТОВ, DDOS АТАК И СПАМА ПАКЕТАМИ (SECURITY SHIELD) ---
+// ============================================================================
+const networkSecurityShield = {
+  peerPacketCounts: new Map(),
+  bannedPeers: new Set(),
+  localChatTimes: [],
+
+  checkLocalChatRate() {
+    const now = Date.now();
+    this.localChatTimes = this.localChatTimes.filter(t => now - t < 2500);
+    if (this.localChatTimes.length >= 4) {
+      return false;
+    }
+    this.localChatTimes.push(now);
+    return true;
+  },
+
+  isPeerBanned(peerId) {
+    return this.bannedPeers.has(peerId);
+  },
+
+  validateIncomingPacket(peerId, packet) {
+    if (!peerId) return true;
+    if (this.bannedPeers.has(peerId)) {
+      return false;
+    }
+
+    const now = Date.now();
+    let stats = this.peerPacketCounts.get(peerId);
+    if (!stats || now - stats.lastReset > 1000) {
+      stats = { count: 1, lastReset: now, strikes: stats ? stats.strikes : 0 };
+      this.peerPacketCounts.set(peerId, stats);
+      return true;
+    }
+
+    stats.count++;
+
+    // Нормальный трафик: до 80 пакетов в секунду (сетевой тикрейт)
+    if (stats.count > 80 && stats.count <= 220) {
+      if (packet && packet.type === 'player_transform') {
+        return false; // Сбрасываем избыточные пакеты интерполяции
+      }
+      return true;
+    }
+
+    // Аномальный флуд: более 220 пакетов/сек — признак спам-бота / DDoS
+    if (stats.count > 220) {
+      stats.strikes++;
+      if (stats.strikes >= 2) {
+        this.banMaliciousPeer(peerId, 'DDoS / Спам пакетами');
+      }
+      return false;
+    }
+
+    return true;
+  },
+
+  banMaliciousPeer(peerId, reason) {
+    this.bannedPeers.add(peerId);
+    console.warn(`[SECURITY SHIELD] Peer ${peerId} заблокирован: ${reason}`);
+
+    showSourceNotification(`Бот заблокирован: ${peerId}`, 'security', 'ЗАЩИТА');
+    appendChatMessageToUI({
+      text: `[Защита] Бот ${peerId} заблокирован и отключен (${reason}).`,
+      isSecurity: true
+    });
+
+    const conn = activePeerConnections.get(peerId);
+    if (conn) {
+      try {
+        conn.send(JSON.stringify({ type: 'kicked', reason }));
+        conn.close();
+      } catch (_) {}
+      activePeerConnections.delete(peerId);
+      removeRemotePlayer(peerId);
+      updateTabPlayerListUI();
+    }
+  }
+};
+
+function simulateBotDdosAttack() {
+  const fakeBotId = "bot_" + Math.random().toString(36).substring(2, 6);
+  let sent = 0;
+  const timer = setInterval(() => {
+    for (let i = 0; i < 60; i++) {
+      sent++;
+      networkSecurityShield.validateIncomingPacket(fakeBotId, { type: 'player_transform', x: 0, y: 0, z: 0 });
+    }
+    if (sent >= 300) {
+      clearInterval(timer);
+    }
+  }, 40);
+}
 
 // Хранилище удаленных 3D аватаров игроков
 const remotePlayerAvatars = new Map();
@@ -7268,6 +7935,9 @@ function createPlayerAvatar(nick = "Игрок") {
     rightLeg,
     pistolGroup,
     toolgunGroup,
+    nameSprite,
+    nameTexture,
+    nameCanvas: canvas,
     targetPos: new THREE.Vector3(0, 0, 0),
     targetYaw: 0,
     targetPitch: 0,
@@ -7414,6 +8084,9 @@ function handleNetworkPacket(packet, senderId) {
   // Полная изоляция: не обрабатываем сетевые пакеты, если мы находимся на главной или отключены
   if (isInMainMenu || !isGameStarted || (!isHostingServer && !isConnectedToHost)) return;
 
+  // Защита от спама, флуда и DDoS ботов
+  if (!networkSecurityShield.validateIncomingPacket(senderId, packet)) return;
+
   switch (packet.type) {
     case 'player_transform': {
       // Синхронизация движения и поворота
@@ -7422,7 +8095,12 @@ function handleNetworkPacket(packet, senderId) {
         avatar = createPlayerAvatar(packet.nick || "Игрок");
         if (!avatar) break;
         remotePlayerAvatars.set(packet.id, avatar);
-        showFlightHudNotification(`Игрок ${packet.nick || packet.id} вошел на сервер!`);
+        showSourceNotification(`Игрок «${packet.nick || 'Игрок'}» подключился к игре`, 'join');
+        appendChatMessageToUI({
+          text: `[+] Игрок «${packet.nick || 'Игрок'}» подключился к игре`,
+          isSystem: true
+        });
+        updateTabPlayerListUI();
       }
       avatar.targetPos.set(packet.x, packet.y, packet.z);
       avatar.targetYaw = packet.yaw;
@@ -7433,6 +8111,37 @@ function handleNetworkPacket(packet, senderId) {
       }
 
       // Если мы хост — ретранслируем остальным клиентам
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'chat_message': {
+      const nick = escapeHtml(packet.nick || 'Игрок');
+      const text = escapeHtml(packet.text || '');
+      appendChatMessageToUI({
+        nick: nick,
+        text: text,
+        isHost: !!packet.isHost,
+        isMe: false,
+        time: packet.time || Date.now()
+      });
+      playSourceNotificationSound('chat');
+
+      if (isHostingServer) {
+        broadcastNetworkPacket(packet, senderId);
+      }
+      break;
+    }
+
+    case 'nick_change': {
+      const avatar = remotePlayerAvatars.get(packet.id);
+      if (avatar) {
+        updateAvatarNick(avatar, packet.nick);
+      }
+      updateTabPlayerListUI();
+
       if (isHostingServer) {
         broadcastNetworkPacket(packet, senderId);
       }
@@ -7548,11 +8257,34 @@ function handleNetworkPacket(packet, senderId) {
     }
 
     case 'player_disconnect': {
+      const avatar = remotePlayerAvatars.get(packet.id);
+      const nick = (avatar && avatar.nick) || packet.nick || 'Игрок';
       removeRemotePlayer(packet.id);
-      showFlightHudNotification(`Игрок покинул сервер`);
+      updateTabPlayerListUI();
+      showSourceNotification(`Игрок «${nick}» покинул игру`, 'leave');
+      appendChatMessageToUI({
+        text: `[-] Игрок «${nick}» покинул игру`,
+        isSystem: true
+      });
       if (isHostingServer) {
         broadcastNetworkPacket(packet, senderId);
       }
+      break;
+    }
+
+    case 'kicked': {
+      leaveMultiplayerSession();
+      clearGameplayWorldObjects();
+      isInMainMenu = true;
+      isGameStarted = false;
+      if (mainMenuEl) {
+        mainMenuEl.classList.remove('hidden', 'fade-out-game');
+        void mainMenuEl.offsetWidth;
+        mainMenuEl.classList.add('visible');
+      }
+      startMenuMusic();
+      cleanupMenuChaosObjects();
+      showRetroAlert(packet.reason || 'Вы были отключены от сервера', 'Отключение');
       break;
     }
 
@@ -7791,13 +8523,21 @@ function initMultiplayerHost(options = {}) {
     });
 
     conn.on('close', () => {
+      const avatar = remotePlayerAvatars.get(conn.peer);
+      const nick = (avatar && avatar.nick) || 'Игрок';
       activePeerConnections.delete(conn.peer);
       removeRemotePlayer(conn.peer);
       updateTabPlayerListUI();
+      showSourceNotification(`Игрок «${nick}» покинул игру`, 'leave');
+      appendChatMessageToUI({
+        text: `[-] Игрок «${nick}» покинул игру`,
+        isSystem: true
+      });
       // Оповещаем остальных клиентов об отключении игрока
       broadcastNetworkPacket({
         type: 'player_disconnect',
-        id: conn.peer
+        id: conn.peer,
+        nick: nick
       });
     });
 
@@ -7880,6 +8620,12 @@ function connectToMultiplayerHost(targetId, enteredPassword = "") {
       if (mpRoomHud) mpRoomHud.classList.remove('hidden');
 
       showFlightHudNotification(`Успешное подключение к серверу!`, 3000);
+      showSourceNotification(`Подключено к серверу «${cleanId}»`, 'join');
+      appendChatMessageToUI({
+        text: `[+] Вы успешно подключились к серверу «${cleanId}»`,
+        isSystem: true
+      });
+
       if (multiplayerModal) multiplayerModal.classList.add('hidden');
       loadWorldAndEnterGame(null, true);
       updateTabPlayerListUI();
@@ -7913,6 +8659,11 @@ function connectToMultiplayerHost(targetId, enteredPassword = "") {
       isConnectedToHost = false;
       if (mpRoomHud) mpRoomHud.classList.add('hidden');
       if (mpTabOverlay) mpTabOverlay.classList.add('hidden');
+      showSourceNotification('Соединение с сервером разорвано', 'leave');
+      appendChatMessageToUI({
+        text: `[-] Соединение с сервером разорвано`,
+        isSystem: true
+      });
       if (!isDisconnectingIntentionally && !isInMainMenu) {
         showRetroAlert('Соединение с сервером разорвано', 'Отключение');
       }
@@ -8627,8 +9378,8 @@ function resizeWindCanvas() {
 resizeWindCanvas();
 
 function updateFallWindEffect(fallIntensity, delta, isGrounded = false) {
-  // Если игрок приземлился на опору — МГНОВЕННО сбрасываем интенсивность и скрываем частицы
-  if (isGrounded) {
+  // Если отключено в настройках или игрок на земле — сбрасываем частицы
+  if (!isWindEffectEnabled || isGrounded) {
     windIntensity = 0;
     fallStreakMat.opacity = 0.0;
     windCtx.clearRect(0, 0, windCanvas.width, windCanvas.height);

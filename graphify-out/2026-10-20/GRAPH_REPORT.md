@@ -1,17 +1,17 @@
 # Graph Report - Sandbox  (2026-10-20)
 
 ## Corpus Check
-- 12 files · ~56,433 words
+- 12 files · ~56,481 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: .glb 3, (none) 2, .b64 1)
 
 ## Summary
-- 488 nodes · 773 edges · 19 communities (14 shown, 5 thin omitted)
+- 488 nodes · 774 edges · 19 communities (14 shown, 5 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `88782702`
+- Built from commit: `c9768d91`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -64,7 +64,7 @@ Nodes (49): addMenuPhysicsItem(), buildMenuTowerAt(), checkJumpPadCollisions(), 
 
 ### Community 2 - "handleNetworkPacket"
 Cohesion: 0.08
-Nodes (55): applyObjectRotationPreset(), broadcastNetworkPacket(), cleanupMenuChaosObjects(), clearGameplayWorldObjects(), confirmWeaponSelection(), connectToMultiplayerHost(), createEquilateralPrismGeometry(), createPlayerAvatar() (+47 more)
+Nodes (54): applyObjectRotationPreset(), broadcastNetworkPacket(), cleanupMenuChaosObjects(), clearGameplayWorldObjects(), confirmWeaponSelection(), connectToMultiplayerHost(), createEquilateralPrismGeometry(), createPlayerAvatar() (+46 more)
 
 ### Community 3 - "package.json"
 Cohesion: 0.05
@@ -80,7 +80,7 @@ Nodes (19): debugApplicationIdSuffix, app, security, windows, build, beforeBuild
 
 ### Community 6 - "animate"
 Cohesion: 0.08
-Nodes (28): animate(), checkEasterEggFormation(), closeMenu(), closePause(), closeRotateMenu(), createSubtleReverbNode(), getWeldClusterForBody(), openMenu() (+20 more)
+Nodes (29): animate(), checkEasterEggFormation(), closeMenu(), closePause(), closeRotateMenu(), createSubtleReverbNode(), getWeldClusterForBody(), openMenu() (+21 more)
 
 ### Community 7 - "shootPistol"
 Cohesion: 0.20
@@ -131,4 +131,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `peerjs` connect `package.json` to `main.js`?**
   _High betweenness centrality (0.063) - this node is a cross-community bridge._
 - **Should `handleNetworkPacket` be split into smaller, more focused modules?**
-  _Cohesion score 0.07946127946127945 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08245981830887492 - nodes in this community are weakly interconnected._

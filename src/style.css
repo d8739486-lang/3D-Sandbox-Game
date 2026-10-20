@@ -2472,3 +2472,289 @@ body > canvas {
   text-align: right;
 }
 
+/* ============================================================================ */
+/* --- SOURCE / HALF-LIFE ИГРОВЫЕ УВЕДОМЛЕНИЯ (JOIN / LEAVE / SECURITY) ---    */
+/* ============================================================================ */
+#source-notification-stack {
+  position: fixed;
+  top: 36px;
+  right: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+  pointer-events: none;
+  width: 320px;
+}
+
+.source-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(20, 24, 30, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  border-left: 4px solid #00f0ff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #f0f0f4;
+  font-family: 'Tahoma', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+  border-radius: 2px;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.24s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.24s ease;
+  backdrop-filter: blur(4px);
+}
+
+.source-toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.source-toast.hide {
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.source-toast-badge {
+  font-family: 'Consolas', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: #11141a;
+  flex-shrink: 0;
+}
+
+.source-toast.toast-join {
+  border-left-color: #2ecc71;
+}
+.source-toast.toast-join .source-toast-badge {
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
+.source-toast.toast-leave {
+  border-left-color: #e74c3c;
+}
+.source-toast.toast-leave .source-toast-badge {
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.source-toast.toast-security {
+  border-left-color: #f39c12;
+}
+.source-toast.toast-security .source-toast-badge {
+  color: #f39c12;
+  border: 1px solid rgba(243, 156, 18, 0.4);
+}
+
+.source-toast-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.source-toast-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #8c909e;
+  font-weight: 700;
+}
+
+.source-toast-text {
+  font-size: 12px;
+  color: #ffffff;
+}
+
+/* ============================================================================ */
+/* --- ИГРОВОЙ ЧАТ В СТИЛЕ КЛАССИЧЕСКИХ ИГР / MINECRAFT / SOURCE ---            */
+/* ============================================================================ */
+#game-chat-container {
+  position: fixed;
+  bottom: 34px;
+  left: 14px;
+  width: 440px;
+  max-width: calc(100vw - 28px);
+  z-index: 9500;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  user-select: text;
+  transition: opacity 0.3s ease;
+}
+
+#game-chat-container.chat-active {
+  pointer-events: auto;
+}
+
+.chat-messages-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  overflow-y: hidden;
+  padding: 6px;
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+#game-chat-container.chat-active .chat-messages-box {
+  background: rgba(12, 14, 18, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow-y: auto;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+}
+
+.chat-msg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95);
+  word-break: break-word;
+  transition: opacity 0.5s ease;
+}
+
+.chat-msg-row.faded {
+  opacity: 0.15;
+}
+
+#game-chat-container.chat-active .chat-msg-row.faded {
+  opacity: 1.0 !important;
+}
+
+.chat-msg-time {
+  color: #8c909c;
+  font-size: 10px;
+  margin-top: 1px;
+  font-family: 'Consolas', monospace;
+  flex-shrink: 0;
+}
+
+.chat-msg-nick {
+  font-weight: 700;
+  color: #00f0ff;
+  flex-shrink: 0;
+}
+
+.chat-msg-nick.is-host {
+  color: #ffaa00;
+}
+
+.chat-msg-nick.is-me {
+  color: #55ff55;
+}
+
+.chat-msg-text {
+  color: #f4f5f8;
+}
+
+.chat-msg-row.is-system {
+  color: #ffff55;
+}
+
+.chat-msg-row.is-security {
+  color: #ff5555;
+  font-weight: 700;
+}
+
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 4px 6px;
+  background: rgba(20, 22, 28, 0.95);
+  border: 1px solid #00f0ff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+  pointer-events: auto;
+}
+
+.chat-prefix {
+  color: #00f0ff;
+  font-family: 'Consolas', monospace;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chat-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 12px;
+  padding: 4px 2px;
+}
+
+.chat-send-btn {
+  background: #2b2c30;
+  color: #00f0ff;
+  border: 1px solid #4a4b52;
+  font-size: 11px;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-family: 'Tahoma', sans-serif;
+  font-weight: 700;
+}
+
+.chat-send-btn:hover {
+  background: #007799;
+  color: #ffffff;
+  border-color: #00f0ff;
+}
+
+/* ============================================================================ */
+/* --- НАСТРОЙКИ: СТИЛИ ДЛЯ ВЫПАДАЮЩИХ СПИСКОВ И ПРОФИЛЯ ---                    */
+/* ============================================================================ */
+.retro-select {
+  cursor: pointer;
+  background: #141517;
+  color: #dedee4;
+  padding: 4px 8px;
+}
+
+.retro-select option {
+  background: #222327;
+  color: #ffffff;
+}
+
+.sb-nick-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #1a1b1f;
+  border: 1px solid #33343c;
+  margin-bottom: 8px;
+}
+
+.sb-nick-label {
+  font-family: 'Tahoma', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #b0b2ba;
+}
+
+.sb-nick-status {
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  color: #00f0ff;
+  margin-left: auto;
+}
+
+.account-status-sub {
+  font-size: 11px;
+  color: #8c909e;
+  margin-top: 2px;
+}
+
+

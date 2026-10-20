@@ -90,7 +90,7 @@
         <button class="menu-btn" id="btn-exit">Выход</button>
       </div>
       <div class="main-menu-version-bar">
-        <span id="label-game-version">v1.0.5</span>
+        <span id="label-game-version">v1.0.6</span>
         <button type="button" id="btn-check-update-link" class="update-link">[Проверить]</button>
       </div>
     </div>
@@ -115,6 +115,13 @@
       <div class="sb-top-line"></div>
 
       <div class="sb-mp-body">
+        <!-- Никнейм игрока в мультиплеере -->
+        <div class="sb-nick-row">
+          <span class="sb-nick-label">Ваш ник:</span>
+          <input type="text" id="mp-quick-nick-input" class="setting-player-nick-input sb-direct-input" maxlength="20" placeholder="Никнейм..." autocomplete="off" />
+          <span class="sb-nick-status" id="mp-nick-badge">Профиль [Гость]</span>
+        </div>
+
         <!-- Поисковая строка -->
         <div class="sb-search-row">
           <div class="sb-search-box">
@@ -310,6 +317,8 @@
       <div class="settings-tabs">
         <button class="settings-tab-btn active" data-tab="sound">Звук</button>
         <button class="settings-tab-btn" data-tab="gameplay">Игра</button>
+        <button class="settings-tab-btn" data-tab="graphics">Графика</button>
+        <button class="settings-tab-btn" data-tab="account">Аккаунт</button>
       </div>
       <div class="settings-body">
         <!-- Вкладка: Звук -->
@@ -341,6 +350,13 @@
         <div class="settings-tab-pane hidden" id="tab-pane-gameplay">
           <div class="settings-row">
             <div class="settings-label-val">
+              <label>Ваш никнейм:</label>
+              <span id="val-player-nick">Игрок</span>
+            </div>
+            <input type="text" id="setting-player-nick" class="setting-player-nick-input retro-dialog-input" maxlength="20" placeholder="Введите ваш ник..." autocomplete="off" />
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
               <label>Поле зрения (FOV):</label>
               <span id="val-fov">70°</span>
             </div>
@@ -352,6 +368,80 @@
               <span id="val-sens">5</span>
             </div>
             <input type="range" id="setting-sens" min="1" max="10" value="5" />
+          </div>
+        </div>
+
+        <!-- Вкладка: Графика -->
+        <div class="settings-tab-pane hidden" id="tab-pane-graphics">
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Качество рендеринга (Масштаб):</label>
+              <span id="val-gfx-scale">1.0x (Стандарт)</span>
+            </div>
+            <select id="setting-gfx-scale" class="retro-dialog-input retro-select">
+              <option value="0.75">0.75x (Производительность / 720p)</option>
+              <option value="1.0" selected>1.0x (Стандарт / 1080p)</option>
+              <option value="1.5">1.5x (Высокое / 1440p)</option>
+              <option value="2.0">2.0x (Ультра / 4K)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Динамические тени (Shadows):</label>
+              <span id="val-gfx-shadows">Включены</span>
+            </div>
+            <select id="setting-gfx-shadows" class="retro-dialog-input retro-select">
+              <option value="on" selected>Включены (Мягкие PCFShadows)</option>
+              <option value="off">Выключены (Макс FPS)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Дальность прорисовки и туман:</label>
+              <span id="val-gfx-fog">Дальняя (180м)</span>
+            </div>
+            <select id="setting-gfx-fog" class="retro-dialog-input retro-select">
+              <option value="near">Близкая (60м)</option>
+              <option value="medium">Средняя (120м)</option>
+              <option value="far" selected>Дальняя (180м)</option>
+              <option value="off">Максимум (Без тумана)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Эффекты падения и ветра:</label>
+              <span id="val-gfx-wind">Вкл</span>
+            </div>
+            <select id="setting-gfx-wind" class="retro-dialog-input retro-select">
+              <option value="on" selected>Включены</option>
+              <option value="off">Выключены</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Вкладка: Аккаунт и Облако (Supabase) -->
+        <div class="settings-tab-pane hidden" id="tab-pane-account">
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Статус профиля:</label>
+              <span id="val-account-status">Локальный (Гость)</span>
+            </div>
+            <div class="account-status-sub">Синхронизация через Supabase Cloud готова к подключению</div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Supabase Project URL:</label>
+            </div>
+            <input type="text" id="setting-supabase-url" class="retro-dialog-input" placeholder="https://xyzcompany.supabase.co" autocomplete="off" />
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
+              <label>Supabase Anon Key:</label>
+            </div>
+            <input type="password" id="setting-supabase-key" class="retro-dialog-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." autocomplete="off" />
+          </div>
+          <div style="margin-top: 10px; display: flex; gap: 8px;">
+            <button type="button" class="menu-btn retro-dialog-btn" id="btn-save-supabase">Сохранить ключи</button>
           </div>
         </div>
       </div>
@@ -618,6 +708,17 @@
         <button class="rotate-step-btn" data-step="roll" data-deg="-45">Roll -45°</button>
         <button class="rotate-step-btn" data-step="roll" data-deg="45">Roll +45°</button>
       </div>
+    </div>
+  <!-- Стек уведомлений Half-Life / Source стилевых (вход/выход игроков, безопасность) -->
+  <div id="source-notification-stack"></div>
+
+  <!-- Чат в ретро/Minecraft стиле (открытие на T / Ь / Enter) -->
+  <div id="game-chat-container" class="chat-inactive">
+    <div id="game-chat-messages" class="chat-messages-box"></div>
+    <div id="game-chat-input-bar" class="chat-input-bar hidden">
+      <span class="chat-prefix">&gt;</span>
+      <input type="text" id="game-chat-input" class="chat-input-field" maxlength="128" placeholder="Сообщение... [Enter] Отправить, [Esc] Отмена" autocomplete="off" />
+      <button type="button" id="game-chat-send-btn" class="chat-send-btn">Отправить</button>
     </div>
   </div>
 

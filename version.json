@@ -1,13 +1,14 @@
 {
-  "version": "1.0.5",
-  "build": 105,
-  "updatedAt": "2026-10-20T21:10:00Z",
-  "name": "Multiplayer Isolation & Tool Gun UI Update",
+  "version": "1.0.6",
+  "build": 106,
+  "updatedAt": "2026-10-20T22:20:00Z",
+  "name": "Source Notifications, Chat, Graphics & DDoS Shield",
   "changelog": [
-    "Tool Gun item selection mode in Q menu with active badge and persistent item memory",
-    "Completely isolated multiplayer rooms with clean exit and no network error popups",
-    "Fixed main menu remote player leak bug",
-    "Added live in-game auto-update system with progress bar",
-    "Clean pause menu with 'Выйти в меню' instead of local save"
+    "Source / Half-Life style player join and leave audio-visual notifications",
+    "In-game chat on T / Ь / Enter with command support and retro styling",
+    "Player nickname system with persistence and UI synchronization",
+    "Graphics settings tab: Resolution Scale, PCF Soft Shadows, Fog, Wind",
+    "Network Security Guard against packet flood, chat spam, and bot DDoS attacks",
+    "Supabase integration client ready for cloud auth and avatars"
   ]
 }
