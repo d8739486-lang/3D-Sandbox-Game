@@ -1,8 +1,8 @@
 {
   "electron-main.cjs": {
-    "mtime": 1792572353.4116454,
-    "seen": 1792573375.8546383,
-    "ast_hash": "e3a61b2691f87f6f47975375d2903133",
+    "mtime": 1792573941.6624691,
+    "seen": 1792573981.2398827,
+    "ast_hash": "f3f45c57ba2b5962f0cd750152ac01e9",
     "semantic_hash": ""
   },
   "package.json": {
@@ -48,9 +48,9 @@
     "semantic_hash": "db6dfd79e3118f99568c6c190b0ae86b"
   },
   "src/main.js": {
-    "mtime": 1792569548.178805,
-    "seen": 1792573375.8546383,
-    "ast_hash": "9033a3670d9c63d0f1143009717a45e1",
+    "mtime": 1792573960.294688,
+    "seen": 1792573981.2398827,
+    "ast_hash": "fce56731e74bff3a1a54723180293910",
     "semantic_hash": ""
   },
   "vite.config.js": {
@@ -180,9 +180,9 @@
     "semantic_hash": "80d4887dd05ea2f546669a6a4da8274c"
   },
   "version.json": {
-    "mtime": 1792567721.8106234,
-    "seen": 1792573375.8546383,
-    "ast_hash": "57ee1a18b58c83a1df1accaca503a2ba",
+    "mtime": 1792573728.2142675,
+    "seen": 1792573981.2398827,
+    "ast_hash": "e170856c4add3d1cef2c9c94a6dfe909",
     "semantic_hash": ""
   },
   "TASKS_TODO.md": {

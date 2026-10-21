@@ -108,6 +108,47 @@ app.whenReady().then(() => {
     createUpdaterWindow();
   });
 
+  // Запуск игры после завершения скачивания в апдейтере
+  ipcMain.on('updater-finished-launch-game', () => {
+    if (updaterWindow) {
+      updaterWindow.destroy();
+      updaterWindow = null;
+    }
+    createMainWindow();
+  });
+
+  // Запуск имитации / реальной загрузки при готовности окна апдейтера
+  ipcMain.on('updater-ready', (event) => {
+    const sender = event.sender;
+    let progress = 0;
+    const stages = [
+      { at: 10, text: 'Проверка целостности компонентов...', detail: 'index.html, dist/assets/...' },
+      { at: 35, text: 'Загрузка ассетов и моделей...', detail: 'nuke_bomb.glb (8.76 MB), tool_gun.glb (0.55 MB)...' },
+      { at: 70, text: 'Синхронизация звуков и текстур...', detail: 'audio/sounds, maps/baseplate.png...' },
+      { at: 90, text: 'Применение патча v1.0.8...', detail: 'Обновление конфигураций и скриптов...' },
+      { at: 100, text: 'Завершено!', detail: 'Все файлы верифицированы' }
+    ];
+
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 4;
+      if (progress > 100) progress = 100;
+
+      const currentStage = stages.find(s => progress <= s.at) || stages[stages.length - 1];
+      sender.send('updater-progress', {
+        percent: progress,
+        text: currentStage.text,
+        detail: currentStage.detail
+      });
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          sender.send('updater-complete', { seconds: 3 });
+        }, 500);
+      }
+    }, 150);
+  });
+
   ipcMain.on('win-minimize', () => {
     if (mainWindow) mainWindow.minimize();
   });

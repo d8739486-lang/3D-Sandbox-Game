@@ -9990,3 +9990,11 @@ if (btnCheckUpdateLink) {
     checkForGameUpdates(true);
   });
 }
+
+// Периодическая проверка наличия обновлений на лету каждые 25 секунд
+setInterval(() => {
+  if (typeof checkForGameUpdates === 'function') {
+    checkForGameUpdates(false);
+  }
+}, 25000);
+
