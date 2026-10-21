@@ -9808,8 +9808,8 @@ if (sortByCountBtn) {
 // ============================================================================
 // --- СИСТЕМА АВТООБНОВЛЕНИЯ ИГРЫ ИЗ РЕПОЗИТОРИЯ GITHUB ---
 // ============================================================================
-const CURRENT_GAME_VERSION = "1.0.6";
-const CURRENT_BUILD_NUMBER = 106;
+const CURRENT_GAME_VERSION = "1.0.7";
+const CURRENT_BUILD_NUMBER = 107;
 const GITHUB_REPO_VERSION_URL = "https://raw.githubusercontent.com/d8739486-lang/3D-Sandbox-Game/main/version.json";
 
 const updateDialogModal = document.getElementById('update-dialog-modal');

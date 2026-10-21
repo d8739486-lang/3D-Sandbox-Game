@@ -88,9 +88,6 @@
         <button class="menu-btn" id="btn-settings">Настройки</button>
         <button class="menu-btn" id="btn-exit">Выход</button>
       </div>
-      <div class="main-menu-version-bar">
-        <span id="label-game-version">v1.0.6</span>
-      </div>
     </div>
   </div>
 
@@ -507,15 +504,9 @@
       </div>
       <div class="retro-dialog-body update-body">
         <div id="update-dialog-status" class="update-status-msg">Проверка наличия обновлений...</div>
-        <div id="update-progress-container" class="update-progress-container hidden">
-          <div class="preloader-track update-track">
-            <div class="preloader-fill update-fill" id="update-progress-fill"></div>
-          </div>
-          <div class="update-percent-label" id="update-percent-label">Загрузка: 0%</div>
-        </div>
         <div class="retro-dialog-buttons update-buttons" id="update-dialog-buttons">
           <button class="menu-btn retro-dialog-btn" id="btn-update-cancel">Закрыть</button>
-          <button class="menu-btn retro-dialog-btn" id="btn-update-confirm">Обновить</button>
+          <button class="menu-btn retro-dialog-btn hidden" id="btn-update-confirm">Обновить</button>
         </div>
       </div>
     </div>
@@ -692,6 +683,11 @@
       <input type="text" id="game-chat-input" class="chat-input-field" maxlength="128" placeholder="Сообщение... [Enter] Отправить, [Esc] Отмена" autocomplete="off" />
       <button type="button" id="game-chat-send-btn" class="chat-send-btn">Отправить</button>
     </div>
+  </div>
+
+  <!-- Метка версии игры: фиксирована в левом нижнем углу -->
+  <div class="main-menu-version-bar">
+    <span id="label-game-version">v1.0.7</span>
   </div>
 
 </body>
