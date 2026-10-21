@@ -162,22 +162,25 @@ body {
 .download-container {
   display: flex;
   flex-direction: column;
+  width: 500px;
+  max-width: 100%;
   gap: 10px;
 }
 
 .btn-download {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   background: #2e6030;
   color: #ffffff;
   text-decoration: none;
-  padding: 14px 28px;
+  padding: 18px 24px;
   border: 1px solid #438546;
   border-top-color: #55a858;
   border-bottom-color: #214723;
   cursor: pointer;
-  width: fit-content;
+  width: 100%;
+  box-sizing: border-box;
   white-space: nowrap;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
