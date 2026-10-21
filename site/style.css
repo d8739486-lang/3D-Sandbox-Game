@@ -1,12 +1,18 @@
 /* ==========================================================================
    3D SANDBOX - ОФИЦИАЛЬНЫЙ САЙТ (КЛАССИЧЕСКИЙ РЕТРО-СТИЛЬ, БЕЗ GLOW)
-   Плавные анимации появления, чистые рамки, мгновенный рендеринг
+   Полноэкранный монолитный интерфейс, единая плавная анимация
    ========================================================================== */
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -18,81 +24,53 @@ body {
   color: #d1d5db;
   font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
   line-height: 1.5;
-  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px 16px;
-  overflow-x: hidden;
+  flex-direction: column;
 }
 
 /* ==========================================================================
-   АНИМАЦИИ ПОЯВЛЕНИЯ
+   ЕДИНАЯ ПЛАВНАЯ АНИМАЦИЯ ПОЯВЛЕНИЯ (Без разрозненных скачков частей)
    ========================================================================== */
-@keyframes siteFadeIn {
+@keyframes smoothPageFadeIn {
   0% {
     opacity: 0;
-    transform: translateY(14px) scale(0.995);
+    transform: translateY(6px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
-@keyframes heroLeftIn {
-  0% {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes heroRightIn {
-  0% {
-    opacity: 0;
-    transform: translateX(12px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* Общий контейнер */
+/* Общий полноэкранный контейнер */
 .site-wrapper {
   width: 100%;
-  max-width: 1040px;
-  background: #131519;
-  border: 1px solid #272a33;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  min-height: 100vh;
+  background: #111317;
   display: flex;
   flex-direction: column;
-  animation: siteFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: smoothPageFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* Верхняя панель */
+/* Верхняя полоса (Шапка) */
 .site-header {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: #171920;
+  padding: 14px 32px;
+  background: #15171d;
   border-bottom: 1px solid #232630;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .header-icon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 3px;
   border: 1px solid #333742;
   display: block;
@@ -100,72 +78,85 @@ body {
 
 .header-title {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 15px;
   color: #f3f4f6;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
-/* Главный блок (Hero) */
+/* Основной блок во весь экран */
 .hero-section {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: 28px;
-  padding: 36px 30px;
-  border-bottom: 1px solid #232630;
+  gap: 48px;
+  padding: 48px 32px;
+  align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .hero-section {
     grid-template-columns: 1fr;
-    padding: 24px 18px;
+    gap: 32px;
+    padding: 24px 20px;
   }
 }
 
+/* Левая часть (Информация и кнопка загрузки) */
 .hero-left {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  animation: heroLeftIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
 }
 
 .hero-title {
-  font-size: 32px;
+  font-size: 38px;
   font-weight: 800;
   color: #ffffff;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
   text-transform: uppercase;
 }
 
+@media (max-width: 600px) {
+  .hero-title {
+    font-size: 28px;
+  }
+}
+
 .hero-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: #9499a8;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   font-weight: 500;
 }
 
 .hero-desc {
-  font-size: 13px;
+  font-size: 14px;
   color: #b5b9c4;
-  line-height: 1.6;
-  margin-bottom: 22px;
+  line-height: 1.65;
+  margin-bottom: 26px;
+  max-width: 650px;
 }
 
 /* Мета-информация */
 .meta-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px 16px;
-  background: #0f1115;
+  gap: 10px 20px;
+  background: #0d0f13;
   border: 1px solid #20232c;
-  padding: 12px 14px;
-  margin-bottom: 24px;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  max-width: 520px;
 }
 
 .meta-item {
   display: flex;
-  font-size: 11px;
-  gap: 6px;
+  font-size: 12px;
+  gap: 8px;
 }
 
 .meta-label {
@@ -182,23 +173,23 @@ body {
 .download-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .btn-download {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   background: #2e6030;
   color: #ffffff;
   text-decoration: none;
-  padding: 14px 22px;
+  padding: 16px 26px;
   border: 1px solid #438546;
   border-top-color: #55a858;
   border-bottom-color: #214723;
   cursor: pointer;
   width: fit-content;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease;
 }
 
 .btn-download:hover {
@@ -212,7 +203,7 @@ body {
 }
 
 .btn-icon {
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
 }
 
@@ -223,20 +214,20 @@ body {
 }
 
 .btn-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .btn-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: #c0dec2;
   font-family: 'Consolas', monospace;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 .download-note {
-  font-size: 11px;
+  font-size: 12px;
   color: #6b7080;
 }
 
@@ -245,23 +236,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: heroRightIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 .preview-frame {
   width: 100%;
-  background: #101216;
+  max-width: 540px;
+  background: #0f1115;
   border: 1px solid #292d37;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .frame-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: #171920;
   border-bottom: 1px solid #232630;
 }
@@ -285,31 +276,30 @@ body {
 }
 
 .preview-media-box {
-  padding: 24px 20px;
+  padding: 28px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #0b0c0f;
+  background: #090a0d;
   border-bottom: 1px solid #1f222b;
 }
 
 .preview-logo {
   max-width: 100%;
   height: auto;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   display: block;
-  content-visibility: auto;
 }
 
 .preview-canvas-card {
   width: 100%;
   background: #13151b;
   border: 1px solid #242732;
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
 
 .preview-tag {
-  font-size: 10px;
+  font-size: 11px;
   font-family: 'Consolas', monospace;
   color: #9cb4d8;
   font-weight: bold;
@@ -317,9 +307,9 @@ body {
 }
 
 .preview-scene-desc {
-  font-size: 11px;
+  font-size: 12px;
   color: #8c909e;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .preview-stats {
@@ -333,7 +323,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px 6px;
+  padding: 12px 8px;
   border-right: 1px solid #1f222b;
 }
 
@@ -343,25 +333,27 @@ body {
 
 .stat-num {
   font-family: 'Consolas', monospace;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: bold;
   color: #e5e7eb;
 }
 
 .stat-lbl {
-  font-size: 10px;
+  font-size: 11px;
   color: #6b7080;
   margin-top: 2px;
   text-align: center;
 }
 
-/* Подвал: только авторские права */
+/* Подвал: на всю ширину с авторскими правами */
 .site-footer {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 16px 24px;
-  background: #0f1115;
+  padding: 18px 32px;
+  background: #15171d;
+  border-top: 1px solid #232630;
   font-size: 12px;
   color: #63687a;
   text-align: center;
@@ -369,5 +361,5 @@ body {
 
 .footer-copyright {
   font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
 }
