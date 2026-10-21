@@ -244,7 +244,6 @@ body {
   flex-direction: column;
   align-items: center;
   background: #090a0d;
-  border-bottom: 1px solid #1f222b;
 }
 
 .preview-map-image {
@@ -277,39 +276,6 @@ body {
   color: #8c909e;
   line-height: 1.45;
   font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
-}
-
-.preview-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  background: #14161c;
-}
-
-.stat-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 6px;
-  border-right: 1px solid #1f222b;
-}
-
-.stat-box:last-child {
-  border-right: none;
-}
-
-.stat-num {
-  font-family: 'Consolas', monospace;
-  font-size: 13px;
-  font-weight: bold;
-  color: #e5e7eb;
-}
-
-.stat-lbl {
-  font-size: 10px;
-  color: #6b7080;
-  margin-top: 2px;
-  text-align: center;
 }
 
 /* Подвал: лаконичный с авторскими правами */
