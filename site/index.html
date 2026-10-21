@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Sandbox - Официальный сайт игры</title>
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="site-wrapper">
+    <!-- Верхняя панель в стиле старых игровых порталов -->
+    <header class="site-header">
+      <div class="header-left">
+        <img src="icon.png" alt="3D Sandbox Icon" class="header-icon" />
+        <span class="header-title">3D SANDBOX</span>
+        <span class="header-badge">v1.0.8</span>
+      </div>
+      <nav class="header-nav">
+        <a href="#features" class="nav-link">Особенности</a>
+        <a href="#specs" class="nav-link">Характеристики</a>
+        <a href="https://github.com/d8739486-lang/3D-Sandbox-Game" target="_blank" rel="noopener noreferrer" class="nav-link github-link">GitHub</a>
+      </nav>
+    </header>
+
+    <!-- Главный баннер (слева текст, справа превью) -->
+    <main class="hero-section">
+      <div class="hero-left">
+        <h1 class="hero-title">3D SANDBOX</h1>
+        <p class="hero-subtitle">Физическая песочница с P2P мультиплеером</p>
+
+        <p class="hero-desc">
+          Одиночная игра со свободным строительством и сетевой режим по комнатам.
+          Физика твёрдых тел, инструмент переноски, Tool Gun для сварки и удаления объектов,
+          оружие и настраиваемый скайбокс в стиле классических ретро-игр.
+        </p>
+
+        <div class="meta-list" id="specs">
+          <div class="meta-item">
+            <span class="meta-label">Платформа:</span>
+            <span class="meta-val">Windows 10 / 11 (x64)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Версия:</span>
+            <span class="meta-val">1.0.8 (Stable Build)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Движок:</span>
+            <span class="meta-val">Three.js + Cannon-es</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Сеть:</span>
+            <span class="meta-val">Прямой P2P (WebRTC)</span>
+          </div>
+        </div>
+
+        <div class="download-container">
+          <a href="3D-Sandbox-Setup.exe" download="3D-Sandbox-Setup.exe" class="btn-download" id="download-link">
+            <span class="btn-icon">⬇</span>
+            <span class="btn-text-group">
+              <span class="btn-title">СКАЧАТЬ УСТАНОВЩИК</span>
+              <span class="btn-sub">3D-Sandbox-Setup.exe • ~123 МБ</span>
+            </span>
+          </a>
+          <div class="download-note">Прямая загрузка без сторонних клиентов и регистрации</div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="preview-frame">
+          <div class="frame-header">
+            <div class="frame-dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <div class="frame-title">Превью игры</div>
+          </div>
+          <div class="preview-media-box">
+            <img src="logo.png" alt="3D Sandbox Logo" class="preview-logo" />
+            <div class="preview-canvas-card">
+              <div class="preview-tag">[ КАРТА: BASEPLATE 512x512 ]</div>
+              <div class="preview-scene-desc">
+                Классическая платформа, физика кубов и сфер, вид от 1-го лица, Tool Gun и динамический скайбокс Old Roblox.
+              </div>
+            </div>
+          </div>
+          <div class="preview-stats">
+            <div class="stat-box">
+              <span class="stat-num">0%</span>
+              <span class="stat-lbl">Инпут-лаг</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num">P2P</span>
+              <span class="stat-lbl">До 10 игроков</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num">60+</span>
+              <span class="stat-lbl">FPS на Baseplate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Сетка особенностей -->
+    <section class="features-section" id="features">
+      <h2 class="section-title">ОСОБЕННОСТИ ИГРЫ</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-tag">[ФИЗИКА]</div>
+          <h3 class="feature-heading">Cannon-es World</h3>
+          <p class="feature-desc">
+            Честная физика твёрдых тел: кубы, сферы, рампы и треугольники. Свободное скольжение и кувыркание при броске без прилипаний.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-tag">[АРСЕНАЛ]</div>
+          <h3 class="feature-heading">Tool Gun и Оружие</h3>
+          <p class="feature-desc">
+            Пустые руки для захвата и броска, Glock-19 с отдачей и гильзами, а также Tool Gun для жесткой сварки конструкций и удаления блоков.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-tag">[СЕТЬ]</div>
+          <h3 class="feature-heading">P2P Мультиплеер</h3>
+          <p class="feature-desc">
+            Создание комнат с настройкой от 2 до 10 игроков. Чат на T / Enter, синхронизация спавна всех фигур и анимации прицеливания.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-tag">[ГРАФИКА]</div>
+          <h3 class="feature-heading">Скайбокс Old Roblox</h3>
+          <p class="feature-desc">
+            Яркое ретро-небо с циклом дня, заката, ночи и восхода. Оптимизированные тени PCF и полное отсутствие задержек мыши.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Подвал сайта -->
+    <footer class="site-footer">
+      <div class="footer-left">
+        <span>3D Sandbox © 2026 Eternal Studio</span>
+      </div>
+      <div class="footer-right">
+        <span>Автономный установщик • Открытый исходный код</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

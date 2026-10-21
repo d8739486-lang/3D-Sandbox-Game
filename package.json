@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite build && electron electron-main.cjs",
+    "site": "vite site --host --port 3000",
     "dist": "vite build && electron-builder --win --dir",
     "dist:portable": "vite build && electron-builder --win portable"
   },

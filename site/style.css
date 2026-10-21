@@ -1,0 +1,414 @@
+/* ==========================================================================
+   3D SANDBOX - ОФИЦИАЛЬНЫЙ САЙТ (КЛАССИЧЕСКИЙ РЕТРО-СТИЛЬ, БЕЗ GLOW)
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0d0f12;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: #d1d5db;
+  font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* Общий контейнер */
+.site-wrapper {
+  width: 100%;
+  max-width: 1040px;
+  background: #131519;
+  border: 1px solid #272a33;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Верхняя панель */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #171920;
+  border-bottom: 1px solid #232630;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  border: 1px solid #333742;
+}
+
+.header-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #f3f4f6;
+  letter-spacing: 0.5px;
+}
+
+.header-badge {
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  color: #9cb4d8;
+  background: #1f232b;
+  border: 1px solid #323846;
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.nav-link {
+  color: #8c909e;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.github-link {
+  color: #9cb4d8;
+}
+
+/* Главный блок (Hero) */
+.hero-section {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 28px;
+  padding: 32px 28px;
+  border-bottom: 1px solid #232630;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: #9499a8;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.hero-desc {
+  font-size: 13px;
+  color: #b5b9c4;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Мета-информация */
+.meta-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  background: #0f1115;
+  border: 1px solid #20232c;
+  padding: 12px 14px;
+  margin-bottom: 22px;
+}
+
+.meta-item {
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+}
+
+.meta-label {
+  color: #6b7080;
+  font-weight: 600;
+}
+
+.meta-val {
+  color: #d1d5db;
+  font-family: 'Consolas', monospace;
+}
+
+/* Кнопка загрузки */
+.download-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: #2e6030;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 14px 20px;
+  border: 1px solid #438546;
+  border-top-color: #55a858;
+  border-bottom-color: #214723;
+  cursor: pointer;
+  width: fit-content;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+
+.btn-download:hover {
+  background: #367239;
+  transform: translateY(-1px);
+}
+
+.btn-download:active {
+  background: #254e27;
+  transform: translateY(1px);
+}
+
+.btn-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.btn-text-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.btn-title {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.btn-sub {
+  font-size: 11px;
+  color: #c0dec2;
+  font-family: 'Consolas', monospace;
+  margin-top: 1px;
+}
+
+.download-note {
+  font-size: 11px;
+  color: #6b7080;
+}
+
+/* Правая колонка: превью игры */
+.hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-frame {
+  width: 100%;
+  background: #101216;
+  border: 1px solid #292d37;
+  display: flex;
+  flex-direction: column;
+}
+
+.frame-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #171920;
+  border-bottom: 1px solid #232630;
+}
+
+.frame-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #2c303c;
+  border-radius: 50%;
+}
+
+.frame-title {
+  font-size: 11px;
+  color: #7b8090;
+  font-family: 'Consolas', monospace;
+}
+
+.preview-media-box {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #0b0c0f;
+  border-bottom: 1px solid #1f222b;
+}
+
+.preview-logo {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 16px;
+  filter: contrast(1.05);
+}
+
+.preview-canvas-card {
+  width: 100%;
+  background: #13151b;
+  border: 1px solid #242732;
+  padding: 10px 12px;
+}
+
+.preview-tag {
+  font-size: 10px;
+  font-family: 'Consolas', monospace;
+  color: #9cb4d8;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.preview-scene-desc {
+  font-size: 11px;
+  color: #8c909e;
+  line-height: 1.4;
+}
+
+.preview-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background: #14161c;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  border-right: 1px solid #1f222b;
+}
+
+.stat-box:last-child {
+  border-right: none;
+}
+
+.stat-num {
+  font-family: 'Consolas', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  color: #e5e7eb;
+}
+
+.stat-lbl {
+  font-size: 10px;
+  color: #6b7080;
+  margin-top: 2px;
+  text-align: center;
+}
+
+/* Особенности (Features) */
+.features-section {
+  padding: 28px;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #8c91a0;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.feature-card {
+  background: #101216;
+  border: 1px solid #242732;
+  padding: 16px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  border-color: #383d4e;
+}
+
+.feature-tag {
+  font-family: 'Consolas', monospace;
+  font-size: 10px;
+  font-weight: bold;
+  color: #9cb4d8;
+  margin-bottom: 6px;
+}
+
+.feature-heading {
+  font-size: 13px;
+  font-weight: bold;
+  color: #f3f4f6;
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 11px;
+  color: #8c909e;
+  line-height: 1.5;
+}
+
+/* Подвал */
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: #0f1115;
+  border-top: 1px solid #1f222b;
+  font-size: 11px;
+  color: #5d6170;
+}
+
+@media (max-width: 600px) {
+  .site-footer {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+}

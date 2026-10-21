@@ -4,3 +4,4 @@ dist-electron
 .agents
 .vercel
 *.log
+site/*.exe

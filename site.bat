@@ -1,0 +1,3 @@
+@echo off
+echo Starting 3D Sandbox official site server on http://localhost:3000 (accessible on LAN with --host)...
+npm run site

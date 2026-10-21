@@ -2444,76 +2444,10 @@ const worldsModal = document.getElementById('worlds-modal');
 const worldsListEl = document.getElementById('worlds-list');
 const btnCloseWorlds = document.getElementById('btn-close-worlds');
 const btnCreateWorld = document.getElementById('btn-create-world');
-const btnImportWorld = document.getElementById('btn-import-world');
-const inputImportWorld = document.getElementById('input-import-world');
 const worldLoadingOverlay = document.getElementById('world-loading-overlay');
 const worldLoadingTitle = document.getElementById('world-loading-title');
 const worldLoadingStatus = document.getElementById('world-loading-status');
 const worldLoadingFill = document.getElementById('world-loading-fill');
-
-// Экспорт мира в JSON файл (выгрузка)
-function exportWorldById(worldId) {
-  const worlds = getAllWorlds();
-  const worldData = worlds.find((w) => w.id === worldId);
-  if (!worldData) return;
-
-  const jsonStr = JSON.stringify(worldData, null, 2);
-  const blob = new Blob([jsonStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const safeName = (worldData.name || 'world').replace(/[^a-zA-Zа-яА-Я0-9_-]/g, '_');
-  a.href = url;
-  a.download = `${safeName}_${Date.now()}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-// Импорт мира из JSON файла (загрузка извне)
-async function importWorldFromFile(file) {
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-
-    if (!data || typeof data !== 'object') {
-      await showRetroAlert('Некорректный формат файла мира!', 'Ошибка импорта');
-      return;
-    }
-
-    const worlds = getAllWorlds();
-    if (worlds.length >= MAX_WORLDS_COUNT) {
-      await showRetroAlert('Достигнут максимум миров (5). Удалите один из миров перед импортом.', 'Лимит миров');
-      return;
-    }
-
-    const importedId = 'world_' + Date.now();
-    const importedWorld = {
-      id: importedId,
-      name: (data.name ? `${data.name} (Импорт)` : `Импортированный мир #${worlds.length + 1}`).slice(0, 32),
-      lastSaved: Date.now(),
-      blocksCount: Array.isArray(data.blocks) ? data.blocks.length : (data.blocksCount || 0),
-      player: data.player || {
-        pos: { x: 0, y: standHeight, z: 0 },
-        pitch: 0,
-        yaw: 0,
-        isFlying: false,
-        flySpeed: 12.0,
-        equippedWeapon: '1-1',
-        ammo: { current: 18, maxClip: 18, reserve: 54, isReloading: false, reloadTimer: 0, lastShotTime: 0, fireRate: 0.16 }
-      },
-      blocks: Array.isArray(data.blocks) ? data.blocks : []
-    };
-
-    worlds.unshift(importedWorld);
-    saveAllWorlds(worlds);
-    renderWorldsListUI();
-    await showRetroAlert(`Мир «${importedWorld.name}» успешно импортирован!`, 'Успех');
-  } catch (err) {
-    console.error('Ошибка импорта мира:', err);
-    await showRetroAlert('Не удалось прочитать файл мира. Убедитесь, что это валидный .json файл.', 'Ошибка импорта');
-  }
-}
 
 // Отображение списка миров в окне
 function renderWorldsListUI() {
@@ -2537,7 +2471,6 @@ function renderWorldsListUI() {
         </div>
         <div class="world-card-actions">
           <button class="menu-btn world-btn-play" data-world-id="${w.id}">Загрузить</button>
-          <button class="menu-btn world-btn-export" data-world-id="${w.id}">Экспорт</button>
           <button class="menu-btn world-btn-delete" data-world-id="${w.id}">Удалить</button>
         </div>
       `;
@@ -2560,32 +2493,12 @@ function renderWorldsListUI() {
     }
   }
 
-  if (btnImportWorld) {
-    if (worlds.length >= MAX_WORLDS_COUNT) {
-      btnImportWorld.disabled = true;
-      btnImportWorld.style.opacity = '0.5';
-      btnImportWorld.style.cursor = 'not-allowed';
-    } else {
-      btnImportWorld.disabled = false;
-      btnImportWorld.style.opacity = '1';
-      btnImportWorld.style.cursor = 'pointer';
-    }
-  }
-
   // Навешиваем слушатели на кнопки миров
   document.querySelectorAll('.world-btn-play').forEach((b) => {
     b.addEventListener('click', (e) => {
       e.stopPropagation();
       const wid = b.getAttribute('data-world-id');
       loadWorldAndEnterGame(wid);
-    });
-  });
-
-  document.querySelectorAll('.world-btn-export').forEach((b) => {
-    b.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const wid = b.getAttribute('data-world-id');
-      exportWorldById(wid);
     });
   });
 
@@ -3273,20 +3186,6 @@ if (btnCreateWorld) {
   });
 }
 
-if (btnImportWorld && inputImportWorld) {
-  btnImportWorld.addEventListener('click', (e) => {
-    e.stopPropagation();
-    inputImportWorld.value = '';
-    inputImportWorld.click();
-  });
-
-  inputImportWorld.addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      importWorldFromFile(file);
-    }
-  });
-}
 
 // --- Управление разделами (вкладками) настроек ---
 document.querySelectorAll('.settings-tab-btn').forEach((tabBtn) => {
