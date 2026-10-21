@@ -48,7 +48,7 @@ body {
   flex-direction: column;
 }
 
-/* Плавное, мягкое появление страницы */
+/* Плавное, мягкое появление страницы и элементов */
 @keyframes smoothPageFadeIn {
   0% {
     opacity: 0;
@@ -56,6 +56,22 @@ body {
   100% {
     opacity: 1;
   }
+}
+
+@keyframes cascadeFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cascade-item {
+  opacity: 0;
+  animation: cascadeFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 /* Полноэкранный контейнер ровно на 100vh */

@@ -79,10 +79,68 @@
 
     <!-- Только авторские права внизу сайта -->
     <footer class="site-footer">
-      <div class="footer-copyright">
+      <div class="footer-copyright" data-typewriter>
         3D Sandbox © 2026 Eternal Studio. Все права защищены.
       </div>
     </footer>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Поочередное каскадное появление блоков
+      const cascadeTargets = [
+        '.brand-logo-3d',
+        '.brand-logo-sandbox',
+        '.hero-subtitle',
+        '.hero-desc',
+        '.meta-list',
+        '.btn-download',
+        '.update-notice',
+        '.preview-frame',
+        '.site-footer'
+      ];
+
+      cascadeTargets.forEach((selector, idx) => {
+        const el = document.querySelector(selector);
+        if (el) {
+          el.classList.add('cascade-item');
+          el.style.animationDelay = `${0.15 + idx * 0.12}s`;
+        }
+      });
+
+      // 2. Эффект печатной машинки (typewriter) для текстов
+      const typewriterSelectors = [
+        '.hero-subtitle',
+        '.hero-desc',
+        '.btn-title',
+        '.btn-sub',
+        '.preview-tag',
+        '.preview-scene-desc'
+      ];
+
+      typewriterSelectors.forEach((sel, selIdx) => {
+        const el = document.querySelector(sel);
+        if (!el) return;
+        const fullText = el.textContent.trim();
+        if (!fullText) return;
+
+        el.textContent = '';
+        el.style.visibility = 'visible';
+
+        const startDelay = 250 + selIdx * 200;
+        setTimeout(() => {
+          let charIndex = 0;
+          const speed = Math.max(12, Math.floor(650 / fullText.length));
+          const timer = setInterval(() => {
+            el.textContent = fullText.slice(0, charIndex + 1);
+            charIndex++;
+            if (charIndex >= fullText.length) {
+              clearInterval(timer);
+            }
+          }, speed);
+        }, startDelay);
+      });
+    });
+  </script>
 </body>
 </html>
