@@ -1,17 +1,17 @@
 {
   "0": "main.js",
   "1": "updateMenuChaos",
-  "2": "playCustomOrSynth",
+  "2": "loadWorldAndEnterGame",
   "3": "package.json",
   "4": "nsis",
   "5": "tauri.conf.json",
   "6": "animate",
-  "7": "shootPistol",
+  "7": "playCustomOrSynth",
   "8": "renderWorldsListUI",
   "9": "cleanupMenuChaosObjects",
   "10": "startPreloaderSequence",
   "11": "default.json",
-  "12": "playSlotSwitchSound",
+  "12": "requestPointerLockSafely",
   "13": "handleNetworkPacket",
   "14": "createRobloxStudTexture",
   "15": "build.rs",
@@ -23,5 +23,6 @@
   "21": "updateNukeGag",
   "22": "supabaseClient.js",
   "23": "triggerNextBigMenuEvent",
-  "24": "createNukePhysicsInstance"
+  "24": "createNukePhysicsInstance",
+  "25": "Сводный план задач и правок проекта (TODO & Requirements)"
 }

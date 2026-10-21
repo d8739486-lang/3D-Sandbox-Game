@@ -91,7 +91,6 @@
       </div>
       <div class="main-menu-version-bar">
         <span id="label-game-version">v1.0.6</span>
-        <button type="button" id="btn-check-update-link" class="update-link">[Проверить]</button>
       </div>
     </div>
   </div>
@@ -241,33 +240,7 @@
         </div>
 
         <div class="mp-form-row" style="margin-top: 6px;">
-          <label>Выберите карту:</label>
-          <div class="map-selector-grid">
-            <!-- Карта 1: Baseplate -->
-            <div class="map-card selected" data-map-id="baseplate">
-              <div class="map-preview-wrapper">
-                <img src="./maps/baseplate.png" alt="Baseplate" class="map-preview-img" />
-                <div class="map-badge">По умолчанию</div>
-              </div>
-              <div class="map-card-info">
-                <span class="map-card-title">Baseplate</span>
-                <span class="map-card-desc">Классическая ровная плита со стадом серых блоков и свободным горизонтом.</span>
-              </div>
-            </div>
-            <!-- Карта 2: Flat Grid -->
-            <div class="map-card" data-map-id="flat_grid">
-              <div class="map-preview-wrapper">
-                <div class="map-preview-fallback">
-                  <div class="map-fallback-grid"></div>
-                  <span class="map-fallback-text">GRID MAP</span>
-                </div>
-              </div>
-              <div class="map-card-info">
-                <span class="map-card-title">Сетка инженера</span>
-                <span class="map-card-desc">Высокоточная разметка пола для точного строительства и тестов физики.</span>
-              </div>
-            </div>
-          </div>
+          <label>Карта: Baseplate (По умолчанию)</label>
         </div>
 
         <div class="retro-dialog-buttons" style="margin-top: 14px;">
@@ -539,7 +512,7 @@
           <div class="preloader-track update-track">
             <div class="preloader-fill update-fill" id="update-progress-fill"></div>
           </div>
-          <div class="update-percent-label" id="update-percent-label">Скачивание: 0%</div>
+          <div class="update-percent-label" id="update-percent-label">Загрузка: 0%</div>
         </div>
         <div class="retro-dialog-buttons update-buttons" id="update-dialog-buttons">
           <button class="menu-btn retro-dialog-btn" id="btn-update-cancel">Закрыть</button>
@@ -554,7 +527,7 @@
     <div class="gmod-slots-container">
       <div class="gmod-slot-col" data-cat="1">
         <div class="gmod-slot-header">1</div>
-        <div class="gmod-item" data-slot="1-1">
+        <div class="gmod-item active equipped" data-slot="1-1">
           <div class="gmod-item-title">Руки (Физика)</div>
           <div class="gmod-item-sub">Пустые руки</div>
         </div>
@@ -566,7 +539,7 @@
 
       <div class="gmod-slot-col" data-cat="2">
         <div class="gmod-slot-header">2</div>
-        <div class="gmod-item active" data-slot="2-1">
+        <div class="gmod-item" data-slot="2-1">
           <div class="gmod-item-title">Glock-19</div>
           <div class="gmod-item-sub">Пистолет</div>
         </div>

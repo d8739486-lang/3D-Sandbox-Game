@@ -16,7 +16,7 @@
       "file_type": "code",
       "norm_label": "alignobjecttogrid()",
       "source_file": "src/main.js",
-      "source_location": "L5060"
+      "source_location": "L5062"
     },
     {
       "id": "src_main_applygraphicssettings",
@@ -52,7 +52,7 @@
       "file_type": "code",
       "norm_label": "createbulletholetexture()",
       "source_file": "src/main.js",
-      "source_location": "L6165"
+      "source_location": "L6183"
     },
     {
       "id": "src_main_createcardpreview",
@@ -64,7 +64,7 @@
       "file_type": "code",
       "norm_label": "createcardpreview()",
       "source_file": "src/main.js",
-      "source_location": "L4185"
+      "source_location": "L4187"
     },
     {
       "id": "src_main_getelectronipc",
@@ -88,7 +88,7 @@
       "file_type": "code",
       "norm_label": "gettargetobjectforrotation()",
       "source_file": "src/main.js",
-      "source_location": "L4873"
+      "source_location": "L4875"
     },
     {
       "id": "src_main_opengamechat",
@@ -112,7 +112,7 @@
       "file_type": "code",
       "norm_label": "openrotatemenu()",
       "source_file": "src/main.js",
-      "source_location": "L4887"
+      "source_location": "L4889"
     },
     {
       "id": "src_main_resizewindcanvas",
@@ -148,7 +148,7 @@
       "file_type": "code",
       "norm_label": "updateflightspeedui()",
       "source_file": "src/main.js",
-      "source_location": "L6881"
+      "source_location": "L6899"
     },
     {
       "id": "src_main_addmenuphysicsitem",
@@ -328,7 +328,7 @@
       "file_type": "code",
       "norm_label": "startmenumusic()",
       "source_file": "src/main.js",
-      "source_location": "L3087"
+      "source_location": "L3077"
     },
     {
       "id": "src_main_startpreloadersequence",
@@ -340,7 +340,7 @@
       "file_type": "code",
       "norm_label": "startpreloadersequence()",
       "source_file": "src/main.js",
-      "source_location": "L3010"
+      "source_location": "L3000"
     },
     {
       "id": "src_main_startpreloadersequence_finishpreloader",
@@ -352,7 +352,7 @@
       "file_type": "code",
       "norm_label": "finishpreloader()",
       "source_file": "src/main.js",
-      "source_location": "L3034"
+      "source_location": "L3024"
     },
     {
       "id": "src_main_startpreloadersequence_tickpreloader",
@@ -364,55 +364,103 @@
       "file_type": "code",
       "norm_label": "tickpreloader()",
       "source_file": "src/main.js",
-      "source_location": "L3061"
+      "source_location": "L3051"
     },
     {
-      "id": "src_main_playslotswitchsound",
-      "label": "playSlotSwitchSound()",
+      "id": "src_main_closemenu",
+      "label": "closeMenu()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "playSlotSwitchSound",
+      "community_name": "requestPointerLockSafely",
       "file_type": "code",
-      "norm_label": "playslotswitchsound()",
+      "norm_label": "closemenu()",
       "source_file": "src/main.js",
-      "source_location": "L5335"
+      "source_location": "L3635"
     },
     {
-      "id": "src_main_selectweaponslotbystep",
-      "label": "selectWeaponSlotByStep()",
+      "id": "src_main_closepause",
+      "label": "closePause()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "playSlotSwitchSound",
+      "community_name": "requestPointerLockSafely",
       "file_type": "code",
-      "norm_label": "selectweaponslotbystep()",
+      "norm_label": "closepause()",
       "source_file": "src/main.js",
-      "source_location": "L5975"
+      "source_location": "L3436"
     },
     {
-      "id": "src_main_showweaponselector",
-      "label": "showWeaponSelector()",
+      "id": "src_main_closerotatemenu",
+      "label": "closeRotateMenu()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "playSlotSwitchSound",
+      "community_name": "requestPointerLockSafely",
       "file_type": "code",
-      "norm_label": "showweaponselector()",
+      "norm_label": "closerotatemenu()",
       "source_file": "src/main.js",
-      "source_location": "L5948"
+      "source_location": "L4913"
     },
     {
-      "id": "src_main_updateweaponhudhighlight",
-      "label": "updateWeaponHudHighlight()",
+      "id": "src_main_openmenu",
+      "label": "openMenu()",
       "_callable": true,
       "_origin": "ast",
       "community": 12,
-      "community_name": "playSlotSwitchSound",
+      "community_name": "requestPointerLockSafely",
       "file_type": "code",
-      "norm_label": "updateweaponhudhighlight()",
+      "norm_label": "openmenu()",
       "source_file": "src/main.js",
-      "source_location": "L5939"
+      "source_location": "L3615"
+    },
+    {
+      "id": "src_main_openpause",
+      "label": "openPause()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "code",
+      "norm_label": "openpause()",
+      "source_file": "src/main.js",
+      "source_location": "L3410"
+    },
+    {
+      "id": "src_main_requestpointerlocksafely",
+      "label": "requestPointerLockSafely()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "code",
+      "norm_label": "requestpointerlocksafely()",
+      "source_file": "src/main.js",
+      "source_location": "L3381"
+    },
+    {
+      "id": "src_main_togglemenu",
+      "label": "toggleMenu()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "code",
+      "norm_label": "togglemenu()",
+      "source_file": "src/main.js",
+      "source_location": "L3725"
+    },
+    {
+      "id": "src_main_togglepause",
+      "label": "togglePause()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "code",
+      "norm_label": "togglepause()",
+      "source_file": "src/main.js",
+      "source_location": "L3447"
     },
     {
       "id": "src_main_appendchatmessagetoui",
@@ -439,6 +487,18 @@
       "source_location": "L8061"
     },
     {
+      "id": "src_main_closegamechat",
+      "label": "closeGameChat()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "handleNetworkPacket",
+      "file_type": "code",
+      "norm_label": "closegamechat()",
+      "source_file": "src/main.js",
+      "source_location": "L7510"
+    },
+    {
       "id": "src_main_connecttomultiplayerhost",
       "label": "connectToMultiplayerHost()",
       "_callable": true,
@@ -460,7 +520,7 @@
       "file_type": "code",
       "norm_label": "createnewworldflow()",
       "source_file": "src/main.js",
-      "source_location": "L2983"
+      "source_location": "L2973"
     },
     {
       "id": "src_main_createplayeravatar",
@@ -556,7 +616,7 @@
       "file_type": "code",
       "norm_label": "opencreateworlddialog()",
       "source_file": "src/main.js",
-      "source_location": "L2968"
+      "source_location": "L2958"
     },
     {
       "id": "src_main_playsourcenotificationsound",
@@ -763,16 +823,16 @@
       "source_location": "L244"
     },
     {
-      "id": "src_main_createsubtlereverbnode",
-      "label": "createSubtleReverbNode()",
+      "id": "src_main_detonatenukeprop",
+      "label": "detonateNukeProp()",
       "_callable": true,
       "_origin": "ast",
       "community": 19,
       "community_name": "getAudioContext",
       "file_type": "code",
-      "norm_label": "createsubtlereverbnode()",
+      "norm_label": "detonatenukeprop()",
       "source_file": "src/main.js",
-      "source_location": "L5243"
+      "source_location": "L2758"
     },
     {
       "id": "src_main_getaudiocontext",
@@ -784,7 +844,7 @@
       "file_type": "code",
       "norm_label": "getaudiocontext()",
       "source_file": "src/main.js",
-      "source_location": "L5096"
+      "source_location": "L5098"
     },
     {
       "id": "src_main_getaudiodestination",
@@ -796,7 +856,7 @@
       "file_type": "code",
       "norm_label": "getaudiodestination()",
       "source_file": "src/main.js",
-      "source_location": "L5117"
+      "source_location": "L5119"
     },
     {
       "id": "src_main_playimpactsound",
@@ -808,7 +868,7 @@
       "file_type": "code",
       "norm_label": "playimpactsound()",
       "source_file": "src/main.js",
-      "source_location": "L5177"
+      "source_location": "L5179"
     },
     {
       "id": "src_main_playkaboomsound",
@@ -820,7 +880,7 @@
       "file_type": "code",
       "norm_label": "playkaboomsound()",
       "source_file": "src/main.js",
-      "source_location": "L5159"
+      "source_location": "L5161"
     },
     {
       "id": "src_main_playlaunchsound",
@@ -832,7 +892,7 @@
       "file_type": "code",
       "norm_label": "playlaunchsound()",
       "source_file": "src/main.js",
-      "source_location": "L5141"
+      "source_location": "L5143"
     },
     {
       "id": "src_main_playominousrumblesound",
@@ -844,7 +904,7 @@
       "file_type": "code",
       "norm_label": "playominousrumblesound()",
       "source_file": "src/main.js",
-      "source_location": "L5655"
+      "source_location": "L5657"
     },
     {
       "id": "src_main_playritualhumsound",
@@ -856,19 +916,7 @@
       "file_type": "code",
       "norm_label": "playritualhumsound()",
       "source_file": "src/main.js",
-      "source_location": "L5122"
-    },
-    {
-      "id": "src_main_playspatialsecretcubefall",
-      "label": "playSpatialSecretCubeFall()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 19,
-      "community_name": "getAudioContext",
-      "file_type": "code",
-      "norm_label": "playspatialsecretcubefall()",
-      "source_file": "src/main.js",
-      "source_location": "L5264"
+      "source_location": "L5124"
     },
     {
       "id": "src_main_synthboing",
@@ -883,28 +931,16 @@
       "source_location": "L751"
     },
     {
-      "id": "src_main_updateeastereggritual",
-      "label": "updateEasterEggRitual()",
+      "id": "src_main_synthnukeexplosion",
+      "label": "synthNukeExplosion()",
       "_callable": true,
       "_origin": "ast",
       "community": 19,
       "community_name": "getAudioContext",
       "file_type": "code",
-      "norm_label": "updateeastereggritual()",
+      "norm_label": "synthnukeexplosion()",
       "source_file": "src/main.js",
-      "source_location": "L5733"
-    },
-    {
-      "id": "src_main_applyobjectrotationpreset",
-      "label": "applyObjectRotationPreset()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "applyobjectrotationpreset()",
-      "source_file": "src/main.js",
-      "source_location": "L4929"
+      "source_location": "L509"
     },
     {
       "id": "src_main_cleargameplayworldobjects",
@@ -912,23 +948,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "cleargameplayworldobjects()",
       "source_file": "src/main.js",
       "source_location": "L2177"
-    },
-    {
-      "id": "src_main_confirmweaponselection",
-      "label": "confirmWeaponSelection()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "confirmweaponselection()",
-      "source_file": "src/main.js",
-      "source_location": "L5996"
     },
     {
       "id": "src_main_createequilateralprismgeometry",
@@ -936,11 +960,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "createequilateralprismgeometry()",
       "source_file": "src/main.js",
-      "source_location": "L3895"
+      "source_location": "L3897"
     },
     {
       "id": "src_main_createrampgeometry",
@@ -948,23 +972,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "createrampgeometry()",
       "source_file": "src/main.js",
-      "source_location": "L4013"
-    },
-    {
-      "id": "src_main_equipweapon",
-      "label": "equipWeapon()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "equipweapon()",
-      "source_file": "src/main.js",
-      "source_location": "L6014"
+      "source_location": "L4015"
     },
     {
       "id": "src_main_firetoolgun",
@@ -972,11 +984,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "firetoolgun()",
       "source_file": "src/main.js",
-      "source_location": "L4564"
+      "source_location": "L4566"
     },
     {
       "id": "src_main_getitemdisplayname",
@@ -984,11 +996,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "getitemdisplayname()",
       "source_file": "src/main.js",
-      "source_location": "L3552"
+      "source_location": "L3554"
     },
     {
       "id": "src_main_gettoolgungeometry",
@@ -996,11 +1008,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "gettoolgungeometry()",
       "source_file": "src/main.js",
-      "source_location": "L4403"
+      "source_location": "L4405"
     },
     {
       "id": "src_main_loadworldandentergame",
@@ -1008,7 +1020,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "loadworldandentergame()",
       "source_file": "src/main.js",
@@ -1020,143 +1032,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "notifyspawnblock()",
       "source_file": "src/main.js",
       "source_location": "L2597"
-    },
-    {
-      "id": "src_main_playbuttonclicksound",
-      "label": "playButtonClickSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playbuttonclicksound()",
-      "source_file": "src/main.js",
-      "source_location": "L5490"
-    },
-    {
-      "id": "src_main_playcustomorsynth",
-      "label": "playCustomOrSynth()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playcustomorsynth()",
-      "source_file": "src/main.js",
-      "source_location": "L5199"
-    },
-    {
-      "id": "src_main_playgrabsound",
-      "label": "playGrabSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playgrabsound()",
-      "source_file": "src/main.js",
-      "source_location": "L5369"
-    },
-    {
-      "id": "src_main_playphysicscollisionsound",
-      "label": "playPhysicsCollisionSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playphysicscollisionsound()",
-      "source_file": "src/main.js",
-      "source_location": "L5536"
-    },
-    {
-      "id": "src_main_playreloadsound",
-      "label": "playReloadSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playreloadsound()",
-      "source_file": "src/main.js",
-      "source_location": "L5429"
-    },
-    {
-      "id": "src_main_playspawnsound",
-      "label": "playSpawnSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playspawnsound()",
-      "source_file": "src/main.js",
-      "source_location": "L5517"
-    },
-    {
-      "id": "src_main_playunweldsound",
-      "label": "playUnweldSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playunweldsound()",
-      "source_file": "src/main.js",
-      "source_location": "L4847"
-    },
-    {
-      "id": "src_main_playweapondeploysound",
-      "label": "playWeaponDeploySound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playweapondeploysound()",
-      "source_file": "src/main.js",
-      "source_location": "L5352"
-    },
-    {
-      "id": "src_main_playweldsound",
-      "label": "playWeldSound()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "playweldsound()",
-      "source_file": "src/main.js",
-      "source_location": "L4815"
-    },
-    {
-      "id": "src_main_reloadpistol",
-      "label": "reloadPistol()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "reloadpistol()",
-      "source_file": "src/main.js",
-      "source_location": "L6626"
-    },
-    {
-      "id": "src_main_removetoolguntarget",
-      "label": "removeToolGunTarget()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "removetoolguntarget()",
-      "source_file": "src/main.js",
-      "source_location": "L4658"
     },
     {
       "id": "src_main_setupbodycollisionaudio",
@@ -1164,23 +1044,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "setupbodycollisionaudio()",
       "source_file": "src/main.js",
-      "source_location": "L5629"
-    },
-    {
-      "id": "src_main_showflighthudnotification",
-      "label": "showFlightHudNotification()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "showflighthudnotification()",
-      "source_file": "src/main.js",
-      "source_location": "L6893"
+      "source_location": "L5631"
     },
     {
       "id": "src_main_spawncube",
@@ -1188,11 +1056,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawncube()",
       "source_file": "src/main.js",
-      "source_location": "L3752"
+      "source_location": "L3754"
     },
     {
       "id": "src_main_spawncubeat",
@@ -1200,7 +1068,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawncubeat()",
       "source_file": "src/main.js",
@@ -1212,11 +1080,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnitembytype()",
       "source_file": "src/main.js",
-      "source_location": "L4129"
+      "source_location": "L4131"
     },
     {
       "id": "src_main_spawnnukeprop",
@@ -1224,11 +1092,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnnukeprop()",
       "source_file": "src/main.js",
-      "source_location": "L4111"
+      "source_location": "L4113"
     },
     {
       "id": "src_main_spawnnukepropat",
@@ -1236,7 +1104,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnnukepropat()",
       "source_file": "src/main.js",
@@ -1248,11 +1116,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnramp()",
       "source_file": "src/main.js",
-      "source_location": "L4041"
+      "source_location": "L4043"
     },
     {
       "id": "src_main_spawnrampat",
@@ -1260,7 +1128,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnrampat()",
       "source_file": "src/main.js",
@@ -1272,11 +1140,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnsecretcube()",
       "source_file": "src/main.js",
-      "source_location": "L3809"
+      "source_location": "L3811"
     },
     {
       "id": "src_main_spawnsecretcubeat",
@@ -1284,7 +1152,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnsecretcubeat()",
       "source_file": "src/main.js",
@@ -1296,11 +1164,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnsphere()",
       "source_file": "src/main.js",
-      "source_location": "L3844"
+      "source_location": "L3846"
     },
     {
       "id": "src_main_spawnsphereat",
@@ -1308,7 +1176,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawnsphereat()",
       "source_file": "src/main.js",
@@ -1320,11 +1188,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawntriangle()",
       "source_file": "src/main.js",
-      "source_location": "L3935"
+      "source_location": "L3937"
     },
     {
       "id": "src_main_spawntriangleat",
@@ -1332,7 +1200,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "spawntriangleat()",
       "source_file": "src/main.js",
@@ -1344,23 +1212,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "stopmenumusic()",
       "source_file": "src/main.js",
-      "source_location": "L3106"
-    },
-    {
-      "id": "src_main_toggleweldatcrosshair",
-      "label": "toggleWeldAtCrosshair()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "playCustomOrSynth",
-      "file_type": "code",
-      "norm_label": "toggleweldatcrosshair()",
-      "source_file": "src/main.js",
-      "source_location": "L4730"
+      "source_location": "L3096"
     },
     {
       "id": "src_main_updatespawnmenumodeui",
@@ -1368,11 +1224,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "updatespawnmenumodeui()",
       "source_file": "src/main.js",
-      "source_location": "L3564"
+      "source_location": "L3566"
     },
     {
       "id": "src_main_updatetoolgunhologrammesh",
@@ -1380,11 +1236,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "updatetoolgunhologrammesh()",
       "source_file": "src/main.js",
-      "source_location": "L4418"
+      "source_location": "L4420"
     },
     {
       "id": "src_main_playmenusound",
@@ -1840,55 +1696,19 @@
       "file_type": "code",
       "norm_label": "checkeastereggformation()",
       "source_file": "src/main.js",
-      "source_location": "L5851"
+      "source_location": "L5853"
     },
     {
-      "id": "src_main_closegamechat",
-      "label": "closeGameChat()",
+      "id": "src_main_createsubtlereverbnode",
+      "label": "createSubtleReverbNode()",
       "_callable": true,
       "_origin": "ast",
       "community": 6,
       "community_name": "animate",
       "file_type": "code",
-      "norm_label": "closegamechat()",
+      "norm_label": "createsubtlereverbnode()",
       "source_file": "src/main.js",
-      "source_location": "L7510"
-    },
-    {
-      "id": "src_main_closemenu",
-      "label": "closeMenu()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "animate",
-      "file_type": "code",
-      "norm_label": "closemenu()",
-      "source_file": "src/main.js",
-      "source_location": "L3633"
-    },
-    {
-      "id": "src_main_closepause",
-      "label": "closePause()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "animate",
-      "file_type": "code",
-      "norm_label": "closepause()",
-      "source_file": "src/main.js",
-      "source_location": "L3438"
-    },
-    {
-      "id": "src_main_closerotatemenu",
-      "label": "closeRotateMenu()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "animate",
-      "file_type": "code",
-      "norm_label": "closerotatemenu()",
-      "source_file": "src/main.js",
-      "source_location": "L4911"
+      "source_location": "L5245"
     },
     {
       "id": "src_main_getobjectsnapfacepoints",
@@ -1900,7 +1720,7 @@
       "file_type": "code",
       "norm_label": "getobjectsnapfacepoints()",
       "source_file": "src/main.js",
-      "source_location": "L4431"
+      "source_location": "L4433"
     },
     {
       "id": "src_main_getweldclusterforbody",
@@ -1912,31 +1732,19 @@
       "file_type": "code",
       "norm_label": "getweldclusterforbody()",
       "source_file": "src/main.js",
-      "source_location": "L4317"
+      "source_location": "L4319"
     },
     {
-      "id": "src_main_openmenu",
-      "label": "openMenu()",
+      "id": "src_main_playspatialsecretcubefall",
+      "label": "playSpatialSecretCubeFall()",
       "_callable": true,
       "_origin": "ast",
       "community": 6,
       "community_name": "animate",
       "file_type": "code",
-      "norm_label": "openmenu()",
+      "norm_label": "playspatialsecretcubefall()",
       "source_file": "src/main.js",
-      "source_location": "L3613"
-    },
-    {
-      "id": "src_main_openpause",
-      "label": "openPause()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "animate",
-      "file_type": "code",
-      "norm_label": "openpause()",
-      "source_file": "src/main.js",
-      "source_location": "L3420"
+      "source_location": "L5266"
     },
     {
       "id": "src_main_releasegrabbedbody",
@@ -1948,19 +1756,7 @@
       "file_type": "code",
       "norm_label": "releasegrabbedbody()",
       "source_file": "src/main.js",
-      "source_location": "L4274"
-    },
-    {
-      "id": "src_main_requestpointerlocksafely",
-      "label": "requestPointerLockSafely()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "animate",
-      "file_type": "code",
-      "norm_label": "requestpointerlocksafely()",
-      "source_file": "src/main.js",
-      "source_location": "L3391"
+      "source_location": "L4276"
     },
     {
       "id": "src_main_setweldclustervelocity",
@@ -1972,7 +1768,7 @@
       "file_type": "code",
       "norm_label": "setweldclustervelocity()",
       "source_file": "src/main.js",
-      "source_location": "L4344"
+      "source_location": "L4346"
     },
     {
       "id": "src_main_startredskycenterevent",
@@ -1984,7 +1780,7 @@
       "file_type": "code",
       "norm_label": "startredskycenterevent()",
       "source_file": "src/main.js",
-      "source_location": "L5680"
+      "source_location": "L5682"
     },
     {
       "id": "src_main_syncweldconstraintspositions",
@@ -1996,31 +1792,19 @@
       "file_type": "code",
       "norm_label": "syncweldconstraintspositions()",
       "source_file": "src/main.js",
-      "source_location": "L4354"
+      "source_location": "L4356"
     },
     {
-      "id": "src_main_togglemenu",
-      "label": "toggleMenu()",
+      "id": "src_main_updateeastereggritual",
+      "label": "updateEasterEggRitual()",
       "_callable": true,
       "_origin": "ast",
       "community": 6,
       "community_name": "animate",
       "file_type": "code",
-      "norm_label": "togglemenu()",
+      "norm_label": "updateeastereggritual()",
       "source_file": "src/main.js",
-      "source_location": "L3723"
-    },
-    {
-      "id": "src_main_togglepause",
-      "label": "togglePause()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "animate",
-      "file_type": "code",
-      "norm_label": "togglepause()",
-      "source_file": "src/main.js",
-      "source_location": "L3449"
+      "source_location": "L5735"
     },
     {
       "id": "src_main_updatefallwindeffect",
@@ -2044,7 +1828,7 @@
       "file_type": "code",
       "norm_label": "updatepreview3d()",
       "source_file": "src/main.js",
-      "source_location": "L4246"
+      "source_location": "L4248"
     },
     {
       "id": "src_main_updatethrowpowerui",
@@ -2068,7 +1852,7 @@
       "file_type": "code",
       "norm_label": "updatetoolgunloop()",
       "source_file": "src/main.js",
-      "source_location": "L4462"
+      "source_location": "L4464"
     },
     {
       "id": "src_main_wakeweldcluster",
@@ -2080,19 +1864,43 @@
       "file_type": "code",
       "norm_label": "wakeweldcluster()",
       "source_file": "src/main.js",
-      "source_location": "L4336"
+      "source_location": "L4338"
     },
     {
-      "id": "src_main_detonatenukeprop",
-      "label": "detonateNukeProp()",
+      "id": "src_main_applyobjectrotationpreset",
+      "label": "applyObjectRotationPreset()",
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
-      "norm_label": "detonatenukeprop()",
+      "norm_label": "applyobjectrotationpreset()",
       "source_file": "src/main.js",
-      "source_location": "L2758"
+      "source_location": "L4931"
+    },
+    {
+      "id": "src_main_confirmweaponselection",
+      "label": "confirmWeaponSelection()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "confirmweaponselection()",
+      "source_file": "src/main.js",
+      "source_location": "L6010"
+    },
+    {
+      "id": "src_main_equipweapon",
+      "label": "equipWeapon()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "equipweapon()",
+      "source_file": "src/main.js",
+      "source_location": "L6028"
     },
     {
       "id": "src_main_getmuzzleworldposition",
@@ -2100,11 +1908,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "getmuzzleworldposition()",
       "source_file": "src/main.js",
-      "source_location": "L6274"
+      "source_location": "L6292"
+    },
+    {
+      "id": "src_main_playbuttonclicksound",
+      "label": "playButtonClickSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playbuttonclicksound()",
+      "source_file": "src/main.js",
+      "source_location": "L5492"
+    },
+    {
+      "id": "src_main_playcustomorsynth",
+      "label": "playCustomOrSynth()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playcustomorsynth()",
+      "source_file": "src/main.js",
+      "source_location": "L5201"
     },
     {
       "id": "src_main_playemptyclicksound",
@@ -2112,11 +1944,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "playemptyclicksound()",
       "source_file": "src/main.js",
-      "source_location": "L5473"
+      "source_location": "L5475"
+    },
+    {
+      "id": "src_main_playgrabsound",
+      "label": "playGrabSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playgrabsound()",
+      "source_file": "src/main.js",
+      "source_location": "L5371"
+    },
+    {
+      "id": "src_main_playphysicscollisionsound",
+      "label": "playPhysicsCollisionSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playphysicscollisionsound()",
+      "source_file": "src/main.js",
+      "source_location": "L5538"
     },
     {
       "id": "src_main_playpistolshootsound",
@@ -2124,11 +1980,119 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "playpistolshootsound()",
       "source_file": "src/main.js",
-      "source_location": "L5386"
+      "source_location": "L5388"
+    },
+    {
+      "id": "src_main_playreloadsound",
+      "label": "playReloadSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playreloadsound()",
+      "source_file": "src/main.js",
+      "source_location": "L5431"
+    },
+    {
+      "id": "src_main_playslotswitchsound",
+      "label": "playSlotSwitchSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playslotswitchsound()",
+      "source_file": "src/main.js",
+      "source_location": "L5337"
+    },
+    {
+      "id": "src_main_playspawnsound",
+      "label": "playSpawnSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playspawnsound()",
+      "source_file": "src/main.js",
+      "source_location": "L5519"
+    },
+    {
+      "id": "src_main_playunweldsound",
+      "label": "playUnweldSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playunweldsound()",
+      "source_file": "src/main.js",
+      "source_location": "L4849"
+    },
+    {
+      "id": "src_main_playweapondeploysound",
+      "label": "playWeaponDeploySound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playweapondeploysound()",
+      "source_file": "src/main.js",
+      "source_location": "L5354"
+    },
+    {
+      "id": "src_main_playweldsound",
+      "label": "playWeldSound()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "playweldsound()",
+      "source_file": "src/main.js",
+      "source_location": "L4817"
+    },
+    {
+      "id": "src_main_reloadpistol",
+      "label": "reloadPistol()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "reloadpistol()",
+      "source_file": "src/main.js",
+      "source_location": "L6644"
+    },
+    {
+      "id": "src_main_removetoolguntarget",
+      "label": "removeToolGunTarget()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "removetoolguntarget()",
+      "source_file": "src/main.js",
+      "source_location": "L4660"
+    },
+    {
+      "id": "src_main_selectweaponslotbystep",
+      "label": "selectWeaponSlotByStep()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "selectweaponslotbystep()",
+      "source_file": "src/main.js",
+      "source_location": "L5983"
     },
     {
       "id": "src_main_shootpistol",
@@ -2136,11 +2100,35 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "shootpistol()",
       "source_file": "src/main.js",
-      "source_location": "L6508"
+      "source_location": "L6526"
+    },
+    {
+      "id": "src_main_showflighthudnotification",
+      "label": "showFlightHudNotification()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "showflighthudnotification()",
+      "source_file": "src/main.js",
+      "source_location": "L6911"
+    },
+    {
+      "id": "src_main_showweaponselector",
+      "label": "showWeaponSelector()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "showweaponselector()",
+      "source_file": "src/main.js",
+      "source_location": "L5950"
     },
     {
       "id": "src_main_spawnbullethole",
@@ -2148,11 +2136,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "spawnbullethole()",
       "source_file": "src/main.js",
-      "source_location": "L6211"
+      "source_location": "L6229"
     },
     {
       "id": "src_main_spawnbulletimpactsparks",
@@ -2160,11 +2148,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "spawnbulletimpactsparks()",
       "source_file": "src/main.js",
-      "source_location": "L6638"
+      "source_location": "L6656"
     },
     {
       "id": "src_main_spawnbullettracer",
@@ -2172,11 +2160,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "spawnbullettracer()",
       "source_file": "src/main.js",
-      "source_location": "L6285"
+      "source_location": "L6303"
     },
     {
       "id": "src_main_spawnmuzzlesmoke",
@@ -2184,11 +2172,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "spawnmuzzlesmoke()",
       "source_file": "src/main.js",
-      "source_location": "L6329"
+      "source_location": "L6347"
     },
     {
       "id": "src_main_spawnshellcasing",
@@ -2196,23 +2184,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "spawnshellcasing()",
       "source_file": "src/main.js",
-      "source_location": "L6125"
+      "source_location": "L6143"
     },
     {
-      "id": "src_main_synthnukeexplosion",
-      "label": "synthNukeExplosion()",
+      "id": "src_main_toggleweldatcrosshair",
+      "label": "toggleWeldAtCrosshair()",
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
-      "norm_label": "synthnukeexplosion()",
+      "norm_label": "toggleweldatcrosshair()",
       "source_file": "src/main.js",
-      "source_location": "L509"
+      "source_location": "L4732"
     },
     {
       "id": "src_main_updateammohud",
@@ -2220,11 +2208,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "updateammohud()",
       "source_file": "src/main.js",
-      "source_location": "L5925"
+      "source_location": "L5927"
     },
     {
       "id": "src_main_updatebullettracers",
@@ -2232,11 +2220,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "updatebullettracers()",
       "source_file": "src/main.js",
-      "source_location": "L6311"
+      "source_location": "L6329"
     },
     {
       "id": "src_main_updateshellcasings",
@@ -2244,7 +2232,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "updateshellcasings()",
       "source_file": "src/main.js",
@@ -2256,11 +2244,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "updatesmokepuffs()",
       "source_file": "src/main.js",
       "source_location": "L9168"
+    },
+    {
+      "id": "src_main_updateweaponhudhighlight",
+      "label": "updateWeaponHudHighlight()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "playCustomOrSynth",
+      "file_type": "code",
+      "norm_label": "updateweaponhudhighlight()",
+      "source_file": "src/main.js",
+      "source_location": "L5941"
     },
     {
       "id": "src_main_updateweaponviewmodel",
@@ -2268,7 +2268,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "shootPistol",
+      "community_name": "playCustomOrSynth",
       "file_type": "code",
       "norm_label": "updateweaponviewmodel()",
       "source_file": "src/main.js",
@@ -2356,7 +2356,7 @@
       "file_type": "code",
       "norm_label": "savecurrentactiveworld()",
       "source_file": "src/main.js",
-      "source_location": "L2988"
+      "source_location": "L2978"
     },
     {
       "id": "src_main_serializecurrentworldstate",
@@ -2414,7 +2414,7 @@
       "file_type": "code",
       "norm_label": "activebulletdecals",
       "source_file": "src/main.js",
-      "source_location": "L6161"
+      "source_location": "L6179"
     },
     {
       "id": "src_main_activebullettracers",
@@ -2425,7 +2425,7 @@
       "file_type": "code",
       "norm_label": "activebullettracers",
       "source_file": "src/main.js",
-      "source_location": "L6270"
+      "source_location": "L6288"
     },
     {
       "id": "src_main_activepeerconnections",
@@ -2458,7 +2458,7 @@
       "file_type": "code",
       "norm_label": "activeshellcasings",
       "source_file": "src/main.js",
-      "source_location": "L6117"
+      "source_location": "L6135"
     },
     {
       "id": "src_main_activesmokepuffs",
@@ -2469,7 +2469,7 @@
       "file_type": "code",
       "norm_label": "activesmokepuffs",
       "source_file": "src/main.js",
-      "source_location": "L6326"
+      "source_location": "L6344"
     },
     {
       "id": "src_main_aligningobjects",
@@ -2480,7 +2480,7 @@
       "file_type": "code",
       "norm_label": "aligningobjects",
       "source_file": "src/main.js",
-      "source_location": "L4864"
+      "source_location": "L4866"
     },
     {
       "id": "src_main_all_weapon_slots",
@@ -2491,7 +2491,7 @@
       "file_type": "code",
       "norm_label": "all_weapon_slots",
       "source_file": "src/main.js",
-      "source_location": "L5937"
+      "source_location": "L5939"
     },
     {
       "id": "src_main_allpreviews",
@@ -2502,7 +2502,7 @@
       "file_type": "code",
       "norm_label": "allpreviews",
       "source_file": "src/main.js",
-      "source_location": "L4244"
+      "source_location": "L4246"
     },
     {
       "id": "src_main_ambientlight",
@@ -2524,7 +2524,7 @@
       "file_type": "code",
       "norm_label": "ammocurrentel",
       "source_file": "src/main.js",
-      "source_location": "L5911"
+      "source_location": "L5913"
     },
     {
       "id": "src_main_ammohudel",
@@ -2535,7 +2535,7 @@
       "file_type": "code",
       "norm_label": "ammohudel",
       "source_file": "src/main.js",
-      "source_location": "L5910"
+      "source_location": "L5912"
     },
     {
       "id": "src_main_ammoreserveel",
@@ -2546,7 +2546,7 @@
       "file_type": "code",
       "norm_label": "ammoreserveel",
       "source_file": "src/main.js",
-      "source_location": "L5912"
+      "source_location": "L5914"
     },
     {
       "id": "src_main_audiofiles",
@@ -2557,7 +2557,7 @@
       "file_type": "code",
       "norm_label": "audiofiles",
       "source_file": "src/main.js",
-      "source_location": "L5198"
+      "source_location": "L5200"
     },
     {
       "id": "src_main_baseplate",
@@ -2821,7 +2821,7 @@
       "file_type": "code",
       "norm_label": "btnpauseexit",
       "source_file": "src/main.js",
-      "source_location": "L3465"
+      "source_location": "L3463"
     },
     {
       "id": "src_main_btnpauseresume",
@@ -2832,7 +2832,7 @@
       "file_type": "code",
       "norm_label": "btnpauseresume",
       "source_file": "src/main.js",
-      "source_location": "L3463"
+      "source_location": "L3461"
     },
     {
       "id": "src_main_btnpausesettings",
@@ -2843,7 +2843,7 @@
       "file_type": "code",
       "norm_label": "btnpausesettings",
       "source_file": "src/main.js",
-      "source_location": "L3464"
+      "source_location": "L3462"
     },
     {
       "id": "src_main_btnplay",
@@ -2898,7 +2898,7 @@
       "file_type": "code",
       "norm_label": "btnsavesupabase",
       "source_file": "src/main.js",
-      "source_location": "L3312"
+      "source_location": "L3302"
     },
     {
       "id": "src_main_btnsettings",
@@ -2986,7 +2986,7 @@
       "file_type": "code",
       "norm_label": "bulletholegeo",
       "source_file": "src/main.js",
-      "source_location": "L6208"
+      "source_location": "L6226"
     },
     {
       "id": "src_main_bulletholetexture",
@@ -2997,7 +2997,7 @@
       "file_type": "code",
       "norm_label": "bulletholetexture",
       "source_file": "src/main.js",
-      "source_location": "L6207"
+      "source_location": "L6225"
     },
     {
       "id": "src_main_camera",
@@ -3019,7 +3019,7 @@
       "file_type": "code",
       "norm_label": "casinggeo",
       "source_file": "src/main.js",
-      "source_location": "L6118"
+      "source_location": "L6136"
     },
     {
       "id": "src_main_casingmat",
@@ -3030,7 +3030,7 @@
       "file_type": "code",
       "norm_label": "casingmat",
       "source_file": "src/main.js",
-      "source_location": "L6119"
+      "source_location": "L6137"
     },
     {
       "id": "src_main_centerscreen",
@@ -3041,7 +3041,7 @@
       "file_type": "code",
       "norm_label": "centerscreen",
       "source_file": "src/main.js",
-      "source_location": "L4269"
+      "source_location": "L4271"
     },
     {
       "id": "src_main_closemenubtn",
@@ -3217,7 +3217,7 @@
       "file_type": "code",
       "norm_label": "fixedgrabquat",
       "source_file": "src/main.js",
-      "source_location": "L4267"
+      "source_location": "L4269"
     },
     {
       "id": "src_main_flightspeedfillel",
@@ -3228,7 +3228,7 @@
       "file_type": "code",
       "norm_label": "flightspeedfillel",
       "source_file": "src/main.js",
-      "source_location": "L6879"
+      "source_location": "L6897"
     },
     {
       "id": "src_main_flightspeedoverlay",
@@ -3239,7 +3239,7 @@
       "file_type": "code",
       "norm_label": "flightspeedoverlay",
       "source_file": "src/main.js",
-      "source_location": "L6877"
+      "source_location": "L6895"
     },
     {
       "id": "src_main_flightspeedvalel",
@@ -3250,7 +3250,7 @@
       "file_type": "code",
       "norm_label": "flightspeedvalel",
       "source_file": "src/main.js",
-      "source_location": "L6878"
+      "source_location": "L6896"
     },
     {
       "id": "src_main_flyvelocity",
@@ -3338,7 +3338,7 @@
       "file_type": "code",
       "norm_label": "gltfloader",
       "source_file": "src/main.js",
-      "source_location": "L6369"
+      "source_location": "L6387"
     },
     {
       "id": "src_main_grabrelativequat",
@@ -3349,7 +3349,7 @@
       "file_type": "code",
       "norm_label": "grabrelativequat",
       "source_file": "src/main.js",
-      "source_location": "L4265"
+      "source_location": "L4267"
     },
     {
       "id": "src_main_grabvelocityhistory",
@@ -3360,7 +3360,7 @@
       "file_type": "code",
       "norm_label": "grabvelocityhistory",
       "source_file": "src/main.js",
-      "source_location": "L4270"
+      "source_location": "L4272"
     },
     {
       "id": "src_main_groundbody",
@@ -3415,7 +3415,7 @@
       "file_type": "code",
       "norm_label": "initialslidepos",
       "source_file": "src/main.js",
-      "source_location": "L6099"
+      "source_location": "L6117"
     },
     {
       "id": "src_main_inputimportworld",
@@ -3437,7 +3437,7 @@
       "file_type": "code",
       "norm_label": "keys",
       "source_file": "src/main.js",
-      "source_location": "L6839"
+      "source_location": "L6857"
     },
     {
       "id": "src_main_labelgameversion",
@@ -3470,7 +3470,7 @@
       "file_type": "code",
       "norm_label": "lasttargetpos",
       "source_file": "src/main.js",
-      "source_location": "L4271"
+      "source_location": "L4273"
     },
     {
       "id": "src_main_mainmenuel",
@@ -3679,7 +3679,7 @@
       "file_type": "code",
       "norm_label": "mpnickbadge",
       "source_file": "src/main.js",
-      "source_location": "L3238"
+      "source_location": "L3228"
     },
     {
       "id": "src_main_mppasswordrow",
@@ -3701,7 +3701,7 @@
       "file_type": "code",
       "norm_label": "mpquicknickinput",
       "source_file": "src/main.js",
-      "source_location": "L3236"
+      "source_location": "L3226"
     },
     {
       "id": "src_main_mproomhud",
@@ -3877,7 +3877,7 @@
       "file_type": "code",
       "norm_label": "physicsobjects",
       "source_file": "src/main.js",
-      "source_location": "L3742"
+      "source_location": "L3744"
     },
     {
       "id": "src_main_pistol_aim_pos",
@@ -3888,7 +3888,7 @@
       "file_type": "code",
       "norm_label": "pistol_aim_pos",
       "source_file": "src/main.js",
-      "source_location": "L6081"
+      "source_location": "L6100"
     },
     {
       "id": "src_main_pistol_aim_rot",
@@ -3899,7 +3899,7 @@
       "file_type": "code",
       "norm_label": "pistol_aim_rot",
       "source_file": "src/main.js",
-      "source_location": "L6082"
+      "source_location": "L6101"
     },
     {
       "id": "src_main_pistol_hip_pos",
@@ -3910,7 +3910,7 @@
       "file_type": "code",
       "norm_label": "pistol_hip_pos",
       "source_file": "src/main.js",
-      "source_location": "L6076"
+      "source_location": "L6095"
     },
     {
       "id": "src_main_pistol_hip_rot",
@@ -3921,7 +3921,7 @@
       "file_type": "code",
       "norm_label": "pistol_hip_rot",
       "source_file": "src/main.js",
-      "source_location": "L6077"
+      "source_location": "L6096"
     },
     {
       "id": "src_main_pistolammo",
@@ -3932,7 +3932,7 @@
       "file_type": "code",
       "norm_label": "pistolammo",
       "source_file": "src/main.js",
-      "source_location": "L5915"
+      "source_location": "L5917"
     },
     {
       "id": "src_main_preloaderfill",
@@ -3965,7 +3965,7 @@
       "file_type": "code",
       "norm_label": "previewcubeobj",
       "source_file": "src/main.js",
-      "source_location": "L4210"
+      "source_location": "L4212"
     },
     {
       "id": "src_main_previewsphereobj",
@@ -3976,7 +3976,7 @@
       "file_type": "code",
       "norm_label": "previewsphereobj",
       "source_file": "src/main.js",
-      "source_location": "L4217"
+      "source_location": "L4219"
     },
     {
       "id": "src_main_prevtime",
@@ -3998,7 +3998,7 @@
       "file_type": "code",
       "norm_label": "raycaster",
       "source_file": "src/main.js",
-      "source_location": "L4268"
+      "source_location": "L4270"
     },
     {
       "id": "src_main_recoiloffset",
@@ -4009,7 +4009,7 @@
       "file_type": "code",
       "norm_label": "recoiloffset",
       "source_file": "src/main.js",
-      "source_location": "L6107"
+      "source_location": "L6125"
     },
     {
       "id": "src_main_recoilrotation",
@@ -4020,7 +4020,7 @@
       "file_type": "code",
       "norm_label": "recoilrotation",
       "source_file": "src/main.js",
-      "source_location": "L6108"
+      "source_location": "L6126"
     },
     {
       "id": "src_main_remoteplayeravatars",
@@ -4119,7 +4119,7 @@
       "file_type": "code",
       "norm_label": "secretcubetexture",
       "source_file": "src/main.js",
-      "source_location": "L3746"
+      "source_location": "L3748"
     },
     {
       "id": "src_main_settingfov",
@@ -4141,7 +4141,7 @@
       "file_type": "code",
       "norm_label": "settinggfxfog",
       "source_file": "src/main.js",
-      "source_location": "L3260"
+      "source_location": "L3250"
     },
     {
       "id": "src_main_settinggfxscale",
@@ -4152,7 +4152,7 @@
       "file_type": "code",
       "norm_label": "settinggfxscale",
       "source_file": "src/main.js",
-      "source_location": "L3258"
+      "source_location": "L3248"
     },
     {
       "id": "src_main_settinggfxshadows",
@@ -4163,7 +4163,7 @@
       "file_type": "code",
       "norm_label": "settinggfxshadows",
       "source_file": "src/main.js",
-      "source_location": "L3259"
+      "source_location": "L3249"
     },
     {
       "id": "src_main_settinggfxwind",
@@ -4174,7 +4174,7 @@
       "file_type": "code",
       "norm_label": "settinggfxwind",
       "source_file": "src/main.js",
-      "source_location": "L3261"
+      "source_location": "L3251"
     },
     {
       "id": "src_main_settingplayernickinput",
@@ -4185,7 +4185,7 @@
       "file_type": "code",
       "norm_label": "settingplayernickinput",
       "source_file": "src/main.js",
-      "source_location": "L3235"
+      "source_location": "L3225"
     },
     {
       "id": "src_main_settingsens",
@@ -4218,7 +4218,7 @@
       "file_type": "code",
       "norm_label": "settingsupabasekey",
       "source_file": "src/main.js",
-      "source_location": "L3311"
+      "source_location": "L3301"
     },
     {
       "id": "src_main_settingsupabaseurl",
@@ -4229,7 +4229,7 @@
       "file_type": "code",
       "norm_label": "settingsupabaseurl",
       "source_file": "src/main.js",
-      "source_location": "L3310"
+      "source_location": "L3300"
     },
     {
       "id": "src_main_settingvolmaster",
@@ -4306,7 +4306,7 @@
       "file_type": "code",
       "norm_label": "smokegeo",
       "source_file": "src/main.js",
-      "source_location": "L6327"
+      "source_location": "L6345"
     },
     {
       "id": "src_main_snapdotgeo",
@@ -4317,7 +4317,7 @@
       "file_type": "code",
       "norm_label": "snapdotgeo",
       "source_file": "src/main.js",
-      "source_location": "L4389"
+      "source_location": "L4391"
     },
     {
       "id": "src_main_snapdotmatactive",
@@ -4328,7 +4328,7 @@
       "file_type": "code",
       "norm_label": "snapdotmatactive",
       "source_file": "src/main.js",
-      "source_location": "L4391"
+      "source_location": "L4393"
     },
     {
       "id": "src_main_snapdotmatnormal",
@@ -4339,7 +4339,7 @@
       "file_type": "code",
       "norm_label": "snapdotmatnormal",
       "source_file": "src/main.js",
-      "source_location": "L4390"
+      "source_location": "L4392"
     },
     {
       "id": "src_main_snapdotmeshes",
@@ -4350,7 +4350,7 @@
       "file_type": "code",
       "norm_label": "snapdotmeshes",
       "source_file": "src/main.js",
-      "source_location": "L4393"
+      "source_location": "L4395"
     },
     {
       "id": "src_main_sortbycountbtn",
@@ -4449,7 +4449,7 @@
       "file_type": "code",
       "norm_label": "textureloader",
       "source_file": "src/main.js",
-      "source_location": "L3745"
+      "source_location": "L3747"
     },
     {
       "id": "src_main_throwpowerfill",
@@ -4493,7 +4493,7 @@
       "file_type": "code",
       "norm_label": "toolgunfacenormal",
       "source_file": "src/main.js",
-      "source_location": "L6093"
+      "source_location": "L6111"
     },
     {
       "id": "src_main_toolgunhitpoint",
@@ -4504,7 +4504,7 @@
       "file_type": "code",
       "norm_label": "toolgunhitpoint",
       "source_file": "src/main.js",
-      "source_location": "L6094"
+      "source_location": "L6112"
     },
     {
       "id": "src_main_toolgunpreviewmaterial",
@@ -4515,7 +4515,7 @@
       "file_type": "code",
       "norm_label": "toolgunpreviewmaterial",
       "source_file": "src/main.js",
-      "source_location": "L4376"
+      "source_location": "L4378"
     },
     {
       "id": "src_main_toolgunsnapdotsgroup",
@@ -4526,7 +4526,7 @@
       "file_type": "code",
       "norm_label": "toolgunsnapdotsgroup",
       "source_file": "src/main.js",
-      "source_location": "L4386"
+      "source_location": "L4388"
     },
     {
       "id": "src_main_tracergeo",
@@ -4537,7 +4537,7 @@
       "file_type": "code",
       "norm_label": "tracergeo",
       "source_file": "src/main.js",
-      "source_location": "L6271"
+      "source_location": "L6289"
     },
     {
       "id": "src_main_updatedialogmodal",
@@ -4603,7 +4603,7 @@
       "file_type": "code",
       "norm_label": "valaccountstatus",
       "source_file": "src/main.js",
-      "source_location": "L3313"
+      "source_location": "L3303"
     },
     {
       "id": "src_main_valfov",
@@ -4625,7 +4625,7 @@
       "file_type": "code",
       "norm_label": "valgfxfog",
       "source_file": "src/main.js",
-      "source_location": "L3264"
+      "source_location": "L3254"
     },
     {
       "id": "src_main_valgfxscale",
@@ -4636,7 +4636,7 @@
       "file_type": "code",
       "norm_label": "valgfxscale",
       "source_file": "src/main.js",
-      "source_location": "L3262"
+      "source_location": "L3252"
     },
     {
       "id": "src_main_valgfxshadows",
@@ -4647,7 +4647,7 @@
       "file_type": "code",
       "norm_label": "valgfxshadows",
       "source_file": "src/main.js",
-      "source_location": "L3263"
+      "source_location": "L3253"
     },
     {
       "id": "src_main_valgfxwind",
@@ -4658,7 +4658,7 @@
       "file_type": "code",
       "norm_label": "valgfxwind",
       "source_file": "src/main.js",
-      "source_location": "L3265"
+      "source_location": "L3255"
     },
     {
       "id": "src_main_valplayernick",
@@ -4669,7 +4669,7 @@
       "file_type": "code",
       "norm_label": "valplayernick",
       "source_file": "src/main.js",
-      "source_location": "L3237"
+      "source_location": "L3227"
     },
     {
       "id": "src_main_valsens",
@@ -4724,7 +4724,7 @@
       "file_type": "code",
       "norm_label": "viewmodelroot",
       "source_file": "src/main.js",
-      "source_location": "L6069"
+      "source_location": "L6088"
     },
     {
       "id": "src_main_vortexpos",
@@ -4746,7 +4746,7 @@
       "file_type": "code",
       "norm_label": "weapon_registry",
       "source_file": "src/main.js",
-      "source_location": "L5891"
+      "source_location": "L5893"
     },
     {
       "id": "src_main_weaponhudel",
@@ -4757,7 +4757,7 @@
       "file_type": "code",
       "norm_label": "weaponhudel",
       "source_file": "src/main.js",
-      "source_location": "L5909"
+      "source_location": "L5911"
     },
     {
       "id": "src_main_weldconstraints",
@@ -4768,7 +4768,7 @@
       "file_type": "code",
       "norm_label": "weldconstraints",
       "source_file": "src/main.js",
-      "source_location": "L4312"
+      "source_location": "L4314"
     },
     {
       "id": "src_main_winclosebtn",
@@ -4991,6 +4991,102 @@
       "source_location": "L5"
     },
     {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan",
+      "label": "2026-10-21-tasks-implementation-plan.md",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "2026-10-21-tasks-implementation-plan.md",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_task_1_update_system_simplification_z_index_layering_fix_section_1",
+      "label": "Task 1: Update System Simplification & Z-Index Layering Fix (Section 1)",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 1: update system simplification & z-index layering fix (section 1)",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L13"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_task_2_graphics_design_single_baseplate_map_section_2",
+      "label": "Task 2: Graphics, Design & Single Baseplate Map (Section 2)",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 2: graphics, design & single baseplate map (section 2)",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L27"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_task_3_weapon_slots_spawn_menu_tool_gun_hands_behavior_section_3",
+      "label": "Task 3: Weapon Slots & Spawn Menu Tool Gun / Hands Behavior (Section 3)",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 3: weapon slots & spawn menu tool gun / hands behavior (section 3)",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L38"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_task_4_multiplayer_room_isolation_pause_button_text_section_4",
+      "label": "Task 4: Multiplayer Room Isolation & Pause Button Text (Section 4)",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 4: multiplayer room isolation & pause button text (section 4)",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L50"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_task_5_notifications_chat_key_t_\u044c_enter_no_timestamps_section_5",
+      "label": "Task 5: Notifications & Chat (Key T/\u042c/Enter, No Timestamps) (Section 5)",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 5: notifications & chat (key t/\u044c/enter, no timestamps) (section 5)",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L61"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_task_6_graphify_knowledge_graph_update_final_stability_verification_section_6",
+      "label": "Task 6: Graphify Knowledge Graph Update & Final Stability Verification (Section 6)",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "task 6: graphify knowledge graph update & final stability verification (section 6)",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L71"
+    },
+    {
+      "id": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "label": "[Tasks.md Full Scope] Implementation Plan",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "requestPointerLockSafely",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "[tasks.md full scope] implementation plan",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L1"
+    },
+    {
       "id": "src_tauri_build",
       "label": "build.rs",
       "_origin": "ast",
@@ -5075,22 +5171,22 @@
       "label": "previewRampObj",
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "previewrampobj",
       "source_file": "src/main.js",
-      "source_location": "L4231"
+      "source_location": "L4233"
     },
     {
       "id": "src_main_previewtriangleobj",
       "label": "previewTriangleObj",
       "_origin": "ast",
       "community": 2,
-      "community_name": "playCustomOrSynth",
+      "community_name": "loadWorldAndEnterGame",
       "file_type": "code",
       "norm_label": "previewtriangleobj",
       "source_file": "src/main.js",
-      "source_location": "L4224"
+      "source_location": "L4226"
     },
     {
       "id": "src_supabaseclient",
@@ -5134,7 +5230,103 @@
       "file_type": "code",
       "norm_label": "previewnukeobj",
       "source_file": "src/main.js",
-      "source_location": "L4238"
+      "source_location": "L4240"
+    },
+    {
+      "id": "tasks",
+      "label": "tasks.md",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "tasks.md",
+      "source_file": "tasks.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "tasks_1_\u0441\u0438\u0441\u0442\u0435\u043c\u0430_\u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f_\u0438\u0433\u0440\u044b",
+      "label": "1. \u0421\u0438\u0441\u0442\u0435\u043c\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u0433\u0440\u044b",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "1. \u0441\u0438\u0441\u0442\u0435\u043c\u0430 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u0438\u0433\u0440\u044b",
+      "source_file": "tasks.md",
+      "source_location": "L7"
+    },
+    {
+      "id": "tasks_2_\u0433\u0440\u0430\u0444\u0438\u043a\u0430_\u0434\u0438\u0437\u0430\u0439\u043d_\u0438_\u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441",
+      "label": "2. \u0413\u0440\u0430\u0444\u0438\u043a\u0430, \u0434\u0438\u0437\u0430\u0439\u043d \u0438 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "2. \u0433\u0440\u0430\u0444\u0438\u043a\u0430, \u0434\u0438\u0437\u0430\u0438\u043d \u0438 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0438\u0441",
+      "source_file": "tasks.md",
+      "source_location": "L18"
+    },
+    {
+      "id": "tasks_3_\u0440\u0435\u0436\u0438\u043c\u044b_\u044d\u043a\u0438\u043f\u0438\u0440\u043e\u0432\u043a\u0438_\u0438_\u043c\u0435\u043d\u044e_\u043f\u0440\u0435\u0434\u043c\u0435\u0442\u043e\u0432_spawn_menu_tool_gun_\u0440\u0443\u043a\u0438",
+      "label": "3. \u0420\u0435\u0436\u0438\u043c\u044b \u044d\u043a\u0438\u043f\u0438\u0440\u043e\u0432\u043a\u0438 \u0438 \u043c\u0435\u043d\u044e \u043f\u0440\u0435\u0434\u043c\u0435\u0442\u043e\u0432 (Spawn Menu / Tool Gun / \u0420\u0443\u043a\u0438)",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "3. \u0440\u0435\u0436\u0438\u043c\u044b \u044d\u043a\u0438\u043f\u0438\u0440\u043e\u0432\u043a\u0438 \u0438 \u043c\u0435\u043d\u044e \u043f\u0440\u0435\u0434\u043c\u0435\u0442\u043e\u0432 (spawn menu / tool gun / \u0440\u0443\u043a\u0438)",
+      "source_file": "tasks.md",
+      "source_location": "L30"
+    },
+    {
+      "id": "tasks_4_\u043c\u0443\u043b\u044c\u0442\u0438\u043f\u043b\u0435\u0435\u0440_\u0438_\u0441\u0435\u0442\u0435\u0432\u0430\u044f_\u0438\u0437\u043e\u043b\u044f\u0446\u0438\u044f",
+      "label": "4. \u041c\u0443\u043b\u044c\u0442\u0438\u043f\u043b\u0435\u0435\u0440 \u0438 \u0441\u0435\u0442\u0435\u0432\u0430\u044f \u0438\u0437\u043e\u043b\u044f\u0446\u0438\u044f",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "4. \u043c\u0443\u043b\u044c\u0442\u0438\u043f\u043b\u0435\u0435\u0440 \u0438 \u0441\u0435\u0442\u0435\u0432\u0430\u044f \u0438\u0437\u043e\u043b\u044f\u0446\u0438\u044f",
+      "source_file": "tasks.md",
+      "source_location": "L41"
+    },
+    {
+      "id": "tasks_5_\u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f_\u0438_\u0447\u0430\u0442",
+      "label": "5. \u0423\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f \u0438 \u0447\u0430\u0442",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "5. \u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f \u0438 \u0447\u0430\u0442",
+      "source_file": "tasks.md",
+      "source_location": "L50"
+    },
+    {
+      "id": "tasks_6_\u0440\u0435\u0437\u0435\u0440\u0432\u043d\u043e\u0435_\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435_\u0438_\u0441\u0442\u0430\u0431\u0438\u043b\u044c\u043d\u043e\u0441\u0442\u044c",
+      "label": "6. \u0420\u0435\u0437\u0435\u0440\u0432\u043d\u043e\u0435 \u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0438 \u0441\u0442\u0430\u0431\u0438\u043b\u044c\u043d\u043e\u0441\u0442\u044c",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "6. \u0440\u0435\u0437\u0435\u0440\u0432\u043d\u043e\u0435 \u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 \u0438 \u0441\u0442\u0430\u0431\u0438\u043b\u044c\u043d\u043e\u0441\u0442\u044c",
+      "source_file": "tasks.md",
+      "source_location": "L64"
+    },
+    {
+      "id": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "label": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "_origin": "ast",
+      "community": 25,
+      "community_name": "\u0421\u0432\u043e\u0434\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (TODO & Requirements)",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "\u0441\u0432\u043e\u0434\u043d\u044b\u0438 \u043f\u043b\u0430\u043d \u0437\u0430\u0434\u0430\u0447 \u0438 \u043f\u0440\u0430\u0432\u043e\u043a \u043f\u0440\u043e\u0435\u043a\u0442\u0430 (todo & requirements)",
+      "source_file": "tasks.md",
+      "source_location": "L1"
     },
     {
       "id": "electron_main",
@@ -6256,7 +6448,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5035",
+      "source_location": "L5037",
       "weight": 1.0
     },
     {
@@ -6292,7 +6484,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5873",
+      "source_location": "L5875",
       "weight": 1.0
     },
     {
@@ -6328,7 +6520,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3653",
+      "source_location": "L3655",
       "weight": 1.0
     },
     {
@@ -6340,7 +6532,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3445",
+      "source_location": "L3443",
       "weight": 1.0
     },
     {
@@ -6352,7 +6544,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4924",
+      "source_location": "L4926",
       "weight": 1.0
     },
     {
@@ -6364,7 +6556,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6003",
+      "source_location": "L6017",
       "weight": 1.0
     },
     {
@@ -6376,7 +6568,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6008",
+      "source_location": "L6022",
       "weight": 1.0
     },
     {
@@ -6484,7 +6676,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L2984",
+      "source_location": "L2974",
       "weight": 1.0
     },
     {
@@ -6616,55 +6808,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6020",
+      "source_location": "L6034",
       "weight": 1.0
     },
     {
       "source": "src_main_equipweapon",
-      "target": "src_main_playweapondeploysound",
+      "target": "src_main_updateweaponhudhighlight",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6041",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main_equipweapon",
-      "target": "src_main_broadcastnetworkpacket",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/main.js",
-      "source_location": "L6045",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main_equipweapon",
-      "target": "src_main_updatetoolgunhologrammesh",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/main.js",
-      "source_location": "L6059",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main_equipweapon",
-      "target": "src_main_updatespawnmenumodeui",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/main.js",
-      "source_location": "L6061",
+      "source_location": "L6039",
       "weight": 1.0
     },
     {
@@ -6676,7 +6832,55 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6063",
+      "source_location": "L6040",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_equipweapon",
+      "target": "src_main_updatetoolgunhologrammesh",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L6055",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_equipweapon",
+      "target": "src_main_playweapondeploysound",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L6060",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_equipweapon",
+      "target": "src_main_broadcastnetworkpacket",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L6064",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_equipweapon",
+      "target": "src_main_updatespawnmenumodeui",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L6080",
       "weight": 1.0
     },
     {
@@ -6700,7 +6904,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4566",
+      "source_location": "L4568",
       "weight": 1.0
     },
     {
@@ -6712,7 +6916,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4586",
+      "source_location": "L4588",
       "weight": 1.0
     },
     {
@@ -6724,7 +6928,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4588",
+      "source_location": "L4590",
       "weight": 1.0
     },
     {
@@ -6736,7 +6940,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4590",
+      "source_location": "L4592",
       "weight": 1.0
     },
     {
@@ -6748,7 +6952,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4592",
+      "source_location": "L4594",
       "weight": 1.0
     },
     {
@@ -6760,7 +6964,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4594",
+      "source_location": "L4596",
       "weight": 1.0
     },
     {
@@ -6772,7 +6976,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4596",
+      "source_location": "L4598",
       "weight": 1.0
     },
     {
@@ -6784,7 +6988,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4600",
+      "source_location": "L4602",
       "weight": 1.0
     },
     {
@@ -6796,7 +7000,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4601",
+      "source_location": "L4603",
       "weight": 1.0
     },
     {
@@ -6808,7 +7012,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4629",
+      "source_location": "L4631",
       "weight": 1.0
     },
     {
@@ -6820,7 +7024,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4648",
+      "source_location": "L4650",
       "weight": 1.0
     },
     {
@@ -6832,7 +7036,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4649",
+      "source_location": "L4651",
       "weight": 1.0
     },
     {
@@ -6844,7 +7048,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5118",
+      "source_location": "L5120",
       "weight": 1.0
     },
     {
@@ -6856,7 +7060,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4405",
+      "source_location": "L4407",
       "weight": 1.0
     },
     {
@@ -6868,7 +7072,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4407",
+      "source_location": "L4409",
       "weight": 1.0
     },
     {
@@ -7540,7 +7744,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L2969",
+      "source_location": "L2959",
       "weight": 1.0
     },
     {
@@ -7552,7 +7756,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L2971",
+      "source_location": "L2961",
       "weight": 1.0
     },
     {
@@ -7564,7 +7768,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3614",
+      "source_location": "L3616",
       "weight": 1.0
     },
     {
@@ -7576,7 +7780,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3617",
+      "source_location": "L3619",
       "weight": 1.0
     },
     {
@@ -7588,7 +7792,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3422",
+      "source_location": "L3412",
       "weight": 1.0
     },
     {
@@ -7600,7 +7804,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3434",
+      "source_location": "L3432",
       "weight": 1.0
     },
     {
@@ -7612,7 +7816,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5491",
+      "source_location": "L5493",
       "weight": 1.0
     },
     {
@@ -7624,7 +7828,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5201",
+      "source_location": "L5203",
       "weight": 1.0
     },
     {
@@ -7636,7 +7840,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5474",
+      "source_location": "L5476",
       "weight": 1.0
     },
     {
@@ -7660,7 +7864,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5370",
+      "source_location": "L5372",
       "weight": 1.0
     },
     {
@@ -7672,7 +7876,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5179",
+      "source_location": "L5181",
       "weight": 1.0
     },
     {
@@ -7684,7 +7888,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5161",
+      "source_location": "L5163",
       "weight": 1.0
     },
     {
@@ -7696,7 +7900,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5143",
+      "source_location": "L5145",
       "weight": 1.0
     },
     {
@@ -7708,7 +7912,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5657",
+      "source_location": "L5659",
       "weight": 1.0
     },
     {
@@ -7720,7 +7924,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5555",
+      "source_location": "L5557",
       "weight": 1.0
     },
     {
@@ -7732,7 +7936,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5559",
+      "source_location": "L5561",
       "weight": 1.0
     },
     {
@@ -7744,7 +7948,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5387",
+      "source_location": "L5389",
       "weight": 1.0
     },
     {
@@ -7756,7 +7960,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5430",
+      "source_location": "L5432",
       "weight": 1.0
     },
     {
@@ -7768,7 +7972,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5124",
+      "source_location": "L5126",
       "weight": 1.0
     },
     {
@@ -7780,7 +7984,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5336",
+      "source_location": "L5338",
       "weight": 1.0
     },
     {
@@ -7804,7 +8008,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5266",
+      "source_location": "L5268",
       "weight": 1.0
     },
     {
@@ -7816,7 +8020,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5304",
+      "source_location": "L5306",
       "weight": 1.0
     },
     {
@@ -7828,7 +8032,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5518",
+      "source_location": "L5520",
       "weight": 1.0
     },
     {
@@ -7840,7 +8044,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4848",
+      "source_location": "L4850",
       "weight": 1.0
     },
     {
@@ -7852,7 +8056,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5353",
+      "source_location": "L5355",
       "weight": 1.0
     },
     {
@@ -7864,7 +8068,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4816",
+      "source_location": "L4818",
       "weight": 1.0
     },
     {
@@ -7888,7 +8092,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4239",
+      "source_location": "L4241",
       "weight": 1.0
     },
     {
@@ -7900,7 +8104,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4233",
+      "source_location": "L4235",
       "weight": 1.0
     },
     {
@@ -7912,7 +8116,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4226",
+      "source_location": "L4228",
       "weight": 1.0
     },
     {
@@ -7936,7 +8140,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4287",
+      "source_location": "L4289",
       "weight": 1.0
     },
     {
@@ -7948,7 +8152,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6633",
+      "source_location": "L6651",
       "weight": 1.0
     },
     {
@@ -7960,7 +8164,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6634",
+      "source_location": "L6652",
       "weight": 1.0
     },
     {
@@ -7972,7 +8176,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4665",
+      "source_location": "L4667",
       "weight": 1.0
     },
     {
@@ -7984,7 +8188,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4720",
+      "source_location": "L4722",
       "weight": 1.0
     },
     {
@@ -7996,7 +8200,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4725",
+      "source_location": "L4727",
       "weight": 1.0
     },
     {
@@ -8008,7 +8212,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4726",
+      "source_location": "L4728",
       "weight": 1.0
     },
     {
@@ -8116,7 +8320,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3397",
+      "source_location": "L3387",
       "weight": 1.0
     },
     {
@@ -8140,7 +8344,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L2992",
+      "source_location": "L2982",
       "weight": 1.0
     },
     {
@@ -8152,7 +8356,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L2995",
+      "source_location": "L2985",
       "weight": 1.0
     },
     {
@@ -8164,7 +8368,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3006",
+      "source_location": "L2996",
       "weight": 1.0
     },
     {
@@ -8176,7 +8380,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5987",
+      "source_location": "L5995",
       "weight": 1.0
     },
     {
@@ -8188,7 +8392,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5988",
+      "source_location": "L5996",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_selectweaponslotbystep",
+      "target": "src_main_equipweapon",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L6001",
       "weight": 1.0
     },
     {
@@ -8224,7 +8440,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5644",
+      "source_location": "L5646",
       "weight": 1.0
     },
     {
@@ -8236,7 +8452,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4346",
+      "source_location": "L4348",
       "weight": 1.0
     },
     {
@@ -8260,7 +8476,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6518",
+      "source_location": "L6536",
       "weight": 1.0
     },
     {
@@ -8272,7 +8488,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6525",
+      "source_location": "L6543",
       "weight": 1.0
     },
     {
@@ -8284,7 +8500,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6528",
+      "source_location": "L6546",
       "weight": 1.0
     },
     {
@@ -8296,7 +8512,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6531",
+      "source_location": "L6549",
       "weight": 1.0
     },
     {
@@ -8308,7 +8524,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6537",
+      "source_location": "L6555",
       "weight": 1.0
     },
     {
@@ -8320,7 +8536,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6538",
+      "source_location": "L6556",
       "weight": 1.0
     },
     {
@@ -8332,7 +8548,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6568",
+      "source_location": "L6586",
       "weight": 1.0
     },
     {
@@ -8344,7 +8560,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6584",
+      "source_location": "L6602",
       "weight": 1.0
     },
     {
@@ -8356,7 +8572,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6587",
+      "source_location": "L6605",
       "weight": 1.0
     },
     {
@@ -8368,7 +8584,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6590",
+      "source_location": "L6608",
       "weight": 1.0
     },
     {
@@ -8380,7 +8596,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6613",
+      "source_location": "L6631",
       "weight": 1.0
     },
     {
@@ -8404,7 +8620,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5965",
+      "source_location": "L5967",
       "weight": 1.0
     },
     {
@@ -8416,7 +8632,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5966",
+      "source_location": "L5968",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main_showweaponselector",
+      "target": "src_main_equipweapon",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L5973",
       "weight": 1.0
     },
     {
@@ -8428,7 +8656,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3799",
+      "source_location": "L3801",
       "weight": 1.0
     },
     {
@@ -8440,7 +8668,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3804",
+      "source_location": "L3806",
       "weight": 1.0
     },
     {
@@ -8476,7 +8704,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4133",
+      "source_location": "L4135",
       "weight": 1.0
     },
     {
@@ -8488,7 +8716,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4134",
+      "source_location": "L4136",
       "weight": 1.0
     },
     {
@@ -8500,7 +8728,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4135",
+      "source_location": "L4137",
       "weight": 1.0
     },
     {
@@ -8512,7 +8740,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4147",
+      "source_location": "L4149",
       "weight": 1.0
     },
     {
@@ -8524,7 +8752,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4147",
+      "source_location": "L4149",
       "weight": 1.0
     },
     {
@@ -8536,7 +8764,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4148",
+      "source_location": "L4150",
       "weight": 1.0
     },
     {
@@ -8548,7 +8776,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4160",
+      "source_location": "L4162",
       "weight": 1.0
     },
     {
@@ -8560,7 +8788,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4163",
+      "source_location": "L4165",
       "weight": 1.0
     },
     {
@@ -8572,7 +8800,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4164",
+      "source_location": "L4166",
       "weight": 1.0
     },
     {
@@ -8584,7 +8812,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4165",
+      "source_location": "L4167",
       "weight": 1.0
     },
     {
@@ -8596,7 +8824,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4166",
+      "source_location": "L4168",
       "weight": 1.0
     },
     {
@@ -8608,7 +8836,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4167",
+      "source_location": "L4169",
       "weight": 1.0
     },
     {
@@ -8656,7 +8884,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6336",
+      "source_location": "L6354",
       "weight": 1.0
     },
     {
@@ -8668,7 +8896,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4119",
+      "source_location": "L4121",
       "weight": 1.0
     },
     {
@@ -8680,7 +8908,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4120",
+      "source_location": "L4122",
       "weight": 1.0
     },
     {
@@ -8716,7 +8944,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4043",
+      "source_location": "L4045",
       "weight": 1.0
     },
     {
@@ -8728,7 +8956,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4102",
+      "source_location": "L4104",
       "weight": 1.0
     },
     {
@@ -8740,7 +8968,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4107",
+      "source_location": "L4109",
       "weight": 1.0
     },
     {
@@ -8776,7 +9004,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3833",
+      "source_location": "L3835",
       "weight": 1.0
     },
     {
@@ -8788,7 +9016,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3838",
+      "source_location": "L3840",
       "weight": 1.0
     },
     {
@@ -8812,7 +9040,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3885",
+      "source_location": "L3887",
       "weight": 1.0
     },
     {
@@ -8824,7 +9052,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3890",
+      "source_location": "L3892",
       "weight": 1.0
     },
     {
@@ -8848,7 +9076,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3937",
+      "source_location": "L3939",
       "weight": 1.0
     },
     {
@@ -8860,7 +9088,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4003",
+      "source_location": "L4005",
       "weight": 1.0
     },
     {
@@ -8872,7 +9100,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4008",
+      "source_location": "L4010",
       "weight": 1.0
     },
     {
@@ -8908,7 +9136,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3022",
+      "source_location": "L3012",
       "weight": 1.0
     },
     {
@@ -8920,7 +9148,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3049",
+      "source_location": "L3039",
       "weight": 1.0
     },
     {
@@ -8932,7 +9160,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3053",
+      "source_location": "L3043",
       "weight": 1.0
     },
     {
@@ -8944,7 +9172,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3078",
+      "source_location": "L3068",
       "weight": 1.0
     },
     {
@@ -9172,7 +9400,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3725",
+      "source_location": "L3727",
       "weight": 1.0
     },
     {
@@ -9184,7 +9412,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3727",
+      "source_location": "L3729",
       "weight": 1.0
     },
     {
@@ -9208,7 +9436,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3451",
+      "source_location": "L3449",
       "weight": 1.0
     },
     {
@@ -9220,7 +9448,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3453",
+      "source_location": "L3451",
       "weight": 1.0
     },
     {
@@ -9232,7 +9460,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4753",
+      "source_location": "L4755",
       "weight": 1.0
     },
     {
@@ -9244,7 +9472,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4754",
+      "source_location": "L4756",
       "weight": 1.0
     },
     {
@@ -9256,7 +9484,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4807",
+      "source_location": "L4809",
       "weight": 1.0
     },
     {
@@ -9352,7 +9580,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5811",
+      "source_location": "L5813",
       "weight": 1.0
     },
     {
@@ -9364,7 +9592,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5814",
+      "source_location": "L5816",
       "weight": 1.0
     },
     {
@@ -9688,7 +9916,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3583",
+      "source_location": "L3585",
       "weight": 1.0
     },
     {
@@ -9712,7 +9940,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4424",
+      "source_location": "L4426",
       "weight": 1.0
     },
     {
@@ -9724,7 +9952,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4472",
+      "source_location": "L4474",
       "weight": 1.0
     },
     {
@@ -9736,7 +9964,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4489",
+      "source_location": "L4491",
       "weight": 1.0
     },
     {
@@ -9796,7 +10024,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4338",
+      "source_location": "L4340",
       "weight": 1.0
     },
     {
@@ -9976,7 +10204,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L2983",
+      "source_location": "L2973",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_savecurrentactiveworld",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/main.js",
+      "source_location": "L2978",
       "weight": 1.0
     },
     {
@@ -9988,7 +10228,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3010",
+      "source_location": "L3000",
       "weight": 1.0
     },
     {
@@ -10000,7 +10240,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3087",
+      "source_location": "L3077",
       "weight": 1.0
     },
     {
@@ -10012,7 +10252,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3391",
+      "source_location": "L3381",
       "weight": 1.0
     },
     {
@@ -10036,7 +10276,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3420",
+      "source_location": "L3410",
       "weight": 1.0
     },
     {
@@ -10048,7 +10288,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3438",
+      "source_location": "L3436",
       "weight": 1.0
     },
     {
@@ -10060,7 +10300,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3449",
+      "source_location": "L3447",
       "weight": 1.0
     },
     {
@@ -10072,7 +10312,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3633",
+      "source_location": "L3635",
       "weight": 1.0
     },
     {
@@ -10084,7 +10324,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L3723",
+      "source_location": "L3725",
       "weight": 1.0
     },
     {
@@ -10096,7 +10336,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4129",
+      "source_location": "L4131",
       "weight": 1.0
     },
     {
@@ -10108,7 +10348,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4274",
+      "source_location": "L4276",
       "weight": 1.0
     },
     {
@@ -10120,7 +10360,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4344",
+      "source_location": "L4346",
       "weight": 1.0
     },
     {
@@ -10132,7 +10372,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4564",
+      "source_location": "L4566",
       "weight": 1.0
     },
     {
@@ -10144,7 +10384,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4658",
+      "source_location": "L4660",
       "weight": 1.0
     },
     {
@@ -10156,7 +10396,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4730",
+      "source_location": "L4732",
       "weight": 1.0
     },
     {
@@ -10168,7 +10408,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4873",
+      "source_location": "L4875",
       "weight": 1.0
     },
     {
@@ -10180,7 +10420,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4887",
+      "source_location": "L4889",
       "weight": 1.0
     },
     {
@@ -10192,7 +10432,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4911",
+      "source_location": "L4913",
       "weight": 1.0
     },
     {
@@ -10204,7 +10444,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L4929",
+      "source_location": "L4931",
       "weight": 1.0
     },
     {
@@ -10216,7 +10456,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5060",
+      "source_location": "L5062",
       "weight": 1.0
     },
     {
@@ -10228,7 +10468,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5096",
+      "source_location": "L5098",
       "weight": 1.0
     },
     {
@@ -10240,7 +10480,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5199",
+      "source_location": "L5201",
       "weight": 1.0
     },
     {
@@ -10252,7 +10492,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5369",
+      "source_location": "L5371",
       "weight": 1.0
     },
     {
@@ -10264,7 +10504,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5490",
+      "source_location": "L5492",
       "weight": 1.0
     },
     {
@@ -10276,7 +10516,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5948",
+      "source_location": "L5950",
       "weight": 1.0
     },
     {
@@ -10288,7 +10528,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5975",
+      "source_location": "L5983",
       "weight": 1.0
     },
     {
@@ -10300,7 +10540,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L5996",
+      "source_location": "L6010",
       "weight": 1.0
     },
     {
@@ -10312,7 +10552,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6508",
+      "source_location": "L6526",
       "weight": 1.0
     },
     {
@@ -10324,7 +10564,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6626",
+      "source_location": "L6644",
       "weight": 1.0
     },
     {
@@ -10336,7 +10576,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6881",
+      "source_location": "L6899",
       "weight": 1.0
     },
     {
@@ -10348,7 +10588,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/main.js",
-      "source_location": "L6893",
+      "source_location": "L6911",
       "weight": 1.0
     },
     {
@@ -10721,6 +10961,83 @@
       "context": "import",
       "source_file": "vite.config.js",
       "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_task_1_update_system_simplification_z_index_layering_fix_section_1",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_task_2_graphics_design_single_baseplate_map_section_2",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_task_3_weapon_slots_spawn_menu_tool_gun_hands_behavior_section_3",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_task_4_multiplayer_room_isolation_pause_button_text_section_4",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_task_5_notifications_chat_key_t_\u044c_enter_no_timestamps_section_5",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_tasks_md_full_scope_implementation_plan",
+      "target": "docs_plans_2026_10_21_tasks_implementation_plan_task_6_graphify_knowledge_graph_update_final_stability_verification_section_6",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -12040,18 +12357,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L2968",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_savecurrentactiveworld",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L2988",
+      "source_location": "L2958",
       "weight": 1.0
     },
     {
@@ -12100,6 +12406,17 @@
     },
     {
       "source": "src_main",
+      "target": "src_main_stopmenumusic",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L3096",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
       "target": "src_main_groundmaterial",
       "relation": "contains",
       "_origin": "ast",
@@ -12107,17 +12424,6 @@
       "confidence_score": 1.0,
       "source_file": "src/main.js",
       "source_location": "L31",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_stopmenumusic",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L3106",
       "weight": 1.0
     },
     {
@@ -12205,7 +12511,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3235",
+      "source_location": "L3225",
       "weight": 1.0
     },
     {
@@ -12216,7 +12522,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3236",
+      "source_location": "L3226",
       "weight": 1.0
     },
     {
@@ -12227,7 +12533,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3237",
+      "source_location": "L3227",
       "weight": 1.0
     },
     {
@@ -12238,7 +12544,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3238",
+      "source_location": "L3228",
       "weight": 1.0
     },
     {
@@ -12249,7 +12555,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3258",
+      "source_location": "L3248",
       "weight": 1.0
     },
     {
@@ -12260,7 +12566,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3259",
+      "source_location": "L3249",
       "weight": 1.0
     },
     {
@@ -12271,7 +12577,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3260",
+      "source_location": "L3250",
       "weight": 1.0
     },
     {
@@ -12282,7 +12588,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3261",
+      "source_location": "L3251",
       "weight": 1.0
     },
     {
@@ -12293,7 +12599,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3262",
+      "source_location": "L3252",
       "weight": 1.0
     },
     {
@@ -12304,7 +12610,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3263",
+      "source_location": "L3253",
       "weight": 1.0
     },
     {
@@ -12315,7 +12621,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3264",
+      "source_location": "L3254",
       "weight": 1.0
     },
     {
@@ -12326,7 +12632,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3265",
+      "source_location": "L3255",
       "weight": 1.0
     },
     {
@@ -12348,7 +12654,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3310",
+      "source_location": "L3300",
       "weight": 1.0
     },
     {
@@ -12359,7 +12665,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3311",
+      "source_location": "L3301",
       "weight": 1.0
     },
     {
@@ -12370,7 +12676,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3312",
+      "source_location": "L3302",
       "weight": 1.0
     },
     {
@@ -12381,7 +12687,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3313",
+      "source_location": "L3303",
       "weight": 1.0
     },
     {
@@ -12436,7 +12742,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3463",
+      "source_location": "L3461",
       "weight": 1.0
     },
     {
@@ -12447,7 +12753,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3464",
+      "source_location": "L3462",
       "weight": 1.0
     },
     {
@@ -12458,7 +12764,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3465",
+      "source_location": "L3463",
       "weight": 1.0
     },
     {
@@ -12535,7 +12841,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3552",
+      "source_location": "L3554",
       "weight": 1.0
     },
     {
@@ -12557,7 +12863,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3564",
+      "source_location": "L3566",
       "weight": 1.0
     },
     {
@@ -12590,7 +12896,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3613",
+      "source_location": "L3615",
       "weight": 1.0
     },
     {
@@ -12689,7 +12995,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3742",
+      "source_location": "L3744",
       "weight": 1.0
     },
     {
@@ -12700,7 +13006,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3745",
+      "source_location": "L3747",
       "weight": 1.0
     },
     {
@@ -12711,7 +13017,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3746",
+      "source_location": "L3748",
       "weight": 1.0
     },
     {
@@ -12733,7 +13039,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3752",
+      "source_location": "L3754",
       "weight": 1.0
     },
     {
@@ -12755,7 +13061,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3809",
+      "source_location": "L3811",
       "weight": 1.0
     },
     {
@@ -12766,7 +13072,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3844",
+      "source_location": "L3846",
       "weight": 1.0
     },
     {
@@ -12777,7 +13083,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3895",
+      "source_location": "L3897",
       "weight": 1.0
     },
     {
@@ -12799,7 +13105,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3935",
+      "source_location": "L3937",
       "weight": 1.0
     },
     {
@@ -12854,7 +13160,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4013",
+      "source_location": "L4015",
       "weight": 1.0
     },
     {
@@ -12865,7 +13171,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4041",
+      "source_location": "L4043",
       "weight": 1.0
     },
     {
@@ -12887,7 +13193,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4111",
+      "source_location": "L4113",
       "weight": 1.0
     },
     {
@@ -12909,7 +13215,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4185",
+      "source_location": "L4187",
       "weight": 1.0
     },
     {
@@ -12931,7 +13237,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4210",
+      "source_location": "L4212",
       "weight": 1.0
     },
     {
@@ -12942,7 +13248,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4217",
+      "source_location": "L4219",
       "weight": 1.0
     },
     {
@@ -12953,7 +13259,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4224",
+      "source_location": "L4226",
       "weight": 1.0
     },
     {
@@ -12964,7 +13270,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4231",
+      "source_location": "L4233",
       "weight": 1.0
     },
     {
@@ -12975,7 +13281,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4238",
+      "source_location": "L4240",
       "weight": 1.0
     },
     {
@@ -12986,7 +13292,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4244",
+      "source_location": "L4246",
       "weight": 1.0
     },
     {
@@ -12997,7 +13303,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4246",
+      "source_location": "L4248",
       "weight": 1.0
     },
     {
@@ -13008,7 +13314,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4265",
+      "source_location": "L4267",
       "weight": 1.0
     },
     {
@@ -13019,7 +13325,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4267",
+      "source_location": "L4269",
       "weight": 1.0
     },
     {
@@ -13030,7 +13336,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4268",
+      "source_location": "L4270",
       "weight": 1.0
     },
     {
@@ -13041,7 +13347,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4269",
+      "source_location": "L4271",
       "weight": 1.0
     },
     {
@@ -13052,7 +13358,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4270",
+      "source_location": "L4272",
       "weight": 1.0
     },
     {
@@ -13063,7 +13369,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4271",
+      "source_location": "L4273",
       "weight": 1.0
     },
     {
@@ -13085,7 +13391,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4312",
+      "source_location": "L4314",
       "weight": 1.0
     },
     {
@@ -13096,7 +13402,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4317",
+      "source_location": "L4319",
       "weight": 1.0
     },
     {
@@ -13107,7 +13413,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4336",
+      "source_location": "L4338",
       "weight": 1.0
     },
     {
@@ -13140,7 +13446,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4354",
+      "source_location": "L4356",
       "weight": 1.0
     },
     {
@@ -13173,7 +13479,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4376",
+      "source_location": "L4378",
       "weight": 1.0
     },
     {
@@ -13184,7 +13490,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4386",
+      "source_location": "L4388",
       "weight": 1.0
     },
     {
@@ -13195,7 +13501,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4389",
+      "source_location": "L4391",
       "weight": 1.0
     },
     {
@@ -13206,7 +13512,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4390",
+      "source_location": "L4392",
       "weight": 1.0
     },
     {
@@ -13217,7 +13523,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4391",
+      "source_location": "L4393",
       "weight": 1.0
     },
     {
@@ -13228,7 +13534,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4393",
+      "source_location": "L4395",
       "weight": 1.0
     },
     {
@@ -13250,7 +13556,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4403",
+      "source_location": "L4405",
       "weight": 1.0
     },
     {
@@ -13261,7 +13567,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4418",
+      "source_location": "L4420",
       "weight": 1.0
     },
     {
@@ -13272,7 +13578,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4431",
+      "source_location": "L4433",
       "weight": 1.0
     },
     {
@@ -13283,7 +13589,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4462",
+      "source_location": "L4464",
       "weight": 1.0
     },
     {
@@ -13316,7 +13622,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4815",
+      "source_location": "L4817",
       "weight": 1.0
     },
     {
@@ -13327,7 +13633,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4847",
+      "source_location": "L4849",
       "weight": 1.0
     },
     {
@@ -13338,7 +13644,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L4864",
+      "source_location": "L4866",
       "weight": 1.0
     },
     {
@@ -13360,7 +13666,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5117",
+      "source_location": "L5119",
       "weight": 1.0
     },
     {
@@ -13371,7 +13677,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5122",
+      "source_location": "L5124",
       "weight": 1.0
     },
     {
@@ -13382,7 +13688,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5141",
+      "source_location": "L5143",
       "weight": 1.0
     },
     {
@@ -13393,7 +13699,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5159",
+      "source_location": "L5161",
       "weight": 1.0
     },
     {
@@ -13404,18 +13710,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5177",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_audiofiles",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L5198",
+      "source_location": "L5179",
       "weight": 1.0
     },
     {
@@ -13431,13 +13726,24 @@
     },
     {
       "source": "src_main",
+      "target": "src_main_audiofiles",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L5200",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
       "target": "src_main_createsubtlereverbnode",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5243",
+      "source_location": "L5245",
       "weight": 1.0
     },
     {
@@ -13448,7 +13754,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5264",
+      "source_location": "L5266",
       "weight": 1.0
     },
     {
@@ -13470,7 +13776,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5335",
+      "source_location": "L5337",
       "weight": 1.0
     },
     {
@@ -13481,7 +13787,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5352",
+      "source_location": "L5354",
       "weight": 1.0
     },
     {
@@ -13492,7 +13798,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5386",
+      "source_location": "L5388",
       "weight": 1.0
     },
     {
@@ -13503,7 +13809,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5429",
+      "source_location": "L5431",
       "weight": 1.0
     },
     {
@@ -13514,7 +13820,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5473",
+      "source_location": "L5475",
       "weight": 1.0
     },
     {
@@ -13525,7 +13831,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5517",
+      "source_location": "L5519",
       "weight": 1.0
     },
     {
@@ -13536,7 +13842,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5536",
+      "source_location": "L5538",
       "weight": 1.0
     },
     {
@@ -13558,7 +13864,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5629",
+      "source_location": "L5631",
       "weight": 1.0
     },
     {
@@ -13569,7 +13875,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5655",
+      "source_location": "L5657",
       "weight": 1.0
     },
     {
@@ -13580,7 +13886,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5680",
+      "source_location": "L5682",
       "weight": 1.0
     },
     {
@@ -13591,7 +13897,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5733",
+      "source_location": "L5735",
       "weight": 1.0
     },
     {
@@ -13613,7 +13919,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5851",
+      "source_location": "L5853",
       "weight": 1.0
     },
     {
@@ -13624,7 +13930,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5891",
+      "source_location": "L5893",
       "weight": 1.0
     },
     {
@@ -13635,7 +13941,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5909",
+      "source_location": "L5911",
       "weight": 1.0
     },
     {
@@ -13646,7 +13952,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5910",
+      "source_location": "L5912",
       "weight": 1.0
     },
     {
@@ -13657,7 +13963,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5911",
+      "source_location": "L5913",
       "weight": 1.0
     },
     {
@@ -13668,7 +13974,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5912",
+      "source_location": "L5914",
       "weight": 1.0
     },
     {
@@ -13679,7 +13985,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5915",
+      "source_location": "L5917",
       "weight": 1.0
     },
     {
@@ -13690,7 +13996,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5925",
+      "source_location": "L5927",
       "weight": 1.0
     },
     {
@@ -13701,7 +14007,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5937",
+      "source_location": "L5939",
       "weight": 1.0
     },
     {
@@ -13712,7 +14018,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L5939",
+      "source_location": "L5941",
       "weight": 1.0
     },
     {
@@ -13723,7 +14029,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6014",
+      "source_location": "L6028",
       "weight": 1.0
     },
     {
@@ -13745,7 +14051,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6069",
+      "source_location": "L6088",
       "weight": 1.0
     },
     {
@@ -13756,7 +14062,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6076",
+      "source_location": "L6095",
       "weight": 1.0
     },
     {
@@ -13767,62 +14073,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6077",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_pistol_aim_pos",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6081",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_pistol_aim_rot",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6082",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_toolgunfacenormal",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6093",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_toolgunhitpoint",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6094",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_initialslidepos",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6099",
+      "source_location": "L6096",
       "weight": 1.0
     },
     {
@@ -13838,29 +14089,51 @@
     },
     {
       "source": "src_main",
-      "target": "src_main_recoiloffset",
+      "target": "src_main_pistol_aim_pos",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6107",
+      "source_location": "L6100",
       "weight": 1.0
     },
     {
       "source": "src_main",
-      "target": "src_main_recoilrotation",
+      "target": "src_main_pistol_aim_rot",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6108",
+      "source_location": "L6101",
       "weight": 1.0
     },
     {
       "source": "src_main",
-      "target": "src_main_activeshellcasings",
+      "target": "src_main_toolgunfacenormal",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6111",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_toolgunhitpoint",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6112",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_initialslidepos",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13871,29 +14144,7 @@
     },
     {
       "source": "src_main",
-      "target": "src_main_casinggeo",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6118",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_casingmat",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6119",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_spawnshellcasing",
+      "target": "src_main_recoiloffset",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13904,13 +14155,68 @@
     },
     {
       "source": "src_main",
+      "target": "src_main_recoilrotation",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6126",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_activeshellcasings",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6135",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_casinggeo",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6136",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_casingmat",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6137",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_spawnshellcasing",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6143",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
       "target": "src_main_activebulletdecals",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6161",
+      "source_location": "L6179",
       "weight": 1.0
     },
     {
@@ -13921,7 +14227,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6165",
+      "source_location": "L6183",
       "weight": 1.0
     },
     {
@@ -13932,7 +14238,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6207",
+      "source_location": "L6225",
       "weight": 1.0
     },
     {
@@ -13943,7 +14249,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6208",
+      "source_location": "L6226",
       "weight": 1.0
     },
     {
@@ -13954,7 +14260,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6211",
+      "source_location": "L6229",
       "weight": 1.0
     },
     {
@@ -13965,7 +14271,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6270",
+      "source_location": "L6288",
       "weight": 1.0
     },
     {
@@ -13976,7 +14282,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6271",
+      "source_location": "L6289",
       "weight": 1.0
     },
     {
@@ -13987,7 +14293,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6274",
+      "source_location": "L6292",
       "weight": 1.0
     },
     {
@@ -13998,45 +14304,12 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6285",
+      "source_location": "L6303",
       "weight": 1.0
     },
     {
       "source": "src_main",
       "target": "src_main_updatebullettracers",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6311",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_activesmokepuffs",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6326",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_smokegeo",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/main.js",
-      "source_location": "L6327",
-      "weight": 1.0
-    },
-    {
-      "source": "src_main",
-      "target": "src_main_spawnmuzzlesmoke",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14058,13 +14331,35 @@
     },
     {
       "source": "src_main",
-      "target": "src_main_gltfloader",
+      "target": "src_main_activesmokepuffs",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6369",
+      "source_location": "L6344",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_smokegeo",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6345",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
+      "target": "src_main_spawnmuzzlesmoke",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6347",
       "weight": 1.0
     },
     {
@@ -14080,13 +14375,24 @@
     },
     {
       "source": "src_main",
+      "target": "src_main_gltfloader",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/main.js",
+      "source_location": "L6387",
+      "weight": 1.0
+    },
+    {
+      "source": "src_main",
       "target": "src_main_spawnbulletimpactsparks",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6638",
+      "source_location": "L6656",
       "weight": 1.0
     },
     {
@@ -14108,7 +14414,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6839",
+      "source_location": "L6857",
       "weight": 1.0
     },
     {
@@ -14119,7 +14425,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6877",
+      "source_location": "L6895",
       "weight": 1.0
     },
     {
@@ -14130,7 +14436,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6878",
+      "source_location": "L6896",
       "weight": 1.0
     },
     {
@@ -14141,7 +14447,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L6879",
+      "source_location": "L6897",
       "weight": 1.0
     },
     {
@@ -15241,7 +15547,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/main.js",
-      "source_location": "L3034",
+      "source_location": "L3024",
       "weight": 1.0
     },
     {
@@ -15630,6 +15936,17 @@
       "weight": 1.0
     },
     {
+      "source": "tasks",
+      "target": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
       "source": "tasks_todo",
       "target": "tasks_todo_\u043f\u043b\u0430\u043d_\u0440\u0430\u0431\u043e\u0442_3d_sandbox",
       "relation": "contains",
@@ -15685,6 +16002,72 @@
       "weight": 1.0
     },
     {
+      "source": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "target": "tasks_2_\u0433\u0440\u0430\u0444\u0438\u043a\u0430_\u0434\u0438\u0437\u0430\u0439\u043d_\u0438_\u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "target": "tasks_3_\u0440\u0435\u0436\u0438\u043c\u044b_\u044d\u043a\u0438\u043f\u0438\u0440\u043e\u0432\u043a\u0438_\u0438_\u043c\u0435\u043d\u044e_\u043f\u0440\u0435\u0434\u043c\u0435\u0442\u043e\u0432_spawn_menu_tool_gun_\u0440\u0443\u043a\u0438",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "target": "tasks_4_\u043c\u0443\u043b\u044c\u0442\u0438\u043f\u043b\u0435\u0435\u0440_\u0438_\u0441\u0435\u0442\u0435\u0432\u0430\u044f_\u0438\u0437\u043e\u043b\u044f\u0446\u0438\u044f",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "target": "tasks_5_\u0443\u0432\u0435\u0434\u043e\u043c\u043b\u0435\u043d\u0438\u044f_\u0438_\u0447\u0430\u0442",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "target": "tasks_6_\u0440\u0435\u0437\u0435\u0440\u0432\u043d\u043e\u0435_\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435_\u0438_\u0441\u0442\u0430\u0431\u0438\u043b\u044c\u043d\u043e\u0441\u0442\u044c",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "tasks_\u0441\u0432\u043e\u0434\u043d\u044b\u0439_\u043f\u043b\u0430\u043d_\u0437\u0430\u0434\u0430\u0447_\u0438_\u043f\u0440\u0430\u0432\u043e\u043a_\u043f\u0440\u043e\u0435\u043a\u0442\u0430_todo_requirements",
+      "target": "tasks_1_\u0441\u0438\u0441\u0442\u0435\u043c\u0430_\u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f_\u0438\u0433\u0440\u044b",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tasks.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
       "source": "src_main_startpreloadersequence",
       "target": "src_main_startpreloadersequence_tickpreloader",
       "relation": "indirect_call",
@@ -15693,7 +16076,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/main.js",
-      "source_location": "L3082",
+      "source_location": "L3072",
       "weight": 1.0
     },
     {
@@ -15755,8 +16138,20 @@
       "source_file": "TASKS_TODO.md",
       "source_location": "L20",
       "weight": 1.0
+    },
+    {
+      "source": "docs_plans_2026_10_21_tasks_implementation_plan_task_4_multiplayer_room_isolation_pause_button_text_section_4",
+      "target": "src_main_openpause",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "context": "openPause",
+      "source_file": "docs/plans/2026-10-21-tasks-implementation-plan.md",
+      "source_location": "L55",
+      "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "a40d8f1026d7a79a9d5423e1356dfec4e856a36d"
+  "built_at_commit": "8ec062bd1b7d80d2207939ba0ea2065ca5e66bbd"
 }

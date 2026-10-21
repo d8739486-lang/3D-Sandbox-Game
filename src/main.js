@@ -2395,7 +2395,7 @@ function renderWorldsListUI() {
       card.innerHTML = `
         <div class="world-card-info">
           <div class="world-card-name">${w.name || 'Мир ' + w.id}</div>
-          <div class="world-card-meta">Карта: ${w.mapTitle || (w.map === 'flat_grid' ? 'Сетка инженера' : 'Baseplate')} • Сохранено: ${dateStr} • Блоков: ${w.blocksCount || (w.blocks ? w.blocks.length : 0)}</div>
+          <div class="world-card-meta">Карта: Baseplate • Сохранено: ${dateStr} • Блоков: ${w.blocksCount || (w.blocks ? w.blocks.length : 0)}</div>
         </div>
         <div class="world-card-actions">
           <button class="menu-btn world-btn-play" data-world-id="${w.id}">Загрузить</button>
@@ -2898,16 +2898,6 @@ const btnWorldCreateCancel = document.getElementById('btn-world-create-cancel');
 const worldCreateNameInput = document.getElementById('world-create-name');
 let selectedMapId = 'baseplate';
 
-// Выбор карты кликом по карточке
-document.querySelectorAll('.map-card').forEach(card => {
-  card.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.map-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedMapId = card.getAttribute('data-map-id') || 'baseplate';
-  });
-});
-
 if (btnWorldCreateClose) {
   btnWorldCreateClose.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -2933,13 +2923,13 @@ if (btnWorldCreateConfirm) {
 
     const worldName = (worldCreateNameInput ? worldCreateNameInput.value.trim() : '') || `Мир #${worlds.length + 1}`;
     const newId = 'world_' + Date.now();
-    const mapName = selectedMapId === 'flat_grid' ? 'Сетка инженера' : 'Baseplate';
+    const mapName = 'Baseplate';
 
     const newWorldData = {
       id: newId,
       name: worldName,
-      map: selectedMapId,
-      mapTitle: mapName,
+      map: 'baseplate',
+      mapTitle: 'Baseplate',
       lastSaved: Date.now(),
       blocksCount: 0,
       player: {
@@ -2960,7 +2950,7 @@ if (btnWorldCreateConfirm) {
     // Закрываем модалку создания мира и обновляем список в меню миров (НЕ закидываем сразу в игру!)
     if (worldCreateDialog) worldCreateDialog.classList.add('hidden');
     renderWorldsListUI();
-    showFlightHudNotification(`Мир «${worldName}» [${mapName}] успешно создан!`);
+    showFlightHudNotification(`Мир «${worldName}» [Baseplate] успешно создан!`);
   });
 }
 
@@ -3425,6 +3415,14 @@ function openPause() {
   pauseOverlay.classList.remove('hidden');
   crosshairEl.style.display = 'none';
 
+  if (btnPauseExit) {
+    if (isHostingServer || isConnectedToHost) {
+      btnPauseExit.textContent = 'Выйти';
+    } else {
+      btnPauseExit.textContent = 'Сохранить и выйти';
+    }
+  }
+
   for (const k in keys) {
     keys[k] = false;
   }
@@ -3485,6 +3483,8 @@ if (btnPauseExit) {
     // Если находились в сетевой сессии — корректно выходим без сохранения мира
     if (isHostingServer || isConnectedToHost) {
       leaveMultiplayerSession();
+    } else {
+      saveCurrentActiveWorld();
     }
 
     // 2. Закрываем паузу и очищаем игровой мир
@@ -3548,6 +3548,8 @@ if (btnPauseExit) {
     cleanupMenuChaosObjects();
   });
 }
+
+let toolGunSelectedItem = 'cube';
 
 function getItemDisplayName(type) {
   switch (type) {
@@ -5965,7 +5967,13 @@ function showWeaponSelector(category) {
   updateWeaponHudHighlight();
   playSlotSwitchSound();
 
-  // Меню отображается до подтверждения (ЛКМ) или таймаута
+  // Fast weapon switch: немедленно активируем оружие
+  const targetWep = WEAPON_REGISTRY[selectedSlot];
+  if (targetWep && !targetWep.locked) {
+    equipWeapon(selectedSlot);
+  }
+
+  // Меню скрывается через 1.6 сек
   weaponHudHideTimeout = setTimeout(() => {
     isWeaponHudVisible = false;
     weaponHudEl.classList.add('hidden');
@@ -5986,6 +5994,12 @@ function selectWeaponSlotByStep(step) {
 
   updateWeaponHudHighlight();
   playSlotSwitchSound();
+
+  // Fast weapon switch при прокрутке колеса мыши
+  const targetWep = WEAPON_REGISTRY[selectedSlot];
+  if (targetWep && !targetWep.locked) {
+    equipWeapon(selectedSlot);
+  }
 
   weaponHudHideTimeout = setTimeout(() => {
     isWeaponHudVisible = false;
@@ -6022,6 +6036,8 @@ function equipWeapon(slotId) {
 
   currentEquippedSlot = slotId;
   selectedSlot = slotId;
+  updateWeaponHudHighlight();
+  updateAmmoHud();
 
   const isToolGun = (slotId === '1-2' || slotId === '5-1');
   const isPistol = (slotId === '2-1');
@@ -6034,6 +6050,9 @@ function equipWeapon(slotId) {
   }
   if (toolgunMeshGroup) {
     toolgunMeshGroup.visible = (!isInMainMenu && isToolGun);
+  }
+  if (isToolGun && typeof updateToolGunHologramMesh === 'function') {
+    updateToolGunHologramMesh();
   }
 
   // Воспроизводим звук доставания специально для 9mm пистолета (Слот 2-1)
@@ -6086,7 +6105,6 @@ const PISTOL_DRAW_OFFSET_Y = -0.75;
 
 let pistolMeshGroup = null;
 let toolgunMeshGroup = null;
-let toolGunSelectedItem = 'cube';
 let toolGunRotX = 0;
 let toolGunRotY = 0;
 let toolGunHologram = null;
@@ -7086,17 +7104,10 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  // Открытие игрового чата на Enter или KeyM (буква Ь в русской раскладке)
-  const isToolGunEquipped = currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1';
+  // Открытие игрового чата на Enter, KeyT или KeyM (буква Ь в русской раскладке)
   const isHoldingOrRotating = !!grabbedBody || isRotateMenuOpen || isRotateKeyHeld;
 
-  if (e.code === 'Enter' && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
-    e.preventDefault();
-    openGameChat();
-    return;
-  }
-
-  if (e.code === 'KeyM' && !isHoldingOrRotating && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
+  if (['Enter', 'KeyT', 'KeyM'].includes(e.code) && !isHoldingOrRotating && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
     e.preventDefault();
     openGameChat();
     return;
@@ -7152,17 +7163,6 @@ window.addEventListener('keydown', (e) => {
       } else if (isOnGround) {
         verticalVelocity = jumpStrength;
         isOnGround = false;
-      }
-      break;
-    case 'KeyT':
-      if (isToolGunEquipped) {
-        toolGunRotY += Math.PI / 2;
-        showFlightHudNotification('Tool Gun: поворот Y на 90°');
-        break;
-      }
-      if (!isHoldingOrRotating && isGameStarted && !isInMainMenu && !isMenuOpen && !isPaused) {
-        e.preventDefault();
-        openGameChat();
       }
       break;
     case 'KeyR':
@@ -9808,8 +9808,8 @@ if (sortByCountBtn) {
 // ============================================================================
 // --- СИСТЕМА АВТООБНОВЛЕНИЯ ИГРЫ ИЗ РЕПОЗИТОРИЯ GITHUB ---
 // ============================================================================
-const CURRENT_GAME_VERSION = "1.0.5";
-const CURRENT_BUILD_NUMBER = 105;
+const CURRENT_GAME_VERSION = "1.0.6";
+const CURRENT_BUILD_NUMBER = 106;
 const GITHUB_REPO_VERSION_URL = "https://raw.githubusercontent.com/d8739486-lang/3D-Sandbox-Game/main/version.json";
 
 const updateDialogModal = document.getElementById('update-dialog-modal');
@@ -9849,8 +9849,7 @@ async function checkForGameUpdates(isManual = false) {
     if (btnUpdateConfirm) btnUpdateConfirm.classList.add('hidden');
     if (updateDialogStatus) {
       updateDialogStatus.innerHTML = `
-        <div style="margin-bottom: 8px;"><strong>Текущая версия: v${CURRENT_GAME_VERSION} (Сборка ${CURRENT_BUILD_NUMBER})</strong></div>
-        <div style="color: #00f0ff;">Связываемся с репозиторием GitHub...</div>
+        <div style="color: #dedee4; font-size: 13px;">Проверка наличия обновлений...</div>
       `;
     }
   }
@@ -9873,26 +9872,15 @@ async function checkForGameUpdates(isManual = false) {
       if (updateProgressContainer) updateProgressContainer.classList.add('hidden');
       if (btnUpdateConfirm) {
         btnUpdateConfirm.classList.remove('hidden');
-        btnUpdateConfirm.textContent = 'Обновить сейчас';
+        btnUpdateConfirm.textContent = 'Обновить';
       }
       if (updateDialogStatus) {
-        const changesHtml = Array.isArray(data.changelog)
-          ? data.changelog.map(c => `• ${c}`).join('<br>')
-          : (data.description || 'Обновление песочницы: оптимизация физики и сетевого кода.');
-
         updateDialogStatus.innerHTML = `
-          <div style="color: #00ff88; font-weight: bold; margin-bottom: 6px;">
-            Доступна новая версия: v${remoteVer}!
+          <div style="color: #ffffff; font-weight: bold; font-size: 13px; margin-bottom: 6px;">
+            Доступно обновление игры (v${remoteVer})
           </div>
-          <div style="font-size: 11px; color: #a0a5b5; margin-bottom: 8px;">
-            У вас установлена: v${CURRENT_GAME_VERSION} (Сборка ${CURRENT_BUILD_NUMBER})
-          </div>
-          <div style="background: rgba(0,0,0,0.5); padding: 8px 10px; border: 1px solid #333948; text-align: left; max-height: 120px; overflow-y: auto; font-size: 11px; margin-bottom: 8px; line-height: 1.4;">
-            <strong style="color: #fff;">Что нового:</strong><br>
-            ${changesHtml}
-          </div>
-          <div style="font-size: 11px; color: #d0d5e5;">
-            Нажмите «Обновить сейчас», чтобы получить актуальные файлы игры.
+          <div style="font-size: 12px; color: #a4a9b6; line-height: 1.45;">
+            Нажмите «Обновить», чтобы загрузить актуальную версию игры.
           </div>
         `;
       }
@@ -9900,11 +9888,10 @@ async function checkForGameUpdates(isManual = false) {
       if (isManual) {
         if (updateDialogStatus) {
           updateDialogStatus.innerHTML = `
-            <div style="color: #00ff88; font-weight: bold; margin-bottom: 6px;">
-              У вас установлена последняя версия!
+            <div style="color: #ffffff; font-weight: bold; font-size: 13px; margin-bottom: 6px;">
+              Установлена последняя версия (v${CURRENT_GAME_VERSION})
             </div>
-            <div style="font-size: 11px; color: #a0a5b5;">
-              Версия: v${CURRENT_GAME_VERSION} (Сборка ${CURRENT_BUILD_NUMBER})<br>
+            <div style="font-size: 12px; color: #8fa0b5;">
               Все файлы игры актуальны и готовы к запуску.
             </div>
           `;
@@ -9916,12 +9903,11 @@ async function checkForGameUpdates(isManual = false) {
     console.warn('Update check failed:', err);
     if (isManual && updateDialogStatus) {
       updateDialogStatus.innerHTML = `
-        <div style="color: #ff5555; font-weight: bold; margin-bottom: 6px;">
+        <div style="color: #dedee4; font-weight: bold; font-size: 13px; margin-bottom: 6px;">
           Не удалось проверить обновления
         </div>
-        <div style="font-size: 11px; color: #a0a5b5;">
-          Проверьте подключение к интернету или доступность GitHub.<br>
-          (${err.message})
+        <div style="font-size: 11px; color: #8fa0b5;">
+          Проверьте подключение к интернету.<br>(${err.message})
         </div>
       `;
       if (btnUpdateConfirm) btnUpdateConfirm.classList.add('hidden');
@@ -9935,34 +9921,28 @@ if (btnUpdateConfirm) {
     btnUpdateConfirm.classList.add('hidden');
     if (btnUpdateCancel) btnUpdateCancel.classList.add('hidden');
     if (updateProgressContainer) updateProgressContainer.classList.remove('hidden');
+    if (updateDialogStatus) {
+      updateDialogStatus.innerHTML = `<div style="color: #dedee4; font-size: 13px;">Загрузка обновления...</div>`;
+    }
 
     let progress = 0;
-    const stages = [
-      'Подключение к репозиторию...',
-      'Загрузка обновлений песочницы...',
-      'Проверка контрольных сумм скриптов...',
-      'Установка компонентов...',
-      'Перезапуск игры...'
-    ];
-
     const timer = setInterval(() => {
-      progress += Math.floor(Math.random() * 12) + 8;
+      progress += Math.floor(Math.random() * 10) + 6;
       if (progress > 100) progress = 100;
 
       if (updateProgressFill) {
         updateProgressFill.style.width = progress + '%';
       }
-      const stageIdx = Math.min(Math.floor((progress / 100) * stages.length), stages.length - 1);
       if (updatePercentLabel) {
-        updatePercentLabel.textContent = `Обновление: ${progress}% (${stages[stageIdx]})`;
+        updatePercentLabel.textContent = `Загрузка: ${progress}%`;
       }
 
       if (progress >= 100) {
         clearInterval(timer);
         if (updateDialogStatus) {
           updateDialogStatus.innerHTML = `
-            <div style="color: #00ff88; font-weight: bold;">Обновление успешно установлено!</div>
-            <div style="font-size: 11px; color: #a0a5b5;">Перезапуск приложения...</div>
+            <div style="color: #ffffff; font-weight: bold; font-size: 13px;">Обновление успешно установлено!</div>
+            <div style="font-size: 11px; color: #8fa0b5; margin-top: 4px;">Перезапуск игры...</div>
           `;
         }
         setTimeout(() => {
@@ -9971,7 +9951,7 @@ if (btnUpdateConfirm) {
           }
         }, 700);
       }
-    }, 180);
+    }, 120);
   });
 }
 
