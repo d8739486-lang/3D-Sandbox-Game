@@ -162,25 +162,22 @@ body {
 .download-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 660px;
-  margin-top: 18px;
+  gap: 10px;
 }
 
 .btn-download {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 16px;
   background: #2e6030;
   color: #ffffff;
   text-decoration: none;
-  padding: 16px 24px;
+  padding: 16px 26px;
   border: 1px solid #438546;
   border-top-color: #55a858;
   border-bottom-color: #214723;
   cursor: pointer;
-  width: 100%;
+  width: fit-content;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -219,10 +216,9 @@ body {
   margin-top: 2px;
 }
 
-/* Правая колонка: превью фото карты baseplate.png и кнопка скачать */
+/* Правая колонка: превью фото карты baseplate.png */
 .hero-right {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
