@@ -7,6 +7,23 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+.preview-map-image,
+.brand-logo-3d,
+.brand-logo-sandbox {
+  pointer-events: none;
 }
 
 /* Полное скрытие полосы прокрутки для чистого посадочного экрана */
@@ -100,7 +117,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  margin-bottom: 28px;
+  margin-bottom: 14px;
 }
 
 .brand-logo-3d {
@@ -182,18 +199,18 @@ body {
   width: 100%;
   box-sizing: border-box;
   white-space: nowrap;
-  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .btn-download:hover {
-  background: #367239;
-  transform: translateY(-2px);
+  background: #38763b;
+  border-top-color: #68c56c;
+  border-color: #52a156;
 }
 
 .btn-download:active {
-  background: #254e27;
-  transform: translateY(1px);
+  background: #234825;
 }
 
 .btn-icon {
