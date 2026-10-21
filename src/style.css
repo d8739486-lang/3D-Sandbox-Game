@@ -1173,6 +1173,21 @@ body > canvas {
   gap: 12px;
 }
 
+.world-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.world-card-thumb {
+  width: 64px;
+  height: 40px;
+  object-fit: cover;
+  border: 1px solid #3c3e44;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 .world-card-info {
   display: flex;
   flex-direction: column;
@@ -1804,10 +1819,64 @@ body > canvas {
 }
 
 .sb-col-map {
-  flex: 0 0 110px;
-  text-align: center;
+  flex: 0 0 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   color: #8b949e;
   font-size: 11px;
+}
+
+.sb-map-mini-thumb {
+  width: 22px;
+  height: 14px;
+  object-fit: cover;
+  border: 1px solid #3c3e44;
+  border-radius: 1px;
+}
+
+/* Превью карты в создании мира */
+.world-map-preview-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.world-map-preview-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #141518;
+  border: 1px solid #3a3d45;
+  padding: 8px 10px;
+  border-radius: 3px;
+}
+
+.world-create-thumb-img {
+  width: 72px;
+  height: 45px;
+  object-fit: cover;
+  border: 1px solid #4a4e58;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.world-map-preview-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.world-map-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.world-map-sub {
+  font-size: 11px;
+  color: #8b92a0;
 }
 
 .sb-col-ping {

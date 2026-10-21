@@ -2465,9 +2465,12 @@ function renderWorldsListUI() {
       const card = document.createElement('div');
       card.className = 'world-card';
       card.innerHTML = `
-        <div class="world-card-info">
-          <div class="world-card-name">${w.name || 'Мир ' + w.id}</div>
-          <div class="world-card-meta">Карта: Baseplate • Сохранено: ${dateStr} • Блоков: ${w.blocksCount || (w.blocks ? w.blocks.length : 0)}</div>
+        <div class="world-card-left">
+          <img src="./maps/baseplate.png" class="world-card-thumb" alt="Baseplate" onerror="this.style.display='none'">
+          <div class="world-card-info">
+            <div class="world-card-name">${w.name || 'Мир ' + w.id}</div>
+            <div class="world-card-meta">Карта: Baseplate • Сохранено: ${dateStr} • Блоков: ${w.blocksCount || (w.blocks ? w.blocks.length : 0)}</div>
+          </div>
         </div>
         <div class="world-card-actions">
           <button class="menu-btn world-btn-play" data-world-id="${w.id}">Загрузить</button>
@@ -5392,6 +5395,55 @@ function playSpatialSecretCubeFall(sourcePos) {
   }
 }
 
+// 0. Звук шагов игрока (ходьба и спринт по бетону/Baseplate)
+function playFootstepSound(isSprinting) {
+  playCustomOrSynth('footstep', (ctx) => {
+    const now = ctx.currentTime;
+    
+    // 1. Мягкий низкочастотный глухой удар подошвы
+    const osc = ctx.createOscillator();
+    const oscGain = ctx.createGain();
+    const baseFreq = isSprinting ? (115 + (Math.random() - 0.5) * 16) : (95 + (Math.random() - 0.5) * 14);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(38, now + 0.08);
+
+    const thudVol = (isSprinting ? 0.28 : 0.18) * sfxVolume * masterVolume;
+    oscGain.gain.setValueAtTime(thudVol, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.09);
+
+    // 2. Легкий шорох трения подошвы о поверхность платформы
+    const bufferSize = Math.floor(ctx.sampleRate * 0.04);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(1050 + (Math.random() - 0.5) * 180, now);
+    noiseFilter.Q.setValueAtTime(1.8, now);
+
+    const noiseGain = ctx.createGain();
+    const noiseVol = (isSprinting ? 0.12 : 0.07) * sfxVolume * masterVolume;
+    noiseGain.gain.setValueAtTime(noiseVol, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+    noise.start(now);
+  });
+}
+
 // 1. Звук переключения слотов предметов (щелчок/тик селектора GMod)
 function playSlotSwitchSound() {
   playCustomOrSynth('weapon_switch', (ctx) => {
@@ -6026,16 +6078,12 @@ function showWeaponSelector(category) {
   updateWeaponHudHighlight();
   playSlotSwitchSound();
 
-  // Fast weapon switch: немедленно активируем оружие
-  const targetWep = WEAPON_REGISTRY[selectedSlot];
-  if (targetWep && !targetWep.locked) {
-    equipWeapon(selectedSlot);
-  }
-
-  // Меню скрывается через 1.6 сек
+  // В стиле GMod: только подсвечиваем слот, для подтверждения и экипировки нужно нажать ЛКМ!
   weaponHudHideTimeout = setTimeout(() => {
     isWeaponHudVisible = false;
     weaponHudEl.classList.add('hidden');
+    selectedSlot = currentEquippedSlot; // возвращаем подсветку на реально экипированное оружие
+    updateWeaponHudHighlight();
   }, 1600);
 }
 
@@ -6054,26 +6102,26 @@ function selectWeaponSlotByStep(step) {
   updateWeaponHudHighlight();
   playSlotSwitchSound();
 
-  // Fast weapon switch при прокрутке колеса мыши
-  const targetWep = WEAPON_REGISTRY[selectedSlot];
-  if (targetWep && !targetWep.locked) {
-    equipWeapon(selectedSlot);
-  }
-
+  // При прокрутке колеса мыши тоже только выбираем слот, экипировка по ЛКМ
   weaponHudHideTimeout = setTimeout(() => {
     isWeaponHudVisible = false;
     weaponHudEl.classList.add('hidden');
+    selectedSlot = currentEquippedSlot;
+    updateWeaponHudHighlight();
   }, 1600);
 }
 
 function confirmWeaponSelection() {
   if (!isWeaponHudVisible) return;
+  clearTimeout(weaponHudHideTimeout);
   isWeaponHudVisible = false;
   weaponHudEl.classList.add('hidden');
 
   const targetWep = WEAPON_REGISTRY[selectedSlot];
   if (targetWep && targetWep.locked) {
     showFlightHudNotification(`${targetWep.name}: Скоро будет доступно!`);
+    selectedSlot = currentEquippedSlot;
+    updateWeaponHudHighlight();
     return;
   }
 
@@ -6189,6 +6237,7 @@ let recoilRotX = 0;
 let swayX = 0;
 let swayY = 0;
 let walkBobTimer = 0;
+let footstepDistanceAccumulator = 0;
 
 // Пул физических гильз и дымка от выстрелов
 const activeShellCasings = [];
@@ -6556,23 +6605,29 @@ gltfLoader.load(
     box.getCenter(center);
 
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scaleFactor = 0.35 / (maxDim || 1.0);
+    // Масштабируем тулган до реалистичных 42 см в длину для вида от 1-го лица
+    const scaleFactor = 0.42 / (maxDim || 1.0);
     rawScene.scale.setScalar(scaleFactor);
 
-    // Центрируем внутри контейнера
+    // Центрируем рукоять точно в хвате руки
     rawScene.position.set(
       -center.x * scaleFactor,
-      -center.y * scaleFactor,
+      (-center.y + 35.0) * scaleFactor,
       -center.z * scaleFactor
     );
 
     const wrapper = new THREE.Group();
     wrapper.add(rawScene);
-    wrapper.visible = false;
     viewmodelRoot.add(wrapper);
     toolgunMeshGroup = wrapper;
 
-    console.log('tool_gun.glb успешно загружен с оптимизированными материалами!');
+    const isToolGunActive = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1');
+    toolgunMeshGroup.visible = isToolGunActive && !isInMainMenu;
+    if (isToolGunActive && !isInMainMenu && viewmodelRoot) {
+      viewmodelRoot.visible = true;
+    }
+
+    console.log('tool_gun.glb успешно загружен в руки игрока с правильным масштабом!');
   },
   undefined,
   (err) => {
@@ -8917,8 +8972,19 @@ function animate() {
 
     // Плавная коллизия со скольжением (без дерганий и телепортаций в углах)
     if (moveVector.lengthSq() > 0) {
-      moveVector.normalize().multiplyScalar(currentSpeed * delta);
+      const stepDist = currentSpeed * delta;
+      moveVector.normalize().multiplyScalar(stepDist);
       camera.position.add(moveVector);
+
+      // Воспроизведение звуков шагов при передвижении по земле (Baseplate или блокам)
+      if (isOnGround && !isFlying && !isPaused && !isInMainMenu) {
+        footstepDistanceAccumulator += stepDist;
+        const targetStepDist = keys.sprint ? 2.15 : 1.75;
+        if (footstepDistanceAccumulator >= targetStepDist) {
+          footstepDistanceAccumulator = 0;
+          playFootstepSound(keys.sprint);
+        }
+      }
 
       // Итерируем 3 раза для стабильного разрешения коллизий в углах
       for (let iter = 0; iter < 3; iter++) {
@@ -9258,22 +9324,51 @@ function updateWeaponViewmodel(delta) {
   updateSmokePuffs(delta);
   updateBulletTracers(delta);
 
-  if (!pistolMeshGroup) return;
-
-  // Видимость пистолета: только если экипирован слот 2-1 (9mm Пистолет)
-  const isPistolActive = currentEquippedSlot === '2-1';
-  const isToolGunActiveSlot = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1');
-
-  if (pistolMeshGroup) pistolMeshGroup.visible = isPistolActive;
-  if (toolgunMeshGroup) {
-    toolgunMeshGroup.visible = isToolGunActiveSlot;
-    if (isToolGunActiveSlot) {
-      toolgunMeshGroup.position.set(0.24, -0.22, -0.42);
-      toolgunMeshGroup.rotation.set(0, -Math.PI / 2, 0);
+  // 1. Анимация доставания (Deploy / Draw animation: ~450 мс)
+  if (isDeploying) {
+    deployProgress += delta * 2.2;
+    if (deployProgress >= 1.0) {
+      deployProgress = 1.0;
+      isDeploying = false;
     }
   }
 
-  if (!isPistolActive) return;
+  // 2. Покачивание при ходьбе (Walk Bobbing)
+  const isMoving = (keys.forward || keys.backward || keys.left || keys.right) && !isFlying && isOnGround;
+  if (isMoving) {
+    walkBobTimer += delta * (keys.sprint ? 14.0 : 9.5);
+  } else {
+    walkBobTimer += delta * 1.5; // легкое дыхание
+  }
+
+  const isPistolActive = currentEquippedSlot === '2-1';
+  const isToolGunActiveSlot = (currentEquippedSlot === '1-2' || currentEquippedSlot === '5-1');
+
+  if (viewmodelRoot) {
+    viewmodelRoot.visible = (!isInMainMenu && (isPistolActive || isToolGunActiveSlot));
+  }
+
+  // Обновление Tool Gun в руках игрока
+  if (toolgunMeshGroup) {
+    toolgunMeshGroup.visible = isToolGunActiveSlot && !isInMainMenu;
+    if (isToolGunActiveSlot && !isInMainMenu) {
+      const tgBobIntensity = isMoving ? (keys.sprint ? 0.012 : 0.006) : 0.001;
+      const tgBobX = Math.cos(walkBobTimer * 0.5) * tgBobIntensity;
+      const tgBobY = Math.abs(Math.sin(walkBobTimer)) * tgBobIntensity;
+
+      const tgDeployEase = 1.0 - Math.pow(1.0 - Math.min(1.0, deployProgress), 3);
+      const tgDeployOffsetY = (1.0 - tgDeployEase) * -0.35;
+
+      toolgunMeshGroup.position.set(0.22 + tgBobX, -0.22 + tgBobY + tgDeployOffsetY, -0.42);
+      toolgunMeshGroup.rotation.set(-0.06, -Math.PI / 2, 0.06);
+    }
+  }
+
+  if (pistolMeshGroup) {
+    pistolMeshGroup.visible = isPistolActive && !isInMainMenu;
+  }
+
+  if (!isPistolActive || !pistolMeshGroup) return;
 
   // Механический откат затвора пистолета назад и возврат на место
   slideBlowback = Math.max(0, slideBlowback - delta * 0.45);
@@ -9281,12 +9376,11 @@ function updateWeaponViewmodel(delta) {
     slideMesh.position.x = initialSlidePos.x - slideBlowback;
   }
 
-  // 1. Анимация перезарядки (ровно 2.0 секунды)
+  // Анимация перезарядки (ровно 2.0 секунды)
   const RELOAD_DURATION = 2.0;
   if (pistolAmmo.isReloading) {
     pistolAmmo.reloadTimer += delta;
     if (pistolAmmo.reloadTimer >= RELOAD_DURATION) {
-      // Завершение перезарядки: заполняем магазин из резерва
       const needed = pistolAmmo.maxClip - pistolAmmo.current;
       const take = Math.min(needed, pistolAmmo.reserve);
       pistolAmmo.current += take;
@@ -9296,17 +9390,7 @@ function updateWeaponViewmodel(delta) {
     }
   }
 
-  // 2. Анимация доставания (Deploy / Draw animation: ~450 мс, сочная динамика поднятия снизу)
-  if (isDeploying) {
-    deployProgress += delta * 2.2; // ~450 мс для четкой видимости анимации
-    if (deployProgress >= 1.0) {
-      deployProgress = 1.0;
-      isDeploying = false;
-    }
-  }
-
-  // 3. Плавный переход в прицел (ADS blend: 0 = от бедра, 1 = прицел)
-  // При перезарядке автоматически сбрасываем прицел
+  // Плавный переход в прицел (ADS blend: 0 = от бедра, 1 = прицел)
   if (pistolAmmo.isReloading) {
     isAiming = false;
   }
@@ -9317,16 +9401,8 @@ function updateWeaponViewmodel(delta) {
   // Перекрестие (точка) всегда остается видимой
   crosshairEl.style.opacity = '1';
 
-  // 4. Покачивание при ходьбе (Walk Head & Weapon Bobbing)
-  const isMoving = (keys.forward || keys.backward || keys.left || keys.right) && !isFlying && isOnGround;
-  if (isMoving) {
-    walkBobTimer += delta * (keys.sprint ? 14.0 : 9.5);
-  } else {
-    walkBobTimer += delta * 1.5; // легкое дыхание
-  }
-
   const bobIntensity = isMoving ? (keys.sprint ? 0.016 : 0.008) : 0.0015;
-  const bobAdsMult = 1.0 - currentAdsBlend * 0.85; // в прицеле покачивание почти незаметно
+  const bobAdsMult = 1.0 - currentAdsBlend * 0.85;
   const bobX = Math.cos(walkBobTimer * 0.5) * bobIntensity * bobAdsMult;
   const bobY = Math.abs(Math.sin(walkBobTimer)) * bobIntensity * bobAdsMult;
 
@@ -9617,7 +9693,10 @@ function renderServerList() {
         <span>${s.name}</span>
       </div>
       <div class="sb-col-players">${s.players} / ${s.maxPlayers}</div>
-      <div class="sb-col-map">${s.map || 'Песочница'}</div>
+      <div class="sb-col-map">
+        <img src="./maps/baseplate.png" class="sb-map-mini-thumb" alt="" onerror="this.style.display='none'">
+        <span>${s.map || 'Baseplate'}</span>
+      </div>
       <div class="sb-col-ping">${s.ping || 30} ms</div>
     `;
 
