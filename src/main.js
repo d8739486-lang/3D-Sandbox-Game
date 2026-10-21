@@ -9856,11 +9856,34 @@ async function checkForGameUpdates(isManual = false) {
 
   try {
     const timestamp = Date.now();
-    const res = await fetch(`${GITHUB_REPO_VERSION_URL}?t=${timestamp}`, { cache: 'no-cache' });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
+    let data = null;
+    try {
+      // 1. Попытка запроса через GitHub REST API (всегда отдает мгновенный актуальный SHA/содержимое без 5-минутного кеша Fastly)
+      const apiRes = await fetch(`https://api.github.com/repos/d8739486-lang/3D-Sandbox-Game/contents/version.json?ref=main&t=${timestamp}`, {
+        headers: { 'Accept': 'application/vnd.github.v3+json' },
+        cache: 'no-cache'
+      });
+      if (apiRes.ok) {
+        const jsonApi = await apiRes.json();
+        if (jsonApi.content) {
+          const rawUtf8 = atob(jsonApi.content.replace(/\s/g, ''));
+          // Корректное декодирование UTF-8 строки
+          data = JSON.parse(decodeURIComponent(escape(rawUtf8)));
+        }
+      }
+    } catch (apiErr) {
+      console.warn('GitHub API check failed, falling back to raw:', apiErr);
     }
-    const data = await res.json();
+
+    // 2. Резервный источник: прямой raw.githubusercontent.com
+    if (!data) {
+      const res = await fetch(`${GITHUB_REPO_VERSION_URL}?t=${timestamp}`, { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      data = await res.json();
+    }
+
     const remoteVer = data.version || "1.0.0";
     const remoteBuild = data.build || 0;
 

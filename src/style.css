@@ -2377,15 +2377,19 @@ body > canvas {
    --- СТИЛИ МОДАЛЬНОГО ОКНА ОБНОВЛЕНИЯ (UPDATE SYSTEM) ---
    ============================================================================ */
 .main-menu-version-bar {
+  position: fixed;
+  bottom: 12px;
+  left: 14px;
+  z-index: 15100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 14px;
-  padding: 4px 6px;
+  gap: 8px;
   font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
   font-size: 11px;
-  color: #727683;
+  color: #606470;
+  letter-spacing: 0.5px;
+  user-select: none;
+  pointer-events: none;
 }
 
 .update-link {
