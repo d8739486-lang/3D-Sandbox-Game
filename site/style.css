@@ -232,6 +232,30 @@ body {
   margin-top: 2px;
 }
 
+/* Блок предупреждения об обновлениях */
+.update-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #13151a;
+  border-top: 1px solid #0d0e12;
+  border-left: 1px solid #0d0e12;
+  border-right: 1px solid #282b36;
+  border-bottom: 1px solid #282b36;
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #9ea3b0;
+  line-height: 1.5;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+}
+
+.update-notice-icon {
+  color: #c9aa48;
+  font-size: 14px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
 /* Правая колонка: классическая ретро-рамка (beveled panel) */
 .hero-right {
   display: flex;
