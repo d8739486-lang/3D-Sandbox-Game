@@ -9918,11 +9918,20 @@ async function checkForGameUpdates(isManual = false) {
 if (btnUpdateConfirm) {
   btnUpdateConfirm.addEventListener('click', (e) => {
     e.stopPropagation();
+
+    // Запускаем отдельное изолированное окно обновления в стиле CS2
+    const ipc = getElectronIpc();
+    if (ipc) {
+      ipc.send('start-standalone-updater');
+      return;
+    }
+
+    // Запасной fallback для браузера
     btnUpdateConfirm.classList.add('hidden');
     if (btnUpdateCancel) btnUpdateCancel.classList.add('hidden');
     if (updateProgressContainer) updateProgressContainer.classList.remove('hidden');
     if (updateDialogStatus) {
-      updateDialogStatus.innerHTML = `<div style="color: #dedee4; font-size: 13px;">Загрузка обновления...</div>`;
+      updateDialogStatus.innerHTML = `<div style="color: #dedee4; font-size: 13px;">Загрузка ассетов: 0 / 48 219</div>`;
     }
 
     let progress = 0;
@@ -9934,22 +9943,23 @@ if (btnUpdateConfirm) {
         updateProgressFill.style.width = progress + '%';
       }
       if (updatePercentLabel) {
-        updatePercentLabel.textContent = `Загрузка: ${progress}%`;
+        const count = Math.floor((progress / 100) * 48219);
+        updatePercentLabel.textContent = `Ассеты: ${count.toLocaleString('ru-RU')} / 48 219 (${progress}%)`;
       }
 
       if (progress >= 100) {
         clearInterval(timer);
         if (updateDialogStatus) {
           updateDialogStatus.innerHTML = `
-            <div style="color: #ffffff; font-weight: bold; font-size: 13px;">Обновление успешно установлено!</div>
-            <div style="font-size: 11px; color: #8fa0b5; margin-top: 4px;">Перезапуск игры...</div>
+            <div style="color: #4ade80; font-weight: bold; font-size: 13px;">Обновление успешно завершено!</div>
+            <div style="font-size: 11px; color: #8fa0b5; margin-top: 4px;">Окно закроется через 10 секунд...</div>
           `;
         }
         setTimeout(() => {
           if (window.location && window.location.reload) {
             window.location.reload(true);
           }
-        }, 700);
+        }, 10000);
       }
     }, 120);
   });

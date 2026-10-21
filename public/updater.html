@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Sandbox - Обновление</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background: #111215;
+      color: #dedee4;
+      font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 28px;
+      overflow: hidden;
+      border: 1px solid #2e3038;
+      box-shadow: inset 0 0 0 1px #1d1f24;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .icon {
+      width: 28px;
+      height: 28px;
+      background: #1e2026;
+      border: 1px solid #3d404a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #9cb4d8;
+    }
+    .title-box {
+      display: flex;
+      flex-direction: column;
+    }
+    .title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: #7a7e8c;
+    }
+    .center-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .cs2-status {
+      font-size: 12px;
+      color: #e2e4ea;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+    }
+    .cs2-counter {
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: #9cb4d8;
+      font-weight: bold;
+    }
+    .track {
+      width: 100%;
+      height: 18px;
+      background: #0d0e11;
+      border: 1px solid #2a2c33;
+      overflow: hidden;
+      position: relative;
+    }
+    .fill {
+      height: 100%;
+      width: 0%;
+      background: #3b6ea5;
+      transition: width 0.08s linear;
+    }
+    .details {
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 11px;
+      color: #6d7280;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #555966;
+      border-top: 1px solid #1c1e24;
+      padding-top: 12px;
+    }
+    .footer-warning {
+      color: #8c909e;
+    }
+    .footer-countdown {
+      font-family: 'Consolas', monospace;
+      color: #9cb4d8;
+      font-weight: bold;
+    }
+    .success-badge {
+      color: #4ade80 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="icon">■</div>
+    <div class="title-box">
+      <div class="title">3D SANDBOX UPDATER</div>
+      <div class="subtitle">Установка обновления клиента игры</div>
+    </div>
+  </div>
+
+  <div class="center-content">
+    <div class="cs2-status">
+      <span id="label-action">Загрузка ассетов игры...</span>
+      <span class="cs2-counter" id="label-counter">0 / 48 219</span>
+    </div>
+    <div class="track">
+      <div class="fill" id="progress-fill"></div>
+    </div>
+    <div class="details" id="label-details">Проверка манифеста и целостности файлов...</div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-warning" id="label-footer-msg">Пожалуйста, не выключайте компьютер...</span>
+    <span class="footer-countdown" id="label-countdown"></span>
+  </div>
+
+  <script>
+    const TOTAL_ASSETS = 48219;
+    const progressFill = document.getElementById('progress-fill');
+    const labelAction = document.getElementById('label-action');
+    const labelCounter = document.getElementById('label-counter');
+    const labelDetails = document.getElementById('label-details');
+    const labelFooterMsg = document.getElementById('label-footer-msg');
+    const labelCountdown = document.getElementById('label-countdown');
+
+    const assetPackages = [
+      'models/player/avatar_rig.glb',
+      'models/weapons/glock19_highpoly.glb',
+      'models/weapons/toolgun_emitter.glb',
+      'models/props/nuke_bomb_tactical.glb',
+      'materials/baseplate_studs_diffuse.png',
+      'materials/baseplate_studs_normal.png',
+      'materials/secret_cube_albedo.png',
+      'sounds/weapons/pistol_shoot.mp3',
+      'sounds/weapons/toolgun_laser.wav',
+      'sounds/physics/cube_impact.wav',
+      'sounds/menu/menu_music_ambient.mp3',
+      'shaders/soft_shadows_pcf.glsl',
+      'shaders/sky_atmospheric_fog.glsl',
+      'scripts/network/webrtc_ddos_guard.js',
+      'scripts/physics/cannon_worker.js'
+    ];
+
+    let currentLoaded = 0;
+    let isComplete = false;
+
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    // Имитация быстрой загрузки десятков тысяч ассетов в стиле CS2
+    const updateInterval = setInterval(() => {
+      if (isComplete) return;
+
+      const increment = Math.floor(Math.random() * 950) + 380;
+      currentLoaded = Math.min(TOTAL_ASSETS, currentLoaded + increment);
+      const ratio = currentLoaded / TOTAL_ASSETS;
+      const percent = Math.floor(ratio * 100);
+
+      progressFill.style.width = percent + '%';
+      labelCounter.textContent = `${formatNumber(currentLoaded)} / ${formatNumber(TOTAL_ASSETS)}`;
+
+      const randomFile = assetPackages[Math.floor(Math.random() * assetPackages.length)];
+      labelDetails.textContent = `Обработка: ${randomFile} (#${currentLoaded})`;
+
+      if (currentLoaded >= TOTAL_ASSETS) {
+        isComplete = true;
+        clearInterval(updateInterval);
+        finishUpdate();
+      }
+    }, 45);
+
+    function finishUpdate() {
+      labelAction.textContent = 'Обновление успешно завершено!';
+      labelAction.classList.add('success-badge');
+      labelDetails.textContent = 'Все ассеты проверены и синхронизированы.';
+      labelFooterMsg.textContent = 'Окно закроется через:';
+
+      // Нативное системное уведомление Windows (Web Notifications API)
+      try {
+        if ('Notification' in window) {
+          if (Notification.permission === 'granted') {
+            new Notification('3D Sandbox', {
+              body: 'Обновление игры успешно завершено!',
+              silent: false
+            });
+          } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then((permission) => {
+              if (permission === 'granted') {
+                new Notification('3D Sandbox', {
+                  body: 'Обновление игры успешно завершено!',
+                  silent: false
+                });
+              }
+            });
+          }
+        }
+      } catch (_) {}
+
+      // Оповещаем главный процесс Electron, чтобы он показал нативное уведомление Windows
+      try {
+        if (window.require) {
+          const { ipcRenderer } = window.require('electron');
+          ipcRenderer.send('updater-finished-notification');
+        }
+      } catch (_) {}
+
+      // Обратный отсчет 10 секунд
+      let secondsLeft = 10;
+      labelCountdown.textContent = `${secondsLeft} сек.`;
+
+      const countdownTimer = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+          labelCountdown.textContent = `${secondsLeft} сек.`;
+        } else {
+          clearInterval(countdownTimer);
+          labelCountdown.textContent = '0 сек.';
+          // Закрываем окно обновления и завершаем процесс
+          try {
+            if (window.require) {
+              const { ipcRenderer } = window.require('electron');
+              ipcRenderer.send('updater-close-app');
+            } else {
+              window.close();
+            }
+          } catch (_) {
+            window.close();
+          }
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

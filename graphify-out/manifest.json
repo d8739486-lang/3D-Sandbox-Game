@@ -1,9 +1,9 @@
 {
   "electron-main.cjs": {
-    "mtime": 1792418886.8772693,
-    "seen": 1792501964.6822,
-    "ast_hash": "806c6bd0c2a9226e14d8c7127a68b95c",
-    "semantic_hash": "806c6bd0c2a9226e14d8c7127a68b95c"
+    "mtime": 1792567476.0342238,
+    "seen": 1792567515.8016129,
+    "ast_hash": "6a4d76ef72305f8a7ac26015879331f4",
+    "semantic_hash": ""
   },
   "package.json": {
     "mtime": 1792421823.515433,
@@ -48,9 +48,9 @@
     "semantic_hash": "db6dfd79e3118f99568c6c190b0ae86b"
   },
   "src/main.js": {
-    "mtime": 1792566140.3323452,
-    "seen": 1792566163.7221787,
-    "ast_hash": "ec879667dd3b4a614f65f54cdce74d09",
+    "mtime": 1792567492.7812684,
+    "seen": 1792567515.8016129,
+    "ast_hash": "d7906f0202c4497dc26ffeb7caaab36c",
     "semantic_hash": ""
   },
   "vite.config.js": {
@@ -90,10 +90,10 @@
     "semantic_hash": "fb3c1b2fd1a1d0c345e21f47f3b95f21"
   },
   "public/sounds/menu_music.mp3": {
-    "mtime": 1792324334.4351141,
-    "seen": 1792501964.6822,
-    "ast_hash": "c90c8109e3abd3b37e3ee2565d3e578f",
-    "semantic_hash": "c90c8109e3abd3b37e3ee2565d3e578f"
+    "mtime": 1792565034.7080305,
+    "seen": 1792567515.8016129,
+    "ast_hash": "06058f5d945da2a58804d7bf62ea754f",
+    "semantic_hash": ""
   },
   "public/sounds/nuke_explosion.mp3": {
     "mtime": 1792332876.493727,
@@ -330,9 +330,15 @@
     "semantic_hash": ""
   },
   "tasks.md": {
-    "mtime": 1792515783.5747983,
-    "seen": 1792566163.7221787,
-    "ast_hash": "9389cc01d57328a3c0f81bb580876833",
+    "mtime": 1792566197.0377173,
+    "seen": 1792567515.8016129,
+    "ast_hash": "94a2fc410bbb499d278a958a6d133fad",
+    "semantic_hash": ""
+  },
+  "public/updater.html": {
+    "mtime": 1792567449.0974467,
+    "seen": 1792567515.8016129,
+    "ast_hash": "799dc6404d9cd50b8d0f19af157c6526",
     "semantic_hash": ""
   }
 }
