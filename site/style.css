@@ -96,11 +96,21 @@ body {
 }
 
 .hero-logo-box {
-  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
-.hero-brand-logo {
-  width: 380px;
+.brand-logo-3d {
+  width: 104px;
+  height: auto;
+  display: block;
+}
+
+.brand-logo-sandbox {
+  width: 400px;
   max-width: 100%;
   height: auto;
   display: block;
