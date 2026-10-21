@@ -48,6 +48,16 @@ body {
   flex-direction: column;
 }
 
+/* Плавное, мягкое появление страницы */
+@keyframes smoothPageFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* Полноэкранный контейнер ровно на 100vh */
 .site-wrapper {
   width: 100%;
@@ -56,6 +66,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  animation: smoothPageFadeIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 /* Основной блок во весь экран */
