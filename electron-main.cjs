@@ -1,15 +1,15 @@
-const { app, BrowserWindow, Menu, ipcMain } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-// Полностью отключаем кэш Chromium на диске, чтобы никогда не было конфликтов блокировок
+// Полностью отключаем кэш Chromium на диске
 app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 app.commandLine.appendSwitch('disable-http-cache');
 app.commandLine.appendSwitch('disable-gpu-program-cache');
 app.commandLine.appendSwitch('disable-component-update');
 app.commandLine.appendSwitch('disable-features', 'DawnGraphite,PersistentCache');
 
-// Уникальная папка для каждого сеанса, чтобы исключить "файл занят другим процессом"
+// Уникальная папка для каждого сеанса
 try {
   const sessionDataDir = path.join(app.getPath('temp'), `sandbox_run_${Date.now()}`);
   if (!fs.existsSync(sessionDataDir)) {
@@ -19,8 +19,9 @@ try {
 } catch (_) {}
 
 let mainWindow = null;
+let updaterWindow = null;
 
-function createWindow() {
+function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -53,11 +54,58 @@ function createWindow() {
   });
 }
 
+function createUpdaterWindow() {
+  if (updaterWindow) return;
+
+  updaterWindow = new BrowserWindow({
+    width: 480,
+    height: 220,
+    resizable: false,
+    frame: false,
+    closable: false,
+    alwaysOnTop: true,
+    center: true,
+    title: '3D Sandbox Updater',
+    icon: path.join(__dirname, 'icon.png'),
+    backgroundColor: '#111215',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  updaterWindow.setMenu(null);
+
+  const updaterPath = path.join(__dirname, 'dist', 'updater.html');
+  const fallbackPath = path.join(__dirname, 'public', 'updater.html');
+  if (fs.existsSync(updaterPath)) {
+    updaterWindow.loadFile(updaterPath);
+  } else {
+    updaterWindow.loadFile(fallbackPath);
+  }
+
+  updaterWindow.on('closed', () => {
+    updaterWindow = null;
+  });
+}
+
 app.whenReady().then(() => {
-  createWindow();
+  // Напрямую открываем главное окно игры
+  createMainWindow();
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createMainWindow();
+    }
+  });
+
+  // Открытие отдельного окна обновления в стиле CS2 без рамок и кнопок
+  ipcMain.on('start-standalone-updater', () => {
+    if (mainWindow) {
+      mainWindow.destroy();
+      mainWindow = null;
+    }
+    createUpdaterWindow();
   });
 
   ipcMain.on('win-minimize', () => {
@@ -78,59 +126,18 @@ app.whenReady().then(() => {
     if (mainWindow) mainWindow.close();
   });
 
-  // Открытие отдельного окна обновления в стиле CS2 без рамок и кнопок
-  ipcMain.on('start-standalone-updater', () => {
-    // 1. Закрываем главное окно игры
-    if (mainWindow) {
-      mainWindow.destroy();
-      mainWindow = null;
-    }
-
-    // 2. Создаем специальное компактное окно без кнопок и рамок, которое нельзя закрыть
-    const updaterWin = new BrowserWindow({
-      width: 480,
-      height: 220,
-      resizable: false,
-      frame: false,
-      closable: false,
-      alwaysOnTop: true,
-      center: true,
-      title: '3D Sandbox Updater',
-      icon: path.join(__dirname, 'icon.png'),
-      backgroundColor: '#111215',
-      webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false
-      }
-    });
-
-    updaterWin.setMenu(null);
-
-    const updaterPath = path.join(__dirname, 'dist', 'updater.html');
-    const fallbackPath = path.join(__dirname, 'public', 'updater.html');
-    if (fs.existsSync(updaterPath)) {
-      updaterWin.loadFile(updaterPath);
-    } else {
-      updaterWin.loadFile(fallbackPath);
-    }
-  });
-
-  // Системное уведомление Windows о завершении обновления
   ipcMain.on('updater-finished-notification', () => {
     try {
-      const { Notification } = require('electron');
       if (Notification.isSupported()) {
-        const notif = new Notification({
+        new Notification({
           title: '3D Sandbox',
           body: 'Обновление игры успешно завершено!',
           icon: path.join(__dirname, 'icon.png')
-        });
-        notif.show();
+        }).show();
       }
     } catch (_) {}
   });
 
-  // Полное закрытие приложения после отсчета 10 секунд
   ipcMain.on('updater-close-app', () => {
     app.quit();
   });

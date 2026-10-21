@@ -1473,16 +1473,8 @@ let fireFlamesGroup = null;
 let rainCloudMesh = null;
 
 function triggerFireMeteorEvent() {
-  if (fireState !== 'idle') return;
-  fireState = 'meteor';
-  firePos.set(Math.random() > 0.5 ? -10.0 : 10.0, 0.2, (Math.random() - 0.5) * 6);
-
-  // Метеорит летит из неба
-  const meteorGeo = new THREE.SphereGeometry(1.1, 12, 12);
-  const meteorMat = new THREE.MeshBasicMaterial({ color: 0xff3b00 });
-  meteorMesh = new THREE.Mesh(meteorGeo, meteorMat);
-  meteorMesh.position.set(firePos.x - 12, 28, firePos.z - 8);
-  menuChaosSceneGroup.add(meteorMesh);
+  // Event disabled
+  return;
 }
 
 function updateFireMeteor(delta) {
@@ -1894,19 +1886,16 @@ let bigEventCycleIndex = 0;
 function triggerNextBigMenuEvent() {
   if (!isInMainMenu || isGameStarted || isHostingServer || isConnectedToHost) return;
   const eventTypes = [
-    'fire_meteor', // 1. Метеорит, огонь и тушение облаком с водой
-    'lightning',   // 2. Гроза, ливень и удар молнии
-    'vortex',      // 3. Антигравитационный вихрь блоков
-    'laser',       // 4. Орбитальный лазерный луч
-    'domino'       // 5. Мега-домино
+    'lightning',   // 1. Гроза, ливень и удар молнии
+    'vortex',      // 2. Антигравитационный вихрь блоков
+    'laser',       // 3. Орбитальный лазерный луч
+    'domino'       // 4. Мега-домино
   ];
 
   const currentType = eventTypes[bigEventCycleIndex % eventTypes.length];
   bigEventCycleIndex++;
 
-  if (currentType === 'fire_meteor') {
-    triggerFireMeteorEvent();
-  } else if (currentType === 'lightning') {
+  if (currentType === 'lightning') {
     triggerThunderstormEvent();
   } else if (currentType === 'vortex') {
     triggerVortexEvent();

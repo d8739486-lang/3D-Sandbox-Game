@@ -1,15 +1,15 @@
 {
   "electron-main.cjs": {
-    "mtime": 1792567476.0342238,
-    "seen": 1792567515.8016129,
-    "ast_hash": "6a4d76ef72305f8a7ac26015879331f4",
+    "mtime": 1792572353.4116454,
+    "seen": 1792573375.8546383,
+    "ast_hash": "e3a61b2691f87f6f47975375d2903133",
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1792421823.515433,
-    "seen": 1792501964.6822,
-    "ast_hash": "054714e8fc087681ad951ecd1d7cd6d5",
-    "semantic_hash": "054714e8fc087681ad951ecd1d7cd6d5"
+    "mtime": 1792573116.6604853,
+    "seen": 1792573375.8546383,
+    "ast_hash": "24ba422e2699669476048ccd299141fd",
+    "semantic_hash": ""
   },
   "src-tauri/Cargo.toml": {
     "mtime": 1792315005.880829,
@@ -48,9 +48,9 @@
     "semantic_hash": "db6dfd79e3118f99568c6c190b0ae86b"
   },
   "src/main.js": {
-    "mtime": 1792567492.7812684,
-    "seen": 1792567515.8016129,
-    "ast_hash": "d7906f0202c4497dc26ffeb7caaab36c",
+    "mtime": 1792569548.178805,
+    "seen": 1792573375.8546383,
+    "ast_hash": "9033a3670d9c63d0f1143009717a45e1",
     "semantic_hash": ""
   },
   "vite.config.js": {
@@ -180,9 +180,9 @@
     "semantic_hash": "80d4887dd05ea2f546669a6a4da8274c"
   },
   "version.json": {
-    "mtime": 1792513309.5604239,
-    "seen": 1792513329.8960366,
-    "ast_hash": "25a8a2610d5d401071fa082cd6dfa959",
+    "mtime": 1792567721.8106234,
+    "seen": 1792573375.8546383,
+    "ast_hash": "57ee1a18b58c83a1df1accaca503a2ba",
     "semantic_hash": ""
   },
   "TASKS_TODO.md": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1792565974.059319,
-    "seen": 1792566163.7221787,
-    "ast_hash": "b954dcc807236053be83b0bcd6ed5f14",
+    "mtime": 1792573563.4054863,
+    "seen": 1792573579.2005951,
+    "ast_hash": "8bab6fcec5a01867d4e30c21390f62ac",
     "semantic_hash": ""
   },
   "icon.png": {
@@ -336,9 +336,9 @@
     "semantic_hash": ""
   },
   "public/updater.html": {
-    "mtime": 1792567449.0974467,
-    "seen": 1792567515.8016129,
-    "ast_hash": "799dc6404d9cd50b8d0f19af157c6526",
+    "mtime": 1792571229.213962,
+    "seen": 1792573375.8546383,
+    "ast_hash": "9d8846191d3b52882f78c447200863a9",
     "semantic_hash": ""
   }
 }

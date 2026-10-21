@@ -1,7 +1,7 @@
 # Graph Report - 3D Sandbox - old game style  (2026-10-21)
 
 ## Corpus Check
-- 15 files · ~60,287 words
+- 15 files · ~61,198 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 9 file(s) not represented in the graph (top: .glb 3, (none) 2, .b64 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8ec062bd`
+- Built from commit: `4aea5b71`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -145,7 +145,7 @@ Nodes (4): createNukePhysicsInstance(), createProceduralNukeModel(), previewNuke
 
 ### Community 25 - "Сводный план задач и правок проекта (TODO & Requirements)"
 Cohesion: 0.25
-Nodes (7): 1. Система обновления игры, 2. Графика, дизайн и интерфейс, 3. Режимы экипировки и меню предметов (Spawn Menu / Tool Gun / Руки), 4. Мультиплеер и сетевая изоляция, 5. Уведомления и чат, 6. Резервное копирование и стабильность, Сводный план задач и правок проекта (TODO & Requirements)
+Nodes (7): 1. Система обновления игры [ВЫПОЛНЕНО], 2. Графика, дизайн и интерфейс [ВЫПОЛНЕНО], 3. Режимы экипировки и меню предметов (Spawn Menu / Tool Gun / Руки) [ВЫПОЛНЕНО], 4. Мультиплеер и сетевая изоляция [ВЫПОЛНЕНО], 5. Уведомления и чат [ВЫПОЛНЕНО], 6. Резервное копирование и стабильность [ВЫПОЛНЕНО], Сводный план задач и правок проекта (TODO & Requirements)
 
 ## Knowledge Gaps
 - **308 isolated node(s):** `{ app, BrowserWindow, Menu, ipcMain }`, `path`, `fs`, `name`, `version` (+303 more)

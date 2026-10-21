@@ -287,7 +287,6 @@
         <button class="settings-tab-btn active" data-tab="sound">Звук</button>
         <button class="settings-tab-btn" data-tab="gameplay">Игра</button>
         <button class="settings-tab-btn" data-tab="graphics">Графика</button>
-        <button class="settings-tab-btn" data-tab="account">Аккаунт</button>
       </div>
       <div class="settings-body">
         <!-- Вкладка: Звук -->
@@ -317,13 +316,6 @@
 
         <!-- Вкладка: Игра / Функции -->
         <div class="settings-tab-pane hidden" id="tab-pane-gameplay">
-          <div class="settings-row">
-            <div class="settings-label-val">
-              <label>Ваш никнейм:</label>
-              <span id="val-player-nick">Игрок</span>
-            </div>
-            <input type="text" id="setting-player-nick" class="setting-player-nick-input retro-dialog-input" maxlength="20" placeholder="Введите ваш ник..." autocomplete="off" />
-          </div>
           <div class="settings-row">
             <div class="settings-label-val">
               <label>Поле зрения (FOV):</label>
@@ -388,31 +380,6 @@
           </div>
         </div>
 
-        <!-- Вкладка: Аккаунт и Облако (Supabase) -->
-        <div class="settings-tab-pane hidden" id="tab-pane-account">
-          <div class="settings-row">
-            <div class="settings-label-val">
-              <label>Статус профиля:</label>
-              <span id="val-account-status">Локальный (Гость)</span>
-            </div>
-            <div class="account-status-sub">Синхронизация через Supabase Cloud готова к подключению</div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-label-val">
-              <label>Supabase Project URL:</label>
-            </div>
-            <input type="text" id="setting-supabase-url" class="retro-dialog-input" placeholder="https://xyzcompany.supabase.co" autocomplete="off" />
-          </div>
-          <div class="settings-row">
-            <div class="settings-label-val">
-              <label>Supabase Anon Key:</label>
-            </div>
-            <input type="password" id="setting-supabase-key" class="retro-dialog-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..." autocomplete="off" />
-          </div>
-          <div style="margin-top: 10px; display: flex; gap: 8px;">
-            <button type="button" class="menu-btn retro-dialog-btn" id="btn-save-supabase">Сохранить ключи</button>
-          </div>
-        </div>
       </div>
       <div class="settings-footer">
         <button class="menu-btn settings-btn" id="btn-apply-settings">Готово</button>

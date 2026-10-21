@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Sandbox - Обновление</title>
+  <title>3D Sandbox - Загрузка ассетов</title>
   <style>
     * {
       box-sizing: border-box;
@@ -85,7 +85,7 @@
       height: 100%;
       width: 0%;
       background: #3b6ea5;
-      transition: width 0.08s linear;
+      transition: width 0.15s ease-out;
     }
     .details {
       font-family: 'Consolas', 'Courier New', monospace;
@@ -115,6 +115,9 @@
     .success-badge {
       color: #4ade80 !important;
     }
+    .error-badge {
+      color: #f87171 !important;
+    }
   </style>
 </head>
 <body>
@@ -122,28 +125,27 @@
     <div class="icon">■</div>
     <div class="title-box">
       <div class="title">3D SANDBOX UPDATER</div>
-      <div class="subtitle">Установка обновления клиента игры</div>
+      <div class="subtitle">Синхронизация игровых ассетов</div>
     </div>
   </div>
 
   <div class="center-content">
     <div class="cs2-status">
-      <span id="label-action">Загрузка ассетов игры...</span>
-      <span class="cs2-counter" id="label-counter">0 / 48 219</span>
+      <span id="label-action">Подготовка к загрузке...</span>
+      <span class="cs2-counter" id="label-counter">0%</span>
     </div>
     <div class="track">
       <div class="fill" id="progress-fill"></div>
     </div>
-    <div class="details" id="label-details">Проверка манифеста и целостности файлов...</div>
+    <div class="details" id="label-details">Проверка целостности файлов...</div>
   </div>
 
   <div class="footer">
-    <span class="footer-warning" id="label-footer-msg">Пожалуйста, не выключайте компьютер...</span>
+    <span class="footer-warning" id="label-footer-msg">Пожалуйста, не закрывайте окно...</span>
     <span class="footer-countdown" id="label-countdown"></span>
   </div>
 
   <script>
-    const TOTAL_ASSETS = 48219;
     const progressFill = document.getElementById('progress-fill');
     const labelAction = document.getElementById('label-action');
     const labelCounter = document.getElementById('label-counter');
@@ -151,112 +153,64 @@
     const labelFooterMsg = document.getElementById('label-footer-msg');
     const labelCountdown = document.getElementById('label-countdown');
 
-    const assetPackages = [
-      'models/player/avatar_rig.glb',
-      'models/weapons/glock19_highpoly.glb',
-      'models/weapons/toolgun_emitter.glb',
-      'models/props/nuke_bomb_tactical.glb',
-      'materials/baseplate_studs_diffuse.png',
-      'materials/baseplate_studs_normal.png',
-      'materials/secret_cube_albedo.png',
-      'sounds/weapons/pistol_shoot.mp3',
-      'sounds/weapons/toolgun_laser.wav',
-      'sounds/physics/cube_impact.wav',
-      'sounds/menu/menu_music_ambient.mp3',
-      'shaders/soft_shadows_pcf.glsl',
-      'shaders/sky_atmospheric_fog.glsl',
-      'scripts/network/webrtc_ddos_guard.js',
-      'scripts/physics/cannon_worker.js'
-    ];
-
-    let currentLoaded = 0;
-    let isComplete = false;
-
-    function formatNumber(num) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    }
-
-    // Имитация быстрой загрузки десятков тысяч ассетов в стиле CS2
-    const updateInterval = setInterval(() => {
-      if (isComplete) return;
-
-      const increment = Math.floor(Math.random() * 950) + 380;
-      currentLoaded = Math.min(TOTAL_ASSETS, currentLoaded + increment);
-      const ratio = currentLoaded / TOTAL_ASSETS;
-      const percent = Math.floor(ratio * 100);
-
-      progressFill.style.width = percent + '%';
-      labelCounter.textContent = `${formatNumber(currentLoaded)} / ${formatNumber(TOTAL_ASSETS)}`;
-
-      const randomFile = assetPackages[Math.floor(Math.random() * assetPackages.length)];
-      labelDetails.textContent = `Обработка: ${randomFile} (#${currentLoaded})`;
-
-      if (currentLoaded >= TOTAL_ASSETS) {
-        isComplete = true;
-        clearInterval(updateInterval);
-        finishUpdate();
+    let isElectron = false;
+    let ipc = null;
+    try {
+      if (window.require) {
+        ipc = window.require('electron').ipcRenderer;
+        isElectron = true;
       }
-    }, 45);
+    } catch (_) {}
 
-    function finishUpdate() {
-      labelAction.textContent = 'Обновление успешно завершено!';
-      labelAction.classList.add('success-badge');
-      labelDetails.textContent = 'Все ассеты проверены и синхронизированы.';
-      labelFooterMsg.textContent = 'Окно закроется через:';
+    if (ipc) {
+      // Получаем события от Electron Main процесса
+      ipc.on('updater-progress', (event, data) => {
+        // data: { percent, text, detail, status }
+        if (data.percent !== undefined) {
+          progressFill.style.width = Math.min(100, Math.max(0, data.percent)) + '%';
+          labelCounter.textContent = `${Math.round(data.percent)}%`;
+        }
+        if (data.text) labelAction.textContent = data.text;
+        if (data.detail) labelDetails.textContent = data.detail;
+      });
 
-      // Нативное системное уведомление Windows (Web Notifications API)
-      try {
-        if ('Notification' in window) {
-          if (Notification.permission === 'granted') {
-            new Notification('3D Sandbox', {
-              body: 'Обновление игры успешно завершено!',
-              silent: false
-            });
-          } else if (Notification.permission !== 'denied') {
-            Notification.requestPermission().then((permission) => {
-              if (permission === 'granted') {
-                new Notification('3D Sandbox', {
-                  body: 'Обновление игры успешно завершено!',
-                  silent: false
-                });
-              }
-            });
+      ipc.on('updater-complete', (event, data) => {
+        progressFill.style.width = '100%';
+        labelCounter.textContent = '100%';
+        labelAction.textContent = 'Все файлы успешно загружены!';
+        labelAction.classList.add('success-badge');
+        labelDetails.textContent = 'Запуск игры через несколько секунд...';
+        labelFooterMsg.textContent = 'Игра запускается через:';
+        
+        let secondsLeft = data && data.seconds ? data.seconds : 3;
+        labelCountdown.textContent = `${secondsLeft} сек.`;
+
+        const timer = setInterval(() => {
+          secondsLeft--;
+          if (secondsLeft > 0) {
+            labelCountdown.textContent = `${secondsLeft} сек.`;
+          } else {
+            clearInterval(timer);
+            labelCountdown.textContent = '0 сек.';
+            ipc.send('updater-finished-launch-game');
           }
-        }
-      } catch (_) {}
+        }, 1000);
+      });
 
-      // Оповещаем главный процесс Electron, чтобы он показал нативное уведомление Windows
-      try {
-        if (window.require) {
-          const { ipcRenderer } = window.require('electron');
-          ipcRenderer.send('updater-finished-notification');
-        }
-      } catch (_) {}
+      ipc.on('updater-error', (event, data) => {
+        labelAction.textContent = 'Ошибка загрузки';
+        labelAction.classList.add('error-badge');
+        labelDetails.textContent = data && data.message ? data.message : 'Не удалось скачать ассеты';
+        labelFooterMsg.textContent = 'Запуск игры в автономном режиме через 5 сек...';
+        setTimeout(() => {
+          ipc.send('updater-finished-launch-game');
+        }, 5000);
+      });
 
-      // Обратный отсчет 10 секунд
-      let secondsLeft = 10;
-      labelCountdown.textContent = `${secondsLeft} сек.`;
-
-      const countdownTimer = setInterval(() => {
-        secondsLeft--;
-        if (secondsLeft > 0) {
-          labelCountdown.textContent = `${secondsLeft} сек.`;
-        } else {
-          clearInterval(countdownTimer);
-          labelCountdown.textContent = '0 сек.';
-          // Закрываем окно обновления и завершаем процесс
-          try {
-            if (window.require) {
-              const { ipcRenderer } = window.require('electron');
-              ipcRenderer.send('updater-close-app');
-            } else {
-              window.close();
-            }
-          } catch (_) {
-            window.close();
-          }
-        }
-      }, 1000);
+      // Сообщаем главному процессу, что окно апдейтера готово к загрузке
+      ipc.send('updater-ready');
+    } else {
+      labelDetails.textContent = 'Автономный режим (запуск без Electron)';
     }
   </script>
 </body>
