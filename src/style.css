@@ -2010,11 +2010,26 @@ body > canvas {
   background: #1d1e21;
 }
 
+/* Полностью скрываем стандартные стрелки-листалки Windows у числовых полей */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .mp-players-input {
-  width: 60px !important;
+  width: 50px !important;
   text-align: center;
   font-weight: 700;
-  font-size: 13px !important;
+  font-size: 14px !important;
+  background: #141518 !important;
+  border: 1px solid #3c3e44 !important;
+  color: #ffffff !important;
+  user-select: none;
 }
 
 .mp-players-hint {
@@ -2076,11 +2091,11 @@ body > canvas {
   cursor: pointer;
 }
 
-/* Индикатор комнаты в левом верхнем углу игры */
+/* Индикатор комнаты в правом верхнем углу игры */
 #mp-room-hud {
   position: absolute;
   top: 36px;
-  left: 14px;
+  right: 14px;
   z-index: 11000;
   pointer-events: auto;
   user-select: none;
@@ -2091,21 +2106,23 @@ body > canvas {
 }
 
 .mp-room-badge {
-  background: rgba(21, 23, 27, 0.88);
-  border: 1px solid #35373d;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  padding: 6px 10px;
-  border-radius: 4px;
+  background: #1c1d22;
+  border-top: 1px solid #3c3e44;
+  border-left: 1px solid #3c3e44;
+  border-right: 1px solid #101114;
+  border-bottom: 1px solid #101114;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  padding: 6px 12px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: 'Tahoma', 'Verdana', sans-serif;
 }
 
 .mp-room-label {
-  font-size: 10px;
-  color: #8b949e;
+  font-size: 11px;
+  color: #9ba0aa;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
@@ -2113,35 +2130,41 @@ body > canvas {
 .mp-room-id {
   font-size: 13px;
   font-weight: 700;
-  color: #58a6ff;
+  color: #ffffff;
+  background: #121316;
+  border: 1px solid #32353c;
+  padding: 3px 8px;
+  border-radius: 2px;
   letter-spacing: 1px;
 }
 
 .mp-copy-btn {
-  background: #252830;
-  border: 1px solid #3d414d;
-  color: #e6edf3;
+  background: #272930;
+  border-top: 1px solid #444854;
+  border-left: 1px solid #444854;
+  border-right: 1px solid #121316;
+  border-bottom: 1px solid #121316;
+  color: #d8dbe2;
   font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 3px;
+  padding: 4px 10px;
+  border-radius: 2px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.1s;
 }
 
 .mp-copy-btn:hover {
-  background: #353b47;
+  background: #333640;
   color: #ffffff;
-  border-color: #58a6ff;
 }
 
 .mp-copy-btn:active {
   transform: translateY(1px);
 }
 
-/* Вкладка списка игроков (TAB) справа вверху */
+/* Вкладка списка игроков (TAB) справа вверху (под индикатором комнаты) */
 #mp-tab-overlay {
   position: absolute;
-  top: 36px;
+  top: 80px;
   right: 14px;
   z-index: 11000;
   pointer-events: none;

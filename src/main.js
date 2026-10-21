@@ -3132,7 +3132,7 @@ function startMenuMusic() {
   if (menuMusicAudio) return;
   menuMusicAudio = new Audio('./sounds/menu_music.mp3');
   menuMusicAudio.loop = true;
-  menuMusicAudio.volume = 0.45;
+  menuMusicAudio.volume = 0.90; // в 2 раза громче
   menuMusicAudio.play().catch(() => {
     // Если браузер блокирует автоплей до первого клика, запускаем по любому взаимодействию
     const resumeOnInteraction = () => {
@@ -8562,11 +8562,9 @@ function initMultiplayerHost(options = {}) {
     isGameStarted = true;
     cleanupMenuChaosObjects();
 
-    // Включаем HUD с кодом комнаты слева сверху
+    // Включаем HUD с кодом комнаты справа сверху
     if (mpHudRoomId) mpHudRoomId.textContent = id;
     if (mpRoomHud) mpRoomHud.classList.remove('hidden');
-
-    showFlightHudNotification(`Сервер «${srvName}» запущен! Код: ${id}`, 6000);
 
     // Закрываем модалки и входим в чистый мир
     if (multiplayerModal) multiplayerModal.classList.add('hidden');
@@ -8722,12 +8720,10 @@ function connectToMultiplayerHost(targetId, enteredPassword = "") {
         password: enteredPassword
       }));
 
-      // Показываем HUD кода комнаты слева вверху
+      // Показываем HUD кода комнаты справа вверху
       if (mpHudRoomId) mpHudRoomId.textContent = cleanId;
       if (mpRoomHud) mpRoomHud.classList.remove('hidden');
 
-      showFlightHudNotification(`Успешное подключение к серверу!`, 3000);
-      showSourceNotification(`Подключено к серверу «${cleanId}»`, 'join');
       appendChatMessageToUI({
         text: `[+] Вы успешно подключились к серверу «${cleanId}»`,
         isSystem: true
