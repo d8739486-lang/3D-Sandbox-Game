@@ -1,6 +1,6 @@
 /* ==========================================================================
    3D SANDBOX - ОФИЦИАЛЬНЫЙ САЙТ (КЛАССИЧЕСКИЙ РЕТРО-СТИЛЬ, БЕЗ GLOW)
-   Полноэкранный монолитный интерфейс, единая плавная анимация
+   Полноэкранный компактный интерфейс без скролла, плавное появление
    ========================================================================== */
 
 * {
@@ -9,10 +9,17 @@
   padding: 0;
 }
 
+/* Полное скрытие полосы прокрутки для чистого посадочного экрана */
 html, body {
   width: 100%;
   height: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 body {
@@ -29,7 +36,7 @@ body {
 }
 
 /* ==========================================================================
-   ЕДИНАЯ ПЛАВНАЯ АНИМАЦИЯ ПОЯВЛЕНИЯ (Без разрозненных скачков частей)
+   ЕДИНАЯ ПЛАВНАЯ АНИМАЦИЯ ПОЯВЛЕНИЯ
    ========================================================================== */
 @keyframes smoothPageFadeIn {
   0% {
@@ -42,121 +49,93 @@ body {
   }
 }
 
-/* Общий полноэкранный контейнер */
+/* Полноэкранный контейнер ровно на 100vh */
 .site-wrapper {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background: #111317;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   animation: smoothPageFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-/* Верхняя полоса (Шапка) */
-.site-header {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  padding: 14px 32px;
-  background: #15171d;
-  border-bottom: 1px solid #232630;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.header-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 3px;
-  border: 1px solid #333742;
-  display: block;
-}
-
-.header-title {
-  font-weight: bold;
-  font-size: 15px;
-  color: #f3f4f6;
-  letter-spacing: 0.8px;
 }
 
 /* Основной блок во весь экран */
 .hero-section {
   flex: 1;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1320px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: 48px;
-  padding: 48px 32px;
+  gap: 40px;
+  padding: 30px 40px;
   align-items: center;
 }
 
 @media (max-width: 900px) {
+  html, body {
+    overflow-y: auto;
+  }
+  .site-wrapper {
+    height: auto;
+    min-height: 100vh;
+  }
   .hero-section {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 28px;
     padding: 24px 20px;
   }
 }
 
-/* Левая часть (Информация и кнопка загрузки) */
+/* Левая часть: логотип вместо текста, описание и кнопка */
 .hero-left {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.hero-title {
-  font-size: 38px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 1.5px;
-  margin-bottom: 6px;
-  text-transform: uppercase;
+.hero-logo-box {
+  margin-bottom: 8px;
 }
 
-@media (max-width: 600px) {
-  .hero-title {
-    font-size: 28px;
-  }
+.hero-brand-logo {
+  max-width: 320px;
+  height: auto;
+  display: block;
 }
 
 .hero-subtitle {
-  font-size: 15px;
+  font-size: 14px;
   color: #9499a8;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   font-weight: 500;
 }
 
 .hero-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: #b5b9c4;
-  line-height: 1.65;
-  margin-bottom: 26px;
-  max-width: 650px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  max-width: 600px;
 }
 
 /* Мета-информация */
 .meta-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px 20px;
+  gap: 8px 18px;
   background: #0d0f13;
   border: 1px solid #20232c;
-  padding: 14px 18px;
-  margin-bottom: 28px;
-  max-width: 520px;
+  padding: 12px 16px;
+  margin-bottom: 22px;
+  max-width: 500px;
 }
 
 .meta-item {
   display: flex;
-  font-size: 12px;
-  gap: 8px;
+  font-size: 11px;
+  gap: 6px;
 }
 
 .meta-label {
@@ -173,7 +152,7 @@ body {
 .download-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-download {
@@ -183,7 +162,7 @@ body {
   background: #2e6030;
   color: #ffffff;
   text-decoration: none;
-  padding: 16px 26px;
+  padding: 14px 24px;
   border: 1px solid #438546;
   border-top-color: #55a858;
   border-bottom-color: #214723;
@@ -203,7 +182,7 @@ body {
 }
 
 .btn-icon {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -214,24 +193,24 @@ body {
 }
 
 .btn-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   letter-spacing: 0.6px;
 }
 
 .btn-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: #c0dec2;
   font-family: 'Consolas', monospace;
   margin-top: 2px;
 }
 
 .download-note {
-  font-size: 12px;
+  font-size: 11px;
   color: #6b7080;
 }
 
-/* Правая колонка: превью игры */
+/* Правая колонка: превью фото карты baseplate.png */
 .hero-right {
   display: flex;
   align-items: center;
@@ -240,7 +219,7 @@ body {
 
 .preview-frame {
   width: 100%;
-  max-width: 540px;
+  max-width: 520px;
   background: #0f1115;
   border: 1px solid #292d37;
   display: flex;
@@ -248,35 +227,8 @@ body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-.frame-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: #171920;
-  border-bottom: 1px solid #232630;
-}
-
-.frame-dots {
-  display: flex;
-  gap: 6px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  background: #2c303c;
-  border-radius: 50%;
-}
-
-.frame-title {
-  font-size: 11px;
-  color: #7b8090;
-  font-family: 'Consolas', monospace;
-}
-
 .preview-media-box {
-  padding: 28px 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -284,10 +236,13 @@ body {
   border-bottom: 1px solid #1f222b;
 }
 
-.preview-logo {
-  max-width: 100%;
+.preview-map-image {
+  width: 100%;
   height: auto;
-  margin-bottom: 18px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid #20242e;
+  margin-bottom: 12px;
   display: block;
 }
 
@@ -295,11 +250,11 @@ body {
   width: 100%;
   background: #13151b;
   border: 1px solid #242732;
-  padding: 12px 14px;
+  padding: 10px 12px;
 }
 
 .preview-tag {
-  font-size: 11px;
+  font-size: 10px;
   font-family: 'Consolas', monospace;
   color: #9cb4d8;
   font-weight: bold;
@@ -310,6 +265,7 @@ body {
   font-size: 12px;
   color: #8c909e;
   line-height: 1.45;
+  font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
 }
 
 .preview-stats {
@@ -323,7 +279,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 8px;
+  padding: 10px 6px;
   border-right: 1px solid #1f222b;
 }
 
@@ -333,28 +289,28 @@ body {
 
 .stat-num {
   font-family: 'Consolas', monospace;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   color: #e5e7eb;
 }
 
 .stat-lbl {
-  font-size: 11px;
+  font-size: 10px;
   color: #6b7080;
   margin-top: 2px;
   text-align: center;
 }
 
-/* Подвал: на всю ширину с авторскими правами */
+/* Подвал: лаконичный с авторскими правами */
 .site-footer {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 18px 32px;
+  padding: 14px 32px;
   background: #15171d;
   border-top: 1px solid #232630;
-  font-size: 12px;
+  font-size: 11px;
   color: #63687a;
   text-align: center;
 }
