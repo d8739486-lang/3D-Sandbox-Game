@@ -2,12 +2,15 @@ const { app, BrowserWindow, Menu, ipcMain, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-// Полностью отключаем кэш Chromium на диске
+// Оптимизация задержек ввода и графики (устранение инпут-лага)
 app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
 app.commandLine.appendSwitch('disable-http-cache');
 app.commandLine.appendSwitch('disable-gpu-program-cache');
 app.commandLine.appendSwitch('disable-component-update');
 app.commandLine.appendSwitch('disable-features', 'DawnGraphite,PersistentCache');
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-zero-copy');
 
 // Уникальная папка для каждого сеанса
 try {

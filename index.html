@@ -348,11 +348,24 @@
           </div>
           <div class="settings-row">
             <div class="settings-label-val">
+              <label>Небо и время суток (Old Roblox):</label>
+              <span id="val-gfx-time">Динамический цикл</span>
+            </div>
+            <select id="setting-gfx-time" class="retro-dialog-input retro-select">
+              <option value="cycle" selected>Динамический цикл (День / Закат / Ночь)</option>
+              <option value="day">Яркий день (Классика Roblox)</option>
+              <option value="sunset">Закат (Golden Sunset)</option>
+              <option value="sunrise">Восход (Sunrise)</option>
+              <option value="night">Звездная ночь (Starry Night)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <div class="settings-label-val">
               <label>Динамические тени (Shadows):</label>
-              <span id="val-gfx-shadows">Включены</span>
+              <span id="val-gfx-shadows">Оптимизированные</span>
             </div>
             <select id="setting-gfx-shadows" class="retro-dialog-input retro-select">
-              <option value="on" selected>Включены (Мягкие PCFShadows)</option>
+              <option value="on" selected>Оптимизированные (Быстрый PCF без лагов)</option>
               <option value="off">Выключены (Макс FPS)</option>
             </select>
           </div>
@@ -654,7 +667,7 @@
 
   <!-- Метка версии игры: фиксирована в левом нижнем углу -->
   <div class="main-menu-version-bar">
-    <span id="label-game-version">v1.0.7</span>
+    <span id="label-game-version">v1.0.8</span>
   </div>
 
 </body>

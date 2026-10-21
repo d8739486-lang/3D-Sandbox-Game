@@ -12,6 +12,7 @@ if (typeof document !== 'undefined') {
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as CANNON from 'cannon-es';
 import { Peer } from 'peerjs';
+import appVersionConfig from '../version.json';
 
 
 // --- Инициализация физического мира CANNON с высокой оптимизацией ---
@@ -60,7 +61,7 @@ world.addBody(groundBody);
 
 const scene = new THREE.Scene();
 
-// --- Скайбокс: белый горизонт, плавный переход в чёрный в зените и чёрная точка в самом центре ---
+// --- СКАЙБОКС И СВЕТ: РЕТРО OLD ROBLOX (2007-2012) С ДИНАМИЧЕСКИМ ЦИКЛОМ СУТОК ---
 const skyVertexShader = `
   varying vec3 vWorldPosition;
   void main() {
@@ -73,26 +74,96 @@ const skyVertexShader = `
 const skyFragmentShader = `
   varying vec3 vWorldPosition;
   uniform float uRedness;
+  uniform float uTime;
+  uniform float uDayPhase;
+  uniform vec3 uSunDir;
+  uniform vec3 uMoonDir;
+
+  float hash(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+
   void main() {
     vec3 dir = normalize(vWorldPosition);
-    float y = clamp(dir.y, 0.0, 1.0);
+    float y = dir.y;
 
-    // Плавный переход от белого у горизонта к черному наверху
-    float t = pow(y, 1.6);
-    vec3 normalCol = mix(vec3(1.0, 1.0, 1.0), vec3(0.0, 0.0, 0.0), t);
-    
-    // Зловещее красное небо во время ивента
-    vec3 bloodCol = mix(vec3(0.95, 0.12, 0.12), vec3(0.18, 0.01, 0.02), t);
-    vec3 col = mix(normalCol, bloodCol, clamp(uRedness, 0.0, 1.0));
+    float sunHeight = uSunDir.y;
+    float dayFactor = clamp((sunHeight + 0.15) / 0.65, 0.0, 1.0);
+    float sunsetFactor = clamp(1.0 - abs(sunHeight) / 0.35, 0.0, 1.0) * (1.0 - dayFactor * 0.7);
 
-    gl_FragColor = vec4(col, 1.0);
+    // Палитра классического яркого Old Roblox
+    vec3 dayZenith = vec3(0.24, 0.54, 0.98);   // Насыщенный ретро-голубой
+    vec3 dayHorizon = vec3(0.68, 0.86, 1.0);   // Светлый лазурный горизонт
+
+    vec3 sunsetZenith = vec3(0.18, 0.14, 0.38); // Сумеречный фиолетовый
+    vec3 sunsetHorizon = vec3(1.0, 0.45, 0.15); // Огненно-янтарный закат
+    vec3 sunsetGlow = vec3(0.95, 0.25, 0.45);   // Малиновый отблеск
+
+    vec3 nightZenith = vec3(0.02, 0.04, 0.09);  // Глубокий 2008 Midnight
+    vec3 nightHorizon = vec3(0.08, 0.13, 0.24); // Мягкий темный горизонт
+
+    float h = clamp((y + 0.05) / 0.85, 0.0, 1.0);
+    float hCurve = pow(h, 0.8);
+
+    vec3 daySky = mix(dayHorizon, dayZenith, hCurve);
+    vec3 sunsetSky = mix(mix(sunsetHorizon, sunsetGlow, pow(h, 1.4)), sunsetZenith, hCurve);
+    vec3 nightSky = mix(nightHorizon, nightZenith, hCurve);
+
+    // Ночные пиксельные ретро-звезды
+    float starFactor = (1.0 - dayFactor) * (1.0 - sunsetFactor * 0.8);
+    vec3 stars = vec3(0.0);
+    if (starFactor > 0.02 && y > 0.05) {
+      vec2 starCoord = vec2(atan(dir.z, dir.x) * 60.0, asin(clamp(dir.y, -1.0, 1.0)) * 60.0);
+      vec2 starGrid = floor(starCoord);
+      float hVal = hash(starGrid);
+      if (hVal > 0.965) {
+        float twinkle = sin(uTime * 3.0 + hVal * 100.0) * 0.35 + 0.65;
+        float distToCenter = length(fract(starCoord) - vec2(0.5));
+        if (distToCenter < 0.22) {
+          stars = vec3(0.9, 0.95, 1.0) * twinkle * starFactor * smoothstep(0.22, 0.0, distToCenter);
+        }
+      }
+    }
+
+    vec3 baseSky = mix(nightSky, daySky, dayFactor);
+    baseSky = mix(baseSky, sunsetSky, sunsetFactor * 0.85) + stars;
+
+    // Ретро-солнце (яркий стилизованный диск со свечением)
+    float sunDot = max(0.0, dot(dir, normalize(uSunDir)));
+    if (uSunDir.y > -0.2) {
+      float sunDisc = smoothstep(0.9982, 0.9995, sunDot);
+      float sunGlow = pow(sunDot, 64.0) * 0.65 + pow(sunDot, 12.0) * 0.25;
+      vec3 sunCol = mix(vec3(1.0, 0.6, 0.2), vec3(1.0, 0.98, 0.85), clamp(sunHeight * 2.5, 0.0, 1.0));
+      baseSky += sunCol * (sunDisc * 2.0 + sunGlow);
+    }
+
+    // Ретро-луна
+    float moonDot = max(0.0, dot(dir, normalize(uMoonDir)));
+    if (uMoonDir.y > -0.2 && dayFactor < 0.8) {
+      float moonDisc = smoothstep(0.9984, 0.9994, moonDot);
+      float moonGlow = pow(moonDot, 48.0) * 0.35;
+      vec3 moonCol = vec3(0.85, 0.92, 1.0);
+      baseSky += moonCol * (moonDisc * 1.5 + moonGlow) * (1.0 - dayFactor);
+    }
+
+    // Красный режим при ядерном взрыве
+    vec3 bloodCol = mix(vec3(0.95, 0.12, 0.12), vec3(0.18, 0.01, 0.02), pow(clamp(y, 0.0, 1.0), 1.5));
+    vec3 finalCol = mix(baseSky, bloodCol, clamp(uRedness, 0.0, 1.0));
+
+    gl_FragColor = vec4(finalCol, 1.0);
   }
 `;
 
 const skyGeo = new THREE.SphereGeometry(800, 32, 16);
 const skyMat = new THREE.ShaderMaterial({
   uniforms: {
-    uRedness: { value: 0.0 }
+    uRedness: { value: 0.0 },
+    uTime: { value: 0.0 },
+    uDayPhase: { value: 0.45 },
+    uSunDir: { value: new THREE.Vector3(0.5, 0.8, 0.3).normalize() },
+    uMoonDir: { value: new THREE.Vector3(-0.5, -0.8, -0.3).normalize() }
   },
   vertexShader: skyVertexShader,
   fragmentShader: skyFragmentShader,
@@ -112,62 +183,140 @@ camera.position.set(0, -999, 0);
 
 const renderer = new THREE.WebGLRenderer({
   powerPreference: 'high-performance',
-  antialias: true
+  antialias: false // отключаем MSAA для 0% инпут-лага и максимального FPS
 });
 renderer.setSize(window.innerWidth, window.innerHeight - 26);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap; // Быстрый PCF без лагов Poisson-дизеринга
 
-// 3D-сцена и рендерер активны для отображения динамического фона меню и игры
 renderer.domElement.style.display = 'block';
 document.body.appendChild(renderer.domElement);
 
 // --- Освещение для объема и видимости поверхности ---
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+const ambientLight = new THREE.AmbientLight(0xbde0fe, 0.75);
 scene.add(ambientLight);
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.95);
+const dirLight = new THREE.DirectionalLight(0xfff9eb, 1.15);
 dirLight.position.set(40, 80, 30);
 dirLight.castShadow = true;
-dirLight.shadow.mapSize.width = 2048;
-dirLight.shadow.mapSize.height = 2048;
+dirLight.shadow.mapSize.width = 1024; // Оптимизированный размер без статтеров
+dirLight.shadow.mapSize.height = 1024;
 dirLight.shadow.camera.near = 1;
-dirLight.shadow.camera.far = 250;
-dirLight.shadow.camera.left = -120;
-dirLight.shadow.camera.right = 120;
-dirLight.shadow.camera.top = 120;
-dirLight.shadow.camera.bottom = -120;
-dirLight.shadow.bias = -0.0005;
+dirLight.shadow.camera.far = 280;
+dirLight.shadow.camera.left = -110;
+dirLight.shadow.camera.right = 110;
+dirLight.shadow.camera.top = 110;
+dirLight.shadow.camera.bottom = -110;
+dirLight.shadow.bias = -0.0003;
 scene.add(dirLight);
 
 // Состояние графических настроек
 let gfxSettings = {
   scale: localStorage.getItem('sbx_gfx_scale') || '1.0',
+  time: localStorage.getItem('sbx_gfx_time') || 'cycle',
   shadows: localStorage.getItem('sbx_gfx_shadows') || 'on',
   fog: localStorage.getItem('sbx_gfx_fog') || 'far',
   wind: localStorage.getItem('sbx_gfx_wind') || 'on'
 };
 let isWindEffectEnabled = gfxSettings.wind === 'on';
 
+// Логика динамического цикла суток Old Roblox
+let retroDayPhase = 0.40;
+const sunWorldVector = new THREE.Vector3();
+const moonWorldVector = new THREE.Vector3();
+
+function updateRetroSkyAndLighting(delta) {
+  if (gfxSettings.time === 'day') {
+    retroDayPhase = 0.45;
+  } else if (gfxSettings.time === 'sunset') {
+    retroDayPhase = 0.74;
+  } else if (gfxSettings.time === 'sunrise') {
+    retroDayPhase = 0.24;
+  } else if (gfxSettings.time === 'night') {
+    retroDayPhase = 0.02;
+  } else {
+    // 1 полный оборот за 6 минут (360 секунд)
+    retroDayPhase = (retroDayPhase + (delta || 0.016) / 360.0) % 1.0;
+  }
+
+  const angle = (retroDayPhase - 0.25) * Math.PI * 2;
+  const sunX = Math.cos(angle);
+  const sunY = Math.sin(angle);
+  const sunZ = 0.35;
+
+  sunWorldVector.set(sunX, sunY, sunZ).normalize();
+  moonWorldVector.copy(sunWorldVector).negate();
+
+  if (skyMat && skyMat.uniforms) {
+    skyMat.uniforms.uDayPhase.value = retroDayPhase;
+    skyMat.uniforms.uSunDir.value.copy(sunWorldVector);
+    skyMat.uniforms.uMoonDir.value.copy(moonWorldVector);
+    skyMat.uniforms.uTime.value = performance.now() / 1000;
+  }
+
+  const sunHeight = sunWorldVector.y;
+  const dayWeight = Math.max(0.0, Math.min(1.0, (sunHeight + 0.15) / 0.65));
+  const sunsetWeight = Math.max(0.0, 1.0 - Math.abs(sunHeight) / 0.35) * (1.0 - dayWeight * 0.7);
+
+  if (dirLight) {
+    if (sunHeight > -0.15) {
+      dirLight.position.set(sunWorldVector.x * 120, Math.max(sunWorldVector.y * 120, 15), sunWorldVector.z * 120);
+      const sunColor = new THREE.Color().lerpColors(
+        new THREE.Color(0xff8833),
+        new THREE.Color(0xfff6e5),
+        dayWeight
+      );
+      dirLight.color.copy(sunColor);
+      dirLight.intensity = 0.4 + dayWeight * 0.85;
+    } else {
+      dirLight.position.set(moonWorldVector.x * 120, Math.max(moonWorldVector.y * 120, 20), moonWorldVector.z * 120);
+      dirLight.color.setHex(0x5577bb);
+      dirLight.intensity = 0.28;
+    }
+  }
+
+  if (ambientLight) {
+    const ambCol = new THREE.Color();
+    if (dayWeight > 0.3) {
+      ambCol.lerpColors(new THREE.Color(0xffb077), new THREE.Color(0xa8d2ff), dayWeight);
+      ambientLight.intensity = 0.55 + dayWeight * 0.25;
+    } else {
+      ambCol.lerpColors(new THREE.Color(0x111c38), new THREE.Color(0xff8844), sunsetWeight);
+      ambientLight.intensity = 0.35 + sunsetWeight * 0.25;
+    }
+    ambientLight.color.copy(ambCol);
+  }
+
+  if (scene.fog) {
+    if (dayWeight > 0.4) {
+      scene.fog.color.lerpColors(new THREE.Color(0xffc299), new THREE.Color(0xb2dcff), dayWeight);
+    } else {
+      scene.fog.color.lerpColors(new THREE.Color(0x0e172e), new THREE.Color(0xff6e3b), sunsetWeight);
+    }
+  }
+}
+
 function applyGraphicsSettings() {
   const scale = parseFloat(gfxSettings.scale) || 1.0;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio * scale, 3.0));
+  // Устраняем инпут лаг: ограничиваем pixelRatio (макс 1.5)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5) * Math.min(scale, 1.25));
 
   const shadowsOn = gfxSettings.shadows === 'on';
   renderer.shadowMap.enabled = shadowsOn;
   if (dirLight) dirLight.castShadow = shadowsOn;
 
   if (gfxSettings.fog === 'near') {
-    scene.fog = new THREE.Fog(0xd8dbe0, 30, 75);
+    scene.fog = new THREE.Fog(0xb2dcff, 30, 75);
   } else if (gfxSettings.fog === 'medium') {
-    scene.fog = new THREE.Fog(0xd8dbe0, 60, 140);
+    scene.fog = new THREE.Fog(0xb2dcff, 60, 140);
   } else if (gfxSettings.fog === 'far') {
-    scene.fog = new THREE.Fog(0xd8dbe0, 120, 240);
+    scene.fog = new THREE.Fog(0xb2dcff, 120, 240);
   } else {
     scene.fog = null;
   }
 
   isWindEffectEnabled = gfxSettings.wind === 'on';
+  updateRetroSkyAndLighting(0);
 }
 applyGraphicsSettings();
 
@@ -3235,10 +3384,12 @@ if (mpNickBadge) mpNickBadge.textContent = `Профиль [${localPlayerNick}]`
 
 // --- Инициализация и слушатели настроек графики ---
 const settingGfxScale = document.getElementById('setting-gfx-scale');
+const settingGfxTime = document.getElementById('setting-gfx-time');
 const settingGfxShadows = document.getElementById('setting-gfx-shadows');
 const settingGfxFog = document.getElementById('setting-gfx-fog');
 const settingGfxWind = document.getElementById('setting-gfx-wind');
 const valGfxScale = document.getElementById('val-gfx-scale');
+const valGfxTime = document.getElementById('val-gfx-time');
 const valGfxShadows = document.getElementById('val-gfx-shadows');
 const valGfxFog = document.getElementById('val-gfx-fog');
 const valGfxWind = document.getElementById('val-gfx-wind');
@@ -3253,12 +3404,31 @@ if (settingGfxScale) {
   });
 }
 
+if (settingGfxTime) {
+  settingGfxTime.value = gfxSettings.time;
+  settingGfxTime.addEventListener('change', (e) => {
+    gfxSettings.time = e.target.value;
+    try { localStorage.setItem('sbx_gfx_time', gfxSettings.time); } catch (_) {}
+    if (valGfxTime) {
+      const labels = {
+        cycle: 'Динамический цикл',
+        day: 'Яркий день',
+        sunset: 'Закат',
+        sunrise: 'Восход',
+        night: 'Звездная ночь'
+      };
+      valGfxTime.textContent = labels[e.target.value] || e.target.value;
+    }
+    applyGraphicsSettings();
+  });
+}
+
 if (settingGfxShadows) {
   settingGfxShadows.value = gfxSettings.shadows;
   settingGfxShadows.addEventListener('change', (e) => {
     gfxSettings.shadows = e.target.value;
     try { localStorage.setItem('sbx_gfx_shadows', gfxSettings.shadows); } catch (_) {}
-    if (valGfxShadows) valGfxShadows.textContent = e.target.value === 'on' ? 'Включены' : 'Выключены';
+    if (valGfxShadows) valGfxShadows.textContent = e.target.value === 'on' ? 'Оптимизированные' : 'Выключены';
     applyGraphicsSettings();
   });
 }
@@ -4258,6 +4428,7 @@ let isGrabRotationLocked = false; // Блокировка ориентации �
 const fixedGrabQuat = new THREE.Quaternion(); // Фиксированная мировая ориентация при нажатии R
 const raycaster = new THREE.Raycaster();
 const centerScreen = new THREE.Vector2(0, 0);
+const cachedRaycastMeshes = [];
 const grabVelocityHistory = new THREE.Vector3(); // вектор реальной скорости маха рукой/камерой
 const lastTargetPos = new THREE.Vector3(); // предыдущая позиция точки удержания для чистого замера скорости
 let hasLastTargetPos = false;
@@ -8733,6 +8904,9 @@ function animate() {
   const delta = Math.min((time - prevTime) / 1000, 0.05);
   prevTime = time;
 
+  // Динамический ретро-скайбокс и освещение Old Roblox
+  updateRetroSkyAndLighting(delta);
+
   // Если открыто Главное Меню — крутим физику и рендерим зрелищный фоновый хаос (ТОЛЬКО в чистом меню без игры/сервера)
   if ((isInMainMenu || !isGameStarted) && !isHostingServer && !isConnectedToHost) {
     // Тролль-эффект фейковых лагов: во время детонации кучи ядерок ТОЛЬКО фоновый 3D-холст меню
@@ -8951,11 +9125,14 @@ function animate() {
   // Монолитная синхронизация сваренных объектов (абсолютная жесткость)
   syncWeldConstraintsPositions();
 
-  // --- Проверка наведения прицела на куб (Raycast hover) ---
+  // --- Проверка наведения прицела на куб (Raycast hover, без мусора в памяти) ---
   if (!grabbedBody && controls.isLocked && !isMenuOpen) {
     raycaster.setFromCamera(centerScreen, camera);
-    const meshes = physicsObjects.map(obj => obj.mesh);
-    const intersects = raycaster.intersectObjects(meshes);
+    cachedRaycastMeshes.length = 0;
+    for (let i = 0; i < physicsObjects.length; i++) {
+      cachedRaycastMeshes.push(physicsObjects[i].mesh);
+    }
+    const intersects = raycaster.intersectObjects(cachedRaycastMeshes, false);
 
     if (intersects.length > 0 && intersects[0].distance < 8.0) {
       crosshairEl.classList.add('hovered');
@@ -9797,8 +9974,8 @@ if (sortByCountBtn) {
 // ============================================================================
 // --- СИСТЕМА АВТООБНОВЛЕНИЯ ИГРЫ ИЗ РЕПОЗИТОРИЯ GITHUB ---
 // ============================================================================
-const CURRENT_GAME_VERSION = "1.0.7";
-const CURRENT_BUILD_NUMBER = 107;
+const CURRENT_GAME_VERSION = (appVersionConfig && appVersionConfig.version) ? appVersionConfig.version : "1.0.8";
+const CURRENT_BUILD_NUMBER = (appVersionConfig && appVersionConfig.build) ? appVersionConfig.build : 108;
 const GITHUB_REPO_VERSION_URL = "https://raw.githubusercontent.com/d8739486-lang/3D-Sandbox-Game/main/version.json";
 
 const updateDialogModal = document.getElementById('update-dialog-modal');
