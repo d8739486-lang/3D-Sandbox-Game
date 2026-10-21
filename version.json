@@ -1,8 +1,8 @@
 {
-  "version": "1.0.6",
-  "build": 106,
-  "updatedAt": "2026-10-20T22:20:00Z",
-  "name": "Source Notifications, Chat, Graphics & DDoS Shield",
+  "version": "1.0.7",
+  "build": 107,
+  "updatedAt": "2026-10-21T13:30:00Z",
+  "name": "CS2-Style Dedicated Game Updater & Asset Streamer",
   "changelog": [
     "Source / Half-Life style player join and leave audio-visual notifications",
     "In-game chat on T / Ь / Enter with command support and retro styling",
