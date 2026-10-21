@@ -82,7 +82,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  animation: smoothPageFadeIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) both;
+  animation: smoothPageFadeIn 2.0s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 /* Основной блок во весь экран */

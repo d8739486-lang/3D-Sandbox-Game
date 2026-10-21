@@ -87,7 +87,9 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Поочередное каскадное появление блоков
+      const TOTAL_DURATION_MS = 2000;
+
+      // 1. Поочередное появление блоков с финишем ровно к 2 секундам
       const cascadeTargets = [
         '.brand-logo-3d',
         '.brand-logo-sandbox',
@@ -104,18 +106,23 @@
         const el = document.querySelector(selector);
         if (el) {
           el.classList.add('cascade-item');
-          el.style.animationDelay = `${0.15 + idx * 0.12}s`;
+          // Старт от 0ms до 1200ms, каждый блок завершает анимацию ровно к 2000ms
+          const startDelay = idx * 140; 
+          const duration = Math.max(300, TOTAL_DURATION_MS - startDelay);
+          el.style.animationDelay = `${startDelay}ms`;
+          el.style.animationDuration = `${duration}ms`;
         }
       });
 
-      // 2. Эффект печатной машинки (typewriter) для текстов
+      // 2. Эффект печатной машинки: стартуют по очереди, но все заканчивают ровно к 2 секундам
       const typewriterSelectors = [
         '.hero-subtitle',
         '.hero-desc',
         '.btn-title',
         '.btn-sub',
         '.preview-tag',
-        '.preview-scene-desc'
+        '.preview-scene-desc',
+        '.footer-copyright'
       ];
 
       typewriterSelectors.forEach((sel, selIdx) => {
@@ -127,17 +134,21 @@
         el.textContent = '';
         el.style.visibility = 'visible';
 
-        const startDelay = 250 + selIdx * 200;
+        // Разный момент старта для каждого элемента
+        const startDelay = 100 + selIdx * 150;
+        const availableTime = Math.max(400, TOTAL_DURATION_MS - startDelay);
+        const charInterval = Math.max(10, Math.floor(availableTime / fullText.length));
+
         setTimeout(() => {
           let charIndex = 0;
-          const speed = Math.max(12, Math.floor(650 / fullText.length));
           const timer = setInterval(() => {
             el.textContent = fullText.slice(0, charIndex + 1);
             charIndex++;
             if (charIndex >= fullText.length) {
               clearInterval(timer);
+              el.textContent = fullText; // гарантируем полный текст
             }
-          }, speed);
+          }, charInterval);
         }, startDelay);
       });
     });
